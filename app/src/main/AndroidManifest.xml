@@ -10,16 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KeralaRecipeMasterAdmin">
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.KeralaRecipeMasterAdmin">
+            android:name=".ui.view.HomeActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.view.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.KeralaRecipeMasterAdmin" />
+
     </application>
 
 </manifest>
