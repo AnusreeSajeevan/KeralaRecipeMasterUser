@@ -62,6 +62,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+
     //hilt
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
@@ -73,5 +75,13 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:2.40"
     kapt "com.google.dagger:hilt-android-compiler:2.40"
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    // Retrofit with gson converter factory
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
 }

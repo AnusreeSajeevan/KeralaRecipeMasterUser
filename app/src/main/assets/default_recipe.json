@@ -1,0 +1,24 @@
+{
+  "default_recipes": [
+    {
+      "recipe_name": "Chicken Biriyani",
+      "image": "image url",
+      "restaurant": {
+        "name": "Calicut Rahmat",
+        "state": "Kerala",
+        "latitude": "12.4",
+        "longitude": "34.67"
+      }
+    },
+    {
+      "recipe_name": "Fish Nirvana",
+      "image": "image url",
+      "restaurant": {
+        "name": "Restaurant Chef Pillai",
+        "state": "Kerala",
+        "latitude": "12.4",
+        "longitude": "34.67"
+      }
+    }
+  ]
+}
