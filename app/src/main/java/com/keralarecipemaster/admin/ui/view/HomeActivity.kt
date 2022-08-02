@@ -1,11 +1,14 @@
 package com.keralarecipemaster.admin.ui.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +16,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -52,6 +54,18 @@ class HomeActivity : ComponentActivity() {
                 scaffoldState = scaffoldState,
                 bottomBar = {
                     BottomNavigationBar(allScreens, navController)
+                },
+                floatingActionButton = {
+                    FloatingActionButton(onClick = {
+                        startActivity(
+                            Intent(
+                                this,
+                                AddRecipeActivity::class.java
+                            )
+                        )
+                    }) {
+                        Icon(Icons.Filled.Add, "")
+                    }
                 }
             ) { innerPadding ->
                 NavHost(

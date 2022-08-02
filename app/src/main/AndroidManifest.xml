@@ -5,13 +5,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".RecipeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:name=".RecipeApplication"
         android:supportsRtl="true">
-<!--        android:theme="@style/Theme.KeralaRecipeMasterAdmin">-->
+        <activity
+            android:name=".ui.view.AddRecipeActivity"
+            android:exported="false" />
+        <!-- android:theme="@style/Theme.KeralaRecipeMasterAdmin"> -->
         <activity
             android:name=".ui.view.HomeActivity"
             android:exported="true">
@@ -26,7 +29,6 @@
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.KeralaRecipeMasterAdmin" />
-
     </application>
 
 </manifest>
