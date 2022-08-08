@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keralarecipemaster.admin.R
-import com.keralarecipemaster.admin.model.Recipe
+import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.utils.Diet
 
 @Composable

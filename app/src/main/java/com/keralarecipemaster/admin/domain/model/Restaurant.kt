@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.model
+package com.keralarecipemaster.admin.domain.model
 
 data class Restaurant(
     val name: String,

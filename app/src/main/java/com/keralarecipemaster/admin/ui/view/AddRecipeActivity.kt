@@ -37,7 +37,7 @@ class AddRecipeActivity : ComponentActivity() {
 
         KeralaRecipeMasterAdminTheme {
             Scaffold {
-                Column(modifier = Modifier.padding(10.dp).fillMaxWidth().){
+                Column(modifier = Modifier.padding(10.dp).fillMaxWidth()){
                     OutlinedTextField(
                         value = recipeName,
                         label = {
