@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.viewmodel
+package com.keralarecipemaster.admin.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

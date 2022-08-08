@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui.view
+package com.keralarecipemaster.admin.presentation.ui.view
 
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.keralarecipemaster.admin.R
-import com.keralarecipemaster.admin.ui.theme.KeralaRecipeMasterAdminTheme
+import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 
 class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

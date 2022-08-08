@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 
 interface RecipeService {
-    @GET
+    @GET("/get")
     suspend fun fetchRecipes(
         @Header("Authorization") token: String
     ): List<RecipeDto>

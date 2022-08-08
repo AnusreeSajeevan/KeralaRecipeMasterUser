@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.admin.domain.model.Restaurant
 
 data class RecipeDto(
+    val id: Int,
+
     @SerializedName("recipe_name")
     val recipeName: String,
 

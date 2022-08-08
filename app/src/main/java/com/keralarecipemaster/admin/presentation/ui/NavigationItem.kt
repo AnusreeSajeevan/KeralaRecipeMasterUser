@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui
+package com.keralarecipemaster.admin.presentation.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face

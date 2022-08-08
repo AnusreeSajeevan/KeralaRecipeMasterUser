@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui.view
+package com.keralarecipemaster.admin.presentation.ui.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,18 +16,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.keralarecipemaster.admin.ui.DefaultRecipesScreen
-import com.keralarecipemaster.admin.ui.NavigationItems
-import com.keralarecipemaster.admin.ui.ProfileScreen
-import com.keralarecipemaster.admin.ui.UserAddedRecipesScreen
-import com.keralarecipemaster.admin.ui.theme.KeralaRecipeMasterAdminTheme
-import com.keralarecipemaster.admin.viewmodel.RecipeListViewModel
+import com.keralarecipemaster.admin.presentation.ui.DefaultRecipesScreen
+import com.keralarecipemaster.admin.presentation.ui.NavigationItems
+import com.keralarecipemaster.admin.presentation.ui.ProfileScreen
+import com.keralarecipemaster.admin.presentation.ui.UserAddedRecipesScreen
+import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
+import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,12 +37,14 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeActivityView(recipeViewModel)
+            HomeActivityView()
         }
     }
 
     @Composable
-    fun HomeActivityView(recipeViewModel: RecipeListViewModel = viewModel()) {
+    fun HomeActivityView() {
+        val recipes = recipeViewModel.defaultRecipes.value
+
         KeralaRecipeMasterAdminTheme {
             val allScreens = NavigationItems.values().toList()
             var currentScreen by rememberSaveable { mutableStateOf(NavigationItems.DefaultRecipes) }
@@ -74,7 +75,7 @@ class HomeActivity : ComponentActivity() {
                     startDestination = NavigationItems.DefaultRecipes.route
                 ) {
                     composable(NavigationItems.DefaultRecipes.route) {
-                        DefaultRecipesScreen()
+                        DefaultRecipesScreen(recipes)
                     }
                     composable(NavigationItems.UserAddedRecipes.route) {
                         UserAddedRecipesScreen()

@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui
+package com.keralarecipemaster.admin.presentation.ui
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

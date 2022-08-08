@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui.view
+package com.keralarecipemaster.admin.presentation.ui.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,8 +13,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.keralarecipemaster.admin.ui.theme.KeralaRecipeMasterAdminTheme
-import com.keralarecipemaster.admin.viewmodel.AddRecipeViewModel
+import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
+import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

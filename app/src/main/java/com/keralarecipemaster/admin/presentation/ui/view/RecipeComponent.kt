@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.ui.view
+package com.keralarecipemaster.admin.presentation.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
