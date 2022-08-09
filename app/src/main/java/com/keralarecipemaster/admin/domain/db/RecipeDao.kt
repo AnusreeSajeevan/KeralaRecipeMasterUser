@@ -17,4 +17,7 @@ interface RecipeDao {
 
     @Query("SELECT * from recipe WHERE recipeName = :recipeName")
     suspend fun getRecipeDetails(recipeName: String): Recipe
+
+    @Query("SELECT COUNT(recipeName) from recipe")
+     fun numberOfRecipes(): Int
 }

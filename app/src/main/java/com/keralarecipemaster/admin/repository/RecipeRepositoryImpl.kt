@@ -26,6 +26,13 @@ class RecipeRepositoryImpl(
             )
         )*/
     }
+
+    override suspend fun count(): Int {
+        return withContext(Dispatchers.IO) {
+            recipeDao.numberOfRecipes()
+        }
+    }
+
     override suspend fun addRecipe(recipe: Recipe) {
         recipeDao.insertRecipe(recipe)
     }

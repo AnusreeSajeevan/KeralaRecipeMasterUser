@@ -43,7 +43,11 @@ class AddRecipeActivity : ComponentActivity() {
 
         KeralaRecipeMasterAdminTheme {
             Scaffold {
-                Column(modifier = Modifier.padding(10.dp).fillMaxWidth()) {
+                Column(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                ) {
                     OutlinedTextField(
                         value = recipeName,
                         label = {
@@ -51,7 +55,8 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onRecipeNameChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -61,17 +66,19 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onDescriptionChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
                         value = ingredients,
                         label = {
-                            Text(text = "Ingredients")
+                            Text(text = "Ingredients (comma separated list)")
                         },
                         onValueChange = {
                             viewModel.onIngredientsChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -81,7 +88,8 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onPreparationMethodChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -91,7 +99,8 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onRestaurantNameChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -101,7 +110,8 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onLatitudeChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -111,7 +121,8 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onLongitudeChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -121,10 +132,20 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onStateChange(it)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    Button(
+                        onClick = { },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Pick Location")
+                    }
 
-                    Button(onClick = { viewModel.addRecipe() }) {
+                    Button(
+                        onClick = { viewModel.addRecipe() },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(text = "Add Recipe")
                     }
                 }

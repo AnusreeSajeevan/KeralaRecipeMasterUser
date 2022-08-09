@@ -104,7 +104,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         viewModelScope.launch {
             repository.addRecipe(
                 Recipe(
-                    id = 3,
+                    id = repository.count() + 1,
                     recipeName = recipeName.value,
                     description = description.value,
                     preparationMethod = preparationMethod.value,

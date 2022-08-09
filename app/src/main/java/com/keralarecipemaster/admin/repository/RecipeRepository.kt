@@ -7,4 +7,5 @@ interface RecipeRepository {
     val getAllRecipes: LiveData<List<Recipe>>
     suspend fun getDefaultRecipes(): LiveData<List<Recipe>>
     suspend fun addRecipe(recipe: Recipe)
+    suspend fun count(): Int
 }
