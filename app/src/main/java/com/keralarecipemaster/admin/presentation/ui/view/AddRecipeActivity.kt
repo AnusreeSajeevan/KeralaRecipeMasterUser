@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -32,12 +33,17 @@ class AddRecipeActivity : ComponentActivity() {
     @Composable
     private fun AddRecipeDetails() {
         val recipeName = viewModel.recipeName.value
+        val description = viewModel.description.value
         val preparationMethod = viewModel.preparationMethod.value
         val ingredients = viewModel.ingredients.value
+        val restaurantName = viewModel.restaurantName.value
+        val latitude = viewModel.latitude.value
+        val longitude = viewModel.longitude.value
+        val state = viewModel.state.value
 
         KeralaRecipeMasterAdminTheme {
             Scaffold {
-                Column(modifier = Modifier.padding(10.dp).fillMaxWidth()){
+                Column(modifier = Modifier.padding(10.dp).fillMaxWidth()) {
                     OutlinedTextField(
                         value = recipeName,
                         label = {
@@ -45,6 +51,26 @@ class AddRecipeActivity : ComponentActivity() {
                         },
                         onValueChange = {
                             viewModel.onRecipeNameChange(it)
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = description,
+                        label = {
+                            Text(text = "description")
+                        },
+                        onValueChange = {
+                            viewModel.onDescriptionChange(it)
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = ingredients,
+                        label = {
+                            Text(text = "Ingredients")
+                        },
+                        onValueChange = {
+                            viewModel.onIngredientsChange(it)
                         }
                     )
 
@@ -59,14 +85,48 @@ class AddRecipeActivity : ComponentActivity() {
                     )
 
                     OutlinedTextField(
-                        value = ingredients,
+                        value = restaurantName,
                         label = {
-                            Text(text = "Ingredients")
+                            Text(text = "Restaurant Name")
                         },
                         onValueChange = {
-                            viewModel.onIngredientsChange(it)
+                            viewModel.onRestaurantNameChange(it)
                         }
                     )
+
+                    OutlinedTextField(
+                        value = latitude,
+                        label = {
+                            Text(text = "latitude")
+                        },
+                        onValueChange = {
+                            viewModel.onLatitudeChange(it)
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = longitude,
+                        label = {
+                            Text(text = "longitude")
+                        },
+                        onValueChange = {
+                            viewModel.onLongitudeChange(it)
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = state,
+                        label = {
+                            Text(text = "state")
+                        },
+                        onValueChange = {
+                            viewModel.onStateChange(it)
+                        }
+                    )
+
+                    Button(onClick = { viewModel.addRecipe() }) {
+                        Text(text = "Add Recipe")
+                    }
                 }
             }
         }

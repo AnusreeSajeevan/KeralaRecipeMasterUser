@@ -1,5 +1,6 @@
 package com.keralarecipemaster.admin.repository
 
+import androidx.lifecycle.LiveData
 import com.keralarecipemaster.admin.domain.db.RecipeDao
 import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.network.RecipeService
@@ -13,7 +14,10 @@ class RecipeRepositoryImpl(
     private val recipeDtoMapper: RecipeDtoMapper
 ) :
     RecipeRepository {
-    override suspend fun getDefaultRecipes(): List<Recipe> {
+    override val getAllRecipes: LiveData<List<Recipe>>
+        get() = recipeDao.getAllRecipes()
+
+    override suspend fun getDefaultRecipes(): LiveData<List<Recipe>> {
         return withContext(Dispatchers.IO) {
             recipeDao.getAllRecipes()
         } /*recipeDtoMapper.toRecipeList(
@@ -21,5 +25,8 @@ class RecipeRepositoryImpl(
                 token = "token"
             )
         )*/
+    }
+    override suspend fun addRecipe(recipe: Recipe) {
+        recipeDao.insertRecipe(recipe)
     }
 }

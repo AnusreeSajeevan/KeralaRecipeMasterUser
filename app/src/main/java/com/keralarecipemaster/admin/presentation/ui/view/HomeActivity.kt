@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -21,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.presentation.ui.DefaultRecipesScreen
 import com.keralarecipemaster.admin.presentation.ui.NavigationItems
 import com.keralarecipemaster.admin.presentation.ui.ProfileScreen
@@ -37,14 +39,13 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeActivityView()
+            val recipes = recipeViewModel.defaultRecipes.observeAsState(listOf()).value
+            HomeActivityView(recipes)
         }
     }
 
     @Composable
-    fun HomeActivityView() {
-        val recipes = recipeViewModel.defaultRecipes.value
-
+    fun HomeActivityView(recipes: List<Recipe>) {
         KeralaRecipeMasterAdminTheme {
             val allScreens = NavigationItems.values().toList()
             var currentScreen by rememberSaveable { mutableStateOf(NavigationItems.DefaultRecipes) }
