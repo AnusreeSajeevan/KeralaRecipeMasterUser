@@ -1,21 +1,21 @@
 package com.keralarecipemaster.admin.presentation.ui.view
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
+import com.keralarecipemaster.admin.utils.Diet
+import com.keralarecipemaster.admin.utils.Meal
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,6 +30,7 @@ class AddRecipeActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun AddRecipeDetails() {
         val recipeName = viewModel.recipeName.value
@@ -41,17 +42,23 @@ class AddRecipeActivity : ComponentActivity() {
         val longitude = viewModel.longitude.value
         val state = viewModel.state.value
 
+        var dietExpanded by remember { mutableStateOf(false) }
+        var selectedDiet by remember { mutableStateOf("") }
+
+        val dietValues = Diet.values()
+
         KeralaRecipeMasterAdminTheme {
             Scaffold {
                 Column(
                     modifier = Modifier
                         .padding(10.dp)
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                 ) {
                     OutlinedTextField(
                         value = recipeName,
                         label = {
-                            Text(text = "Recipe Name")
+                            Text(text = "Recipe Name *")
                         },
                         onValueChange = {
                             viewModel.onRecipeNameChange(it)
@@ -73,7 +80,7 @@ class AddRecipeActivity : ComponentActivity() {
                     OutlinedTextField(
                         value = ingredients,
                         label = {
-                            Text(text = "Ingredients (comma separated list)")
+                            Text(text = "Ingredients (comma separated list) *")
                         },
                         onValueChange = {
                             viewModel.onIngredientsChange(it)
@@ -84,13 +91,16 @@ class AddRecipeActivity : ComponentActivity() {
                     OutlinedTextField(
                         value = preparationMethod,
                         label = {
-                            Text(text = "Preparation Method")
+                            Text(text = "Preparation Method *")
                         },
                         onValueChange = {
                             viewModel.onPreparationMethodChange(it)
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ShowMealTypeDropDown()
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
                         value = restaurantName,
@@ -143,10 +153,72 @@ class AddRecipeActivity : ComponentActivity() {
                     }
 
                     Button(
-                        onClick = { viewModel.addRecipe() },
+                        onClick = {
+                            if (viewModel.validateFields()) {
+                                viewModel.addRecipe()
+                            } else {
+                                Toast.makeText(
+                                    this@AddRecipeActivity,
+                                    "Please enter all mandatory fields",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Add Recipe")
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
+    @Composable
+    fun ShowMealTypeDropDown() {
+        val mealTypeOptions = arrayListOf<String>()
+
+        Meal.values().forEach {
+            mealTypeOptions.add(it.name)
+        }
+
+        var mealTypeExpanded by remember { mutableStateOf(false) }
+        var selectedMealTypeText by remember { mutableStateOf(mealTypeOptions[0]) }
+
+        ExposedDropdownMenuBox(
+            expanded = mealTypeExpanded,
+            onExpandedChange = {
+                mealTypeExpanded = !mealTypeExpanded
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TextField(
+                readOnly = true,
+                value = selectedMealTypeText,
+                onValueChange = { },
+                label = { Text("Meal Category") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = mealTypeExpanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            )
+            ExposedDropdownMenu(
+                expanded = mealTypeExpanded,
+                onDismissRequest = {
+                    mealTypeExpanded = false
+                }
+            ) {
+                mealTypeOptions.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedMealTypeText = selectionOption
+                            viewModel.onMealTypeChange(selectedMealTypeText)
+                            mealTypeExpanded = false
+                        }
+                    ) {
+                        Text(text = selectionOption)
                     }
                 }
             }

@@ -25,10 +25,10 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val description: MutableState<String>
         get() = _description
 
-    val dietType: MutableState<Diet>
+    val dietType: MutableState<String>
         get() = _dietType
 
-    val mealType: MutableState<Meal>
+    val mealType: MutableState<String>
         get() = _mealType
 
     val ingredients: MutableState<String>
@@ -49,16 +49,16 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val state: MutableState<String>
         get() = _state
 
-    private var _recipeName = mutableStateOf("")
-    private var _dietType = mutableStateOf(Diet.INVALID)
-    private var _mealType = mutableStateOf(Meal.INVALID)
-    private var _ingredients = mutableStateOf("")
-    private var _description = mutableStateOf("")
-    private var _preparationMethod = mutableStateOf("")
-    private var _restaurantName = mutableStateOf("")
-    private var _latitude = mutableStateOf("")
-    private var _longitude = mutableStateOf("")
-    private var _state = mutableStateOf("")
+    private var _recipeName = mutableStateOf(EMPTY_STRING)
+    private var _dietType = mutableStateOf(Diet.VEG.name)
+    private var _mealType = mutableStateOf(Meal.BREAKFAST.name)
+    private var _ingredients = mutableStateOf(EMPTY_STRING)
+    private var _description = mutableStateOf(EMPTY_STRING)
+    private var _preparationMethod = mutableStateOf(EMPTY_STRING)
+    private var _restaurantName = mutableStateOf(EMPTY_STRING)
+    private var _latitude = mutableStateOf(EMPTY_STRING)
+    private var _longitude = mutableStateOf(EMPTY_STRING)
+    private var _state = mutableStateOf(EMPTY_STRING)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
@@ -92,31 +92,37 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         this._state.value = state
     }
 
-    fun onMealTypeChange(mealType: Meal) {
+    fun onMealTypeChange(mealType: String) {
         this._mealType.value = mealType
     }
 
-    fun onDietTypeChange(dietType: Diet) {
+    fun onDietTypeChange(dietType: String) {
         this._dietType.value = dietType
     }
 
     fun addRecipe() {
-        viewModelScope.launch {
-            repository.addRecipe(
-                Recipe(
-                    id = repository.count() + 1,
-                    recipeName = recipeName.value,
-                    description = description.value,
-                    preparationMethod = preparationMethod.value,
-                    ingredients = listOf(ingredients.value),
-                    diet = Diet.VEG,
-                    mealType = Meal.BREAKFAST,
-                    restaurantState = state.value,
-                    restaurantLatitude = latitude.value,
-                    restaurantLongitude = longitude.value,
-                    restaurantName = restaurantName.value
+        if (validateFields()) {
+            viewModelScope.launch {
+                repository.addRecipe(
+                    Recipe(
+                        id = repository.count() + 1,
+                        recipeName = recipeName.value,
+                        description = description.value,
+                        preparationMethod = preparationMethod.value,
+                        ingredients = listOf(ingredients.value),
+                        diet = Diet.valueOf(dietType.value),
+                        mealType = Meal.valueOf(mealType.value),
+                        restaurantState = state.value,
+                        restaurantLatitude = latitude.value,
+                        restaurantLongitude = longitude.value,
+                        restaurantName = restaurantName.value
+                    )
                 )
-            )
+            }
         }
+    }
+
+    fun validateFields(): Boolean {
+        return !(recipeName.value == EMPTY_STRING || ingredients.value == EMPTY_STRING || preparationMethod.value == EMPTY_STRING)
     }
 }
