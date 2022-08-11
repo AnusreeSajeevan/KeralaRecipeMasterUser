@@ -199,51 +199,20 @@ class AddRecipeActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
     @Composable
     fun ShowMealTypeDropDown() {
-        val mealTypeOptions = arrayListOf<String>()
-
-        Meal.values().forEach {
-            mealTypeOptions.add(it.name)
+        var selectedMealCategory by remember {
+            mutableStateOf(Meal.values()[0].name)
         }
-
-        var mealTypeExpanded by remember { mutableStateOf(false) }
-        var selectedMealTypeText by remember { mutableStateOf(mealTypeOptions[0]) }
-
-        ExposedDropdownMenuBox(
-            expanded = mealTypeExpanded,
-            onExpandedChange = {
-                mealTypeExpanded = !mealTypeExpanded
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TextField(
-                readOnly = true,
-                value = selectedMealTypeText,
-                onValueChange = { },
-                label = { Text("Meal Category") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = mealTypeExpanded
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
-            )
-            ExposedDropdownMenu(
-                expanded = mealTypeExpanded,
-                onDismissRequest = {
-                    mealTypeExpanded = false
-                }
-            ) {
-                mealTypeOptions.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedMealTypeText = selectionOption
-                            viewModel.onMealTypeChange(selectedMealTypeText)
-                            mealTypeExpanded = false
-                        }
-                    ) {
-                        Text(text = selectionOption)
+        Row {
+            Meal.values().forEach {
+                RadioButton(
+                    selected = it.name == selectedMealCategory,
+                    onClick = {
+                        selectedMealCategory = it.name
+                        viewModel.onMealCategoryChange(selectedMealCategory)
                     }
-                }
+                )
+                Text(text = it.type)
+                Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
