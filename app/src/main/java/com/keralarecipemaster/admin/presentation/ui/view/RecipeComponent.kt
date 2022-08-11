@@ -51,16 +51,5 @@ fun RecipeComponent(recipe: Recipe) {
         )
 
         Spacer(modifier = Modifier.height(10.dp))
-
-        /*Image(
-            painter = painterResource(
-                id = R.drawable.ic_veg
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .height(50.dp)
-                .width(50.dp),
-            contentScale = ContentScale.Crop
-        )*/
     }
 }

@@ -8,6 +8,7 @@ import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.repository.RecipeRepository
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
+import com.keralarecipemaster.admin.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -115,7 +116,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                         restaurantState = state.value,
                         restaurantLatitude = latitude.value,
                         restaurantLongitude = longitude.value,
-                        restaurantName = restaurantName.value
+                        restaurantName = restaurantName.value,
+                        addedBy = UserType.ADMIN.name
                     )
                 )
             }

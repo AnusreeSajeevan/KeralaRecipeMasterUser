@@ -5,6 +5,7 @@ import com.keralarecipemaster.admin.domain.model.Restaurant
 import com.keralarecipemaster.admin.domain.model.util.DomainMapper
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
+import com.keralarecipemaster.admin.utils.UserType
 
 class RecipeDtoMapper :
     DomainMapper<RecipeDto, Recipe> {
@@ -21,7 +22,8 @@ class RecipeDtoMapper :
             restaurantState = entity.restaurant.state,
             preparationMethod = entity.preparationMethod,
             mealType = Meal.valueOf(entity.mealType),
-            diet = Diet.valueOf(entity.diet)
+            diet = Diet.valueOf(entity.diet),
+            addedBy = UserType.ADMIN.name
         )
     }
 

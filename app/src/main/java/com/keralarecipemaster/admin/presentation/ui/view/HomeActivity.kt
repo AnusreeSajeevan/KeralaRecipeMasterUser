@@ -39,13 +39,14 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val recipes = recipeViewModel.defaultRecipes.observeAsState(listOf()).value
-            HomeActivityView(recipes)
+            val defaultRecipes = recipeViewModel.defaultRecipes.observeAsState(listOf()).value
+            val userAddedRecipes = recipeViewModel.userAddedRecipes.observeAsState(listOf()).value
+            HomeActivityView(defaultRecipes, userAddedRecipes)
         }
     }
 
     @Composable
-    fun HomeActivityView(recipes: List<Recipe>) {
+    fun HomeActivityView(defaultRecipes: List<Recipe>, userAddedRecipes: List<Recipe>) {
         KeralaRecipeMasterAdminTheme {
             val allScreens = NavigationItems.values().toList()
             var currentScreen by rememberSaveable { mutableStateOf(NavigationItems.DefaultRecipes) }
@@ -56,18 +57,6 @@ class HomeActivity : ComponentActivity() {
                 scaffoldState = scaffoldState,
                 bottomBar = {
                     BottomNavigationBar(allScreens, navController)
-                },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = {
-                        startActivity(
-                            Intent(
-                                this,
-                                AddRecipeActivity::class.java
-                            )
-                        )
-                    }) {
-                        Icon(Icons.Filled.Add, "")
-                    }
                 }
             ) { innerPadding ->
                 NavHost(
@@ -76,10 +65,12 @@ class HomeActivity : ComponentActivity() {
                     startDestination = NavigationItems.DefaultRecipes.route
                 ) {
                     composable(NavigationItems.DefaultRecipes.route) {
-                        DefaultRecipesScreen(recipes)
+                        DefaultRecipesScreen(defaultRecipes, onFabClick = {
+                            startActivity(Intent(this@HomeActivity, AddRecipeActivity::class.java))
+                        })
                     }
                     composable(NavigationItems.UserAddedRecipes.route) {
-                        UserAddedRecipesScreen()
+                        UserAddedRecipesScreen(userAddedRecipes)
                     }
                     composable(NavigationItems.Account.route) {
                         ProfileScreen()

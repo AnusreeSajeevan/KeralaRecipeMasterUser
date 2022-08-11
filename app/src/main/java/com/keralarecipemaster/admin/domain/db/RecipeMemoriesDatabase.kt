@@ -35,33 +35,35 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             insertRecipe(
                 recipeDao,
                 1,
-                "Nadan Chicken Curry",
-                "This is a tasty nadan chicken curry",
-                listOf("chicken", "jira rice", "spices"),
+                "Vegetable biriyani",
+                "This is a tasty biriyani",
+                listOf("veggies", "jira rice", "spices"),
                 "Prepare like this",
                 "image url",
                 Meal.LUNCH,
-                Diet.NON_VEG,
+                Diet.VEG,
                 "Thalassery Restaurant",
                 "latitude",
                 "longitude",
-                "Kerala"
+                "Kerala",
+                UserType.ADMIN.name
             )
 
             insertRecipe(
                 recipeDao,
                 2,
-                "Vegetable Biriyani",
-                "Veg biriyani",
-                listOf("greenps", "jira rice", "spices"),
+                "Nirvana",
+                "Sepcial",
+                listOf("fish", "milk", "spices"),
                 "Prepare like this",
                 "image url",
                 Meal.DINNER,
-                Diet.VEG,
+                Diet.NON_VEG,
                 "Thalassery Restaurant",
                 "latitude",
                 "longitude",
-                "Kerala"
+                "Kerala",
+                UserType.USER.name
             )
         }
 
@@ -78,7 +80,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             restaurantName: String,
             latitude: String,
             longitude: String,
-            state: String
+            state: String,
+            userType: String
         ) {
             recipeDao.insertRecipe(
                 Recipe(
@@ -93,7 +96,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                     restaurantLongitude = longitude,
                     restaurantState = state,
                     mealType = meal,
-                    diet = diet
+                    diet = diet,
+                    addedBy = userType
                 )
             )
         }

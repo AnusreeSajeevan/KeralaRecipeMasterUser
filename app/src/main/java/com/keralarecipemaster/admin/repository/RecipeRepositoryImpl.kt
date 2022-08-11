@@ -14,18 +14,10 @@ class RecipeRepositoryImpl(
     private val recipeDtoMapper: RecipeDtoMapper
 ) :
     RecipeRepository {
-    override val getAllRecipes: LiveData<List<Recipe>>
-        get() = recipeDao.getAllRecipes()
-
-    override suspend fun getDefaultRecipes(): LiveData<List<Recipe>> {
-        return withContext(Dispatchers.IO) {
-            recipeDao.getAllRecipes()
-        } /*recipeDtoMapper.toRecipeList(
-            recipeService.fetchRecipes(
-                token = "token"
-            )
-        )*/
-    }
+    override val getDefaultRecipes: LiveData<List<Recipe>>
+        get() = recipeDao.getAllDefaultRecipes()
+    override val getUserAddedRecipes: LiveData<List<Recipe>>
+        get() = recipeDao.getAllUserAddedRecipes()
 
     override suspend fun count(): Int {
         return withContext(Dispatchers.IO) {
