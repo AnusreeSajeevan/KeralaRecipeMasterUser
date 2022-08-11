@@ -96,7 +96,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         this._mealType.value = mealType
     }
 
-    fun onDietTypeChange(dietType: String) {
+    fun onDietCategoryChange(dietType: String) {
         this._dietType.value = dietType
     }
 

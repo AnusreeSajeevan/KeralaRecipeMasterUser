@@ -36,7 +36,7 @@ fun RecipeComponent(recipe: Recipe) {
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        val dietLogo = if (recipe.diet.type.equals(Diet.NON_VEG.type)) {
+        val dietLogo = if (recipe.diet.type == Diet.NON_VEG.type) {
             R.drawable.ic_non_veg
         } else {
             R.drawable.ic_veg

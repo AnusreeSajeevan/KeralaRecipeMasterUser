@@ -101,6 +101,8 @@ class AddRecipeActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
                     ShowMealTypeDropDown()
                     Spacer(modifier = Modifier.height(20.dp))
+                    ShowDietCategory()
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
                         value = restaurantName,
@@ -156,6 +158,7 @@ class AddRecipeActivity : ComponentActivity() {
                         onClick = {
                             if (viewModel.validateFields()) {
                                 viewModel.addRecipe()
+                                finish()
                             } else {
                                 Toast.makeText(
                                     this@AddRecipeActivity,
@@ -169,6 +172,26 @@ class AddRecipeActivity : ComponentActivity() {
                         Text(text = "Add Recipe")
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun ShowDietCategory() {
+        var selectedDietCategory by remember {
+            mutableStateOf(Diet.values()[0].name)
+        }
+        Row {
+            Diet.values().forEach {
+                RadioButton(
+                    selected = it.name == selectedDietCategory,
+                    onClick = {
+                        selectedDietCategory = it.name
+                        viewModel.onDietCategoryChange(selectedDietCategory)
+                    }
+                )
+                Text(text = it.type)
+                Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
