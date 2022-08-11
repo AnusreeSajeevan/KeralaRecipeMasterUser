@@ -55,7 +55,41 @@ class HomeActivity : ComponentActivity() {
                 scaffoldState = scaffoldState,
                 bottomBar = {
                     BottomNavigationBar(allScreens, navController)
-                }
+                } /*,
+                topBar = {
+                    TopAppBar(
+                        // in below line we are
+                        // adding title to our top bar.
+                        title = {
+                            OutlinedTextField(
+                                label = { Text(text = "") },
+                                onValueChange = {
+                                },
+                                text = "",
+                                color = Color.Black
+                            )
+                        },
+                        navigationIcon = {
+                            // navigation icon is use
+                            // for drawer icon.
+                            IconButton(onClick = { }) {
+                                // below line is use to
+                                // specify navigation icon.
+                                Icon(Icons.Filled.Search, "", tint = Color.Black)
+                            }
+                        },
+                        // below line is use to give background color
+                        backgroundColor = colorResource(id = R.color.white),
+
+                        // content color is use to give
+                        // color to our content in our toolbar.
+                        contentColor = Color.White,
+
+                        // below line is use to give
+                        // elevation to our toolbar.
+                        elevation = 12.dp
+                    )
+                }*/
             ) { innerPadding ->
                 NavHost(
                     navController = navController,

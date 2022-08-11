@@ -19,6 +19,9 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
+    fun onQueryChanged() {
+    }
+
     var defaultRecipes: LiveData<List<Recipe>> = recipeRepository.getDefaultRecipes
     var userAddedRecipes: LiveData<List<Recipe>> = recipeRepository.getUserAddedRecipes
 }

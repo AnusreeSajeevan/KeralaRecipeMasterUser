@@ -22,7 +22,7 @@ import com.keralarecipemaster.admin.utils.Diet
 
 @Composable
 fun RecipeComponent(recipe: Recipe, recipeViewModel: RecipeListViewModel) {
-    Card(modifier = Modifier.padding(8.dp)) {
+    Card {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box {
                 Image(
