@@ -8,4 +8,5 @@ interface RecipeRepository {
     val getUserAddedRecipes: LiveData<List<Recipe>>
     suspend fun addRecipe(recipe: Recipe)
     suspend fun count(): Int
+    suspend fun deleteRecipe(recipe: Recipe)
 }

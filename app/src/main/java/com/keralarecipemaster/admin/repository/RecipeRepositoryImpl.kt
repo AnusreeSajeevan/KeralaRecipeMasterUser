@@ -25,6 +25,12 @@ class RecipeRepositoryImpl(
         }
     }
 
+    override suspend fun deleteRecipe(recipe: Recipe) {
+        withContext(Dispatchers.IO) {
+            recipeDao.deleteRecipe(recipe)
+        }
+    }
+
     override suspend fun addRecipe(recipe: Recipe) {
         recipeDao.insertRecipe(recipe)
     }

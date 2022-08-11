@@ -24,4 +24,7 @@ interface RecipeDao {
 
     @Query("SELECT COUNT(recipeName) from recipe")
     fun numberOfRecipes(): Int
+
+    @Delete
+    suspend fun deleteRecipe(recipe: Recipe)
 }

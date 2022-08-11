@@ -7,8 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -67,10 +65,10 @@ class HomeActivity : ComponentActivity() {
                     composable(NavigationItems.DefaultRecipes.route) {
                         DefaultRecipesScreen(defaultRecipes, onFabClick = {
                             startActivity(Intent(this@HomeActivity, AddRecipeActivity::class.java))
-                        })
+                        }, recipeViewModel)
                     }
                     composable(NavigationItems.UserAddedRecipes.route) {
-                        UserAddedRecipesScreen(userAddedRecipes)
+                        UserAddedRecipesScreen(userAddedRecipes, recipeViewModel)
                     }
                     composable(NavigationItems.Account.route) {
                         ProfileScreen()
