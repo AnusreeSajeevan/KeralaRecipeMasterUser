@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Recipe::class], version = 1, exportSchema = false)
+@Database(entities = [RecipeEntity::class], version = 1, exportSchema = false)
 @TypeConverters(
     DietTypeConverter::class,
     MealsTypeConverter::class,
@@ -84,7 +84,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             userType: String
         ) {
             recipeDao.insertRecipe(
-                Recipe(
+                RecipeEntity(
                     id = id,
                     recipeName = recipeName,
                     description = description,

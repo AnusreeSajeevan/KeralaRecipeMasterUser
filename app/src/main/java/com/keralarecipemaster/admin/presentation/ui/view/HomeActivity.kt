@@ -20,7 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.presentation.ui.DefaultRecipesScreen
 import com.keralarecipemaster.admin.presentation.ui.NavigationItems
 import com.keralarecipemaster.admin.presentation.ui.ProfileScreen
@@ -43,7 +43,7 @@ class HomeActivity : ComponentActivity() {
     }
 
     @Composable
-    fun HomeActivityView(viewModel: RecipeListViewModel, userAddedRecipes: List<Recipe>) {
+    fun HomeActivityView(viewModel: RecipeListViewModel, userAddedRecipes: List<RecipeEntity>) {
         KeralaRecipeMasterAdminTheme {
             val allScreens = NavigationItems.values().toList()
             var currentScreen by rememberSaveable { mutableStateOf(NavigationItems.DefaultRecipes) }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.repository.RecipeRepository
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
@@ -105,7 +105,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         if (validateFields()) {
             viewModelScope.launch {
                 repository.addRecipe(
-                    Recipe(
+                    RecipeEntity(
                         id = repository.count() + 1,
                         recipeName = recipeName.value,
                         description = description.value,
@@ -125,6 +125,14 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun validateFields(): Boolean {
+       return validateRecipeDetails() && validateRestaurantDetails()
+    }
+
+    private fun validateRestaurantDetails(): Boolean {
+        return true
+    }
+
+    private fun validateRecipeDetails(): Boolean {
         return !(recipeName.value == EMPTY_STRING || ingredients.value == EMPTY_STRING || preparationMethod.value == EMPTY_STRING)
     }
 }

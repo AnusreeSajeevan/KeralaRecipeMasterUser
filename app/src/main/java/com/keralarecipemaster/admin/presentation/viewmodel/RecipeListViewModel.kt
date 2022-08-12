@@ -2,8 +2,9 @@ package com.keralarecipemaster.admin.presentation.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.repository.RecipeRepository
+import com.keralarecipemaster.admin.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,21 +16,23 @@ class RecipeListViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private var _defaultRecipes = MutableStateFlow<List<Recipe>>(emptyList())
-    val defaultRecipes: StateFlow<List<Recipe>>
+    private var _defaultRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
+    val defaultRecipes: StateFlow<List<RecipeEntity>>
         get() = _defaultRecipes
 
-    var userAddedRecipes: LiveData<List<Recipe>> = recipeRepository.getUserAddedRecipes
+    var userAddedRecipes: LiveData<List<RecipeEntity>> = recipeRepository.getUserAddedRecipes
 
     var query = MutableStateFlow("")
 
     init {
-        fetchAllRecipes()
+//        fetchAllRecipes()
         getDefaultRecipes()
     }
 
     private fun fetchAllRecipes() {
-        recipeRepository.fetchAllRecipes()
+        viewModelScope.launch {
+            recipeRepository.fetchAllRecipes()
+        }
     }
 
     fun getDefaultRecipes() {
@@ -40,18 +43,18 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecipe(recipe: Recipe) {
+    fun deleteRecipe(recipe: RecipeEntity) {
         viewModelScope.launch {
             recipeRepository.deleteRecipe(recipe)
         }
     }
 
-    fun onQueryChanged(query: String) {
+    fun onQueryChanged(query: String, addedBy: UserType) {
         if (query.isEmpty()) {
             getDefaultRecipes()
         } else {
             viewModelScope.launch {
-                recipeRepository.searchResults(query).catch { }.collect {
+                recipeRepository.searchResults(query, addedBy).catch { }.collect {
                     _defaultRecipes.value = it
                 }
             }

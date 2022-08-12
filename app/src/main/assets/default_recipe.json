@@ -1,8 +1,15 @@
 {
-  "default_recipes": [
+  "recipes": [
     {
+      "recipe_id": "",
+      "ingredients": ["chicken", "rice"],
+      "added_by": "admin",
       "recipe_name": "Chicken Biriyani",
       "image": "image url",
+      "description": "",
+      "preparation_method": "",
+      "diet_category": "veg",
+      "meal_category": "lunch",
       "restaurant": {
         "name": "Calicut Rahmat",
         "state": "Kerala",
@@ -11,8 +18,15 @@
       }
     },
     {
+      "recipe_id": "",
+      "ingredients": ["fish", "milk"],
+      "added_by": "user",
       "recipe_name": "Fish Nirvana",
       "image": "image url",
+      "description": "",
+      "preparation_method": "",
+      "diet_category": "non_veg",
+      "meal_category": "lunch",
       "restaurant": {
         "name": "Restaurant Chef Pillai",
         "state": "Kerala",

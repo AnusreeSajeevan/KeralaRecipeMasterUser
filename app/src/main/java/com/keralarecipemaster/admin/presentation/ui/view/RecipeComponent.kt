@@ -16,12 +16,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keralarecipemaster.admin.R
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.admin.utils.Diet
 
 @Composable
-fun RecipeComponent(recipe: Recipe, recipeViewModel: RecipeListViewModel) {
+fun RecipeComponent(recipe: RecipeEntity, recipeViewModel: RecipeListViewModel) {
     Card {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box {

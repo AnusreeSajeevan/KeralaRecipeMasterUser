@@ -1,16 +1,17 @@
 package com.keralarecipemaster.admin.network.model
 
-import com.keralarecipemaster.admin.domain.model.Recipe
+import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.domain.model.Restaurant
 import com.keralarecipemaster.admin.domain.model.util.DomainMapper
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
 import com.keralarecipemaster.admin.utils.UserType
+import javax.inject.Inject
 
-class RecipeDtoMapper :
-    DomainMapper<RecipeDto, Recipe> {
-    override fun toDomainModel(entity: RecipeDto): Recipe {
-        return Recipe(
+class RecipeDtoMapper @Inject constructor() :
+    DomainMapper<RecipeResponse, RecipeEntity> {
+    override fun toDomainModel(entity: RecipeResponse): RecipeEntity {
+        return RecipeEntity(
             id = entity.id,
             recipeName = entity.recipeName,
             description = entity.description,
@@ -27,8 +28,8 @@ class RecipeDtoMapper :
         )
     }
 
-    override fun fromDomainModel(domainModel: Recipe): RecipeDto {
-        return RecipeDto(
+    override fun fromDomainModel(domainModel: RecipeEntity): RecipeResponse {
+        return RecipeResponse(
             id = domainModel.id,
             recipeName = domainModel.recipeName,
             description = domainModel.description,
@@ -46,11 +47,11 @@ class RecipeDtoMapper :
         )
     }
 
-    fun toEntityList(list: List<Recipe>): List<RecipeDto> {
+    fun toEntityList(list: List<RecipeEntity>): List<RecipeResponse> {
         return list.map { fromDomainModel(it) }
     }
 
-    fun toRecipeList(list: List<RecipeDto>): List<Recipe> {
+    fun toRecipeEntityList(list: List<RecipeResponse>): List<RecipeEntity> {
         return list.map { toDomainModel(it) }
     }
 }

@@ -7,7 +7,7 @@ import com.keralarecipemaster.admin.utils.Meal
 import com.keralarecipemaster.admin.utils.UserType
 
 @Entity(tableName = "recipe")
-data class Recipe(
+data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val recipeName: String,

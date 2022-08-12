@@ -1,12 +1,11 @@
 package com.keralarecipemaster.admin.di
 
-import com.google.gson.GsonBuilder
-import com.keralarecipemaster.admin.network.RecipeService
-import com.keralarecipemaster.admin.network.model.RecipeDtoMapper
+import com.keralarecipemaster.admin.network.RecipeApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -18,15 +17,35 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun providesRecipeMapper(): RecipeDtoMapper {
-        return RecipeDtoMapper()
+    fun provideHttpClient(): OkHttpClient {
+        return OkHttpClient
+            .Builder()
+            .build()
     }
 
     @Singleton
     @Provides
-    fun providesRecipeService(): RecipeService {
-        return Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create())).build()
-            .create(RecipeService::class.java)
+    fun provideConverterFactory(): GsonConverterFactory =
+        GsonConverterFactory.create()
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
     }
+
+    @Singleton
+    @Provides
+    fun provideTravelService(retrofit: Retrofit): RecipeApi =
+        retrofit.create(RecipeApi::class.java)
 }
+
+
+

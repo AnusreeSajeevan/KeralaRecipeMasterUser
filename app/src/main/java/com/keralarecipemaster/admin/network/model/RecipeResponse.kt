@@ -3,7 +3,7 @@ package com.keralarecipemaster.admin.network.model
 import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.admin.domain.model.Restaurant
 
-data class RecipeDto(
+data class RecipeResponse(
     val id: Int,
 
     @SerializedName("recipe_name")

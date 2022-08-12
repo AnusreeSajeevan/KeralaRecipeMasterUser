@@ -1,11 +1,9 @@
 package com.keralarecipemaster.admin.network
 
-import com.google.gson.GsonBuilder
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.keralarecipemaster.admin.domain.model.RecipeResponseWrapper
+import retrofit2.http.GET
 
-class RecipeApi {
-    companion object {
-
-    }
+interface RecipeApi {
+    @GET("/recipes")
+    fun fetchRecipes(): RecipeResponseWrapper
 }

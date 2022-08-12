@@ -8,16 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.presentation.ui.view.RecipeComponent
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
-import kotlinx.coroutines.launch
+import com.keralarecipemaster.admin.utils.UserType
 
 @Composable
 fun DefaultRecipesScreen(
@@ -50,7 +48,7 @@ fun DefaultRecipesScreen(
                 },
                 onValueChange = {
                     query = it
-                    recipeViewModel.onQueryChanged(query)
+                    recipeViewModel.onQueryChanged(query, UserType.ADMIN)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
