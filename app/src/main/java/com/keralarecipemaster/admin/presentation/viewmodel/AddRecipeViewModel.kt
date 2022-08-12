@@ -50,6 +50,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val state: MutableState<String>
         get() = _state
 
+    val isRestaurantChecked: MutableState<Boolean>
+        get() = _isRestaurantChecked
+
     private var _recipeName = mutableStateOf(EMPTY_STRING)
     private var _dietType = mutableStateOf(Diet.VEG.name)
     private var _mealType = mutableStateOf(Meal.BREAKFAST.name)
@@ -60,6 +63,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     private var _latitude = mutableStateOf(EMPTY_STRING)
     private var _longitude = mutableStateOf(EMPTY_STRING)
     private var _state = mutableStateOf(EMPTY_STRING)
+    private var _isRestaurantChecked = mutableStateOf(false)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
@@ -107,11 +111,11 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                 repository.addRecipe(
                     RecipeEntity(
                         id = repository.count() + 1,
-                        recipeName = recipeName.value,
-                        description = description.value,
-                        preparationMethod = preparationMethod.value,
-                        ingredients = listOf(ingredients.value),
-                        diet = Diet.valueOf(dietType.value),
+                        recipeName = _recipeName.value,
+                        description = _description.value,
+                        preparationMethod = _preparationMethod.value,
+                        ingredients = listOf(_ingredients.value),
+                        diet = Diet.valueOf(_dietType.value),
                         mealType = Meal.valueOf(mealType.value),
                         restaurantState = state.value,
                         restaurantLatitude = latitude.value,
@@ -125,7 +129,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun validateFields(): Boolean {
-       return validateRecipeDetails() && validateRestaurantDetails()
+        return validateRecipeDetails() && validateRestaurantDetails()
     }
 
     private fun validateRestaurantDetails(): Boolean {
@@ -134,5 +138,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
     private fun validateRecipeDetails(): Boolean {
         return !(recipeName.value == EMPTY_STRING || ingredients.value == EMPTY_STRING || preparationMethod.value == EMPTY_STRING)
+    }
+
+    fun onRestaurantCheckChange(restaurantChecked: Boolean) {
+        _isRestaurantChecked.value = restaurantChecked
     }
 }
