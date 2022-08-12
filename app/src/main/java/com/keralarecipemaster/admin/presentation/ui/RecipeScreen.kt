@@ -18,29 +18,34 @@ import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.admin.utils.UserType
 
 @Composable
-fun DefaultRecipesScreen(
-    onFabClick: () -> Unit,
-    recipeViewModel: RecipeListViewModel
+fun RecipesScreen(
+    onFabClick: (() -> Unit)? = null,
+    recipeViewModel: RecipeListViewModel,
+    userType: UserType
 ) {
-    val defaultRecipes = recipeViewModel.defaultRecipes
+    val recipes =
+        if (userType == UserType.ADMIN) recipeViewModel.defaultRecipes else recipeViewModel.userAddedRecipes
+
     val lifecycleOwner = LocalLifecycleOwner.current
-    val defaultRecipesFlowLifecycleAware = remember(defaultRecipes, lifecycleOwner) {
-        defaultRecipes.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    val recipesRecipesFlowLifecycleAware = remember(recipes, lifecycleOwner) {
+        recipes.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-    val defaultRecipesList by defaultRecipesFlowLifecycleAware.collectAsState(emptyList())
+    val recipesList by recipesRecipesFlowLifecycleAware.collectAsState(emptyList())
 
     var query by remember {
         mutableStateOf("")
     }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onFabClick) {
-                Icon(Icons.Filled.Add, "")
+            onFabClick?.let {
+                FloatingActionButton(onClick = onFabClick!!, modifier = Modifier.padding(bottom = 100.dp)) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) {
         val coroutineScope = rememberCoroutineScope()
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(bottom = 100.dp, top = 8.dp, start = 8.dp, end = 8.dp)) {
             OutlinedTextField(
                 value = query,
                 label = {
@@ -48,7 +53,7 @@ fun DefaultRecipesScreen(
                 },
                 onValueChange = {
                     query = it
-                    recipeViewModel.onQueryChanged(query, UserType.ADMIN)
+                    recipeViewModel.onQueryChanged(query, userType)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
@@ -59,7 +64,7 @@ fun DefaultRecipesScreen(
             Spacer(modifier = Modifier.size(10.dp))
 
             LazyColumn {
-                items(defaultRecipesList) { recipe ->
+                items(recipesList) { recipe ->
                     RecipeComponent(
                         recipe,
                         recipeViewModel

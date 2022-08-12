@@ -37,12 +37,13 @@ class RecipeRepositoryImpl @Inject constructor(
         return recipeDao.getAllDefaultRecipes()
     }
 
+    override suspend fun getUserAddedRecipes(): Flow<List<RecipeEntity>> {
+        return recipeDao.getAllUserAddedRecipes()
+    }
+
     override fun searchResults(query: String, addedBy: UserType): Flow<List<RecipeEntity>> {
         return recipeDao.search(query, addedBy.name)
     }
-
-    override val getUserAddedRecipes: LiveData<List<RecipeEntity>>
-        get() = recipeDao.getAllUserAddedRecipes()
 
     override suspend fun count(): Int {
         return withContext(Dispatchers.IO) {

@@ -12,7 +12,7 @@ interface RecipeDao {
     fun getAllDefaultRecipes(addedBy: String = UserType.ADMIN.name): Flow<List<RecipeEntity>>
 
     @Query("SELECT * from recipe WHERE addedBy = :addedBy")
-    fun getAllUserAddedRecipes(addedBy: String = UserType.USER.name): LiveData<List<RecipeEntity>>
+    fun getAllUserAddedRecipes(addedBy: String = UserType.USER.name): Flow<List<RecipeEntity>>
 
     @Query("DELETE from recipe")
     fun deleteAll()
@@ -29,6 +29,6 @@ interface RecipeDao {
     @Delete
     suspend fun deleteRecipe(recipe: RecipeEntity)
 
-    @Query("SELECT * from recipe WHERE recipeName LIKE '%' || :queryString || '%' AND addedBy LIKE :addedBy")
+    @Query("SELECT * from recipe WHERE recipeName LIKE '%' || :queryString || '%' AND addedBy =:addedBy")
     fun search(queryString: String, addedBy: String): Flow<List<RecipeEntity>>
 }

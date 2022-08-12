@@ -20,13 +20,14 @@ class RecipeListViewModel @Inject constructor(
     val defaultRecipes: StateFlow<List<RecipeEntity>>
         get() = _defaultRecipes
 
-    var userAddedRecipes: LiveData<List<RecipeEntity>> = recipeRepository.getUserAddedRecipes
-
-    var query = MutableStateFlow("")
+    private var _userAddedRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
+    val userAddedRecipes: StateFlow<List<RecipeEntity>>
+        get() = _userAddedRecipes
 
     init {
 //        fetchAllRecipes()
         getDefaultRecipes()
+        getUserAddedeRecipes()
     }
 
     private fun fetchAllRecipes() {
@@ -43,6 +44,14 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
+    fun getUserAddedeRecipes() {
+        viewModelScope.launch {
+            recipeRepository.getUserAddedRecipes().catch { }.collect {
+                _userAddedRecipes.value = it
+            }
+        }
+    }
+
     fun deleteRecipe(recipe: RecipeEntity) {
         viewModelScope.launch {
             recipeRepository.deleteRecipe(recipe)
@@ -51,11 +60,12 @@ class RecipeListViewModel @Inject constructor(
 
     fun onQueryChanged(query: String, addedBy: UserType) {
         if (query.isEmpty()) {
-            getDefaultRecipes()
+           if (addedBy == UserType.ADMIN) getDefaultRecipes() else getUserAddedeRecipes()
         } else {
             viewModelScope.launch {
                 recipeRepository.searchResults(query, addedBy).catch { }.collect {
-                    _defaultRecipes.value = it
+                    if (addedBy == UserType.ADMIN)_defaultRecipes.value = it
+                    else _userAddedRecipes.value = it
                 }
             }
         }
