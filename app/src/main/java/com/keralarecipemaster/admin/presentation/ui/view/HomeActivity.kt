@@ -37,14 +37,13 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val defaultRecipes = recipeViewModel.defaultRecipes.observeAsState(listOf()).value
             val userAddedRecipes = recipeViewModel.userAddedRecipes.observeAsState(listOf()).value
-            HomeActivityView(defaultRecipes, userAddedRecipes)
+            HomeActivityView(recipeViewModel, userAddedRecipes)
         }
     }
 
     @Composable
-    fun HomeActivityView(defaultRecipes: List<Recipe>, userAddedRecipes: List<Recipe>) {
+    fun HomeActivityView(viewModel: RecipeListViewModel, userAddedRecipes: List<Recipe>) {
         KeralaRecipeMasterAdminTheme {
             val allScreens = NavigationItems.values().toList()
             var currentScreen by rememberSaveable { mutableStateOf(NavigationItems.DefaultRecipes) }
@@ -97,7 +96,7 @@ class HomeActivity : ComponentActivity() {
                     startDestination = NavigationItems.DefaultRecipes.route
                 ) {
                     composable(NavigationItems.DefaultRecipes.route) {
-                        DefaultRecipesScreen(defaultRecipes, onFabClick = {
+                        DefaultRecipesScreen(onFabClick = {
                             startActivity(Intent(this@HomeActivity, AddRecipeActivity::class.java))
                         }, recipeViewModel)
                     }

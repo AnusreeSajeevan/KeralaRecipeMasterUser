@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.keralarecipemaster.admin.domain.model.Recipe
 import com.keralarecipemaster.admin.utils.UserType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDao {
     @Query("SELECT * from recipe WHERE addedBy = :addedBy")
-    fun getAllDefaultRecipes(addedBy: String = UserType.ADMIN.name): LiveData<List<Recipe>>
+    fun getAllDefaultRecipes(addedBy: String = UserType.ADMIN.name): Flow<List<Recipe>>
 
     @Query("SELECT * from recipe WHERE addedBy = :addedBy")
     fun getAllUserAddedRecipes(addedBy: String = UserType.USER.name): LiveData<List<Recipe>>
@@ -27,4 +28,7 @@ interface RecipeDao {
 
     @Delete
     suspend fun deleteRecipe(recipe: Recipe)
+
+    @Query("SELECT * from recipe WHERE recipeName = :queryString")
+    fun search(queryString: String): Flow<List<Recipe>>
 }

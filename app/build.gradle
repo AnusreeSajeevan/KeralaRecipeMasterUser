@@ -93,4 +93,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$room"
     kapt "androidx.room:room-compiler:$room"
     androidTestImplementation "androidx.room:room-testing:$room"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 }
