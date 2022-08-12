@@ -26,14 +26,6 @@ class RecipeListViewModel @Inject constructor(
     init {
         fetchAllRecipes()
         getDefaultRecipes()
-        /*viewModelScope.launch {
-            query
-                .debounce(timeoutMillis = 1500)
-                .distinctUntilChanged()
-                .collect {
-                    _defaultRecipes = recipeRepository.searchResults(it).asLiveData()
-                }
-        }*/
     }
 
     private fun fetchAllRecipes() {
@@ -54,7 +46,15 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    /* fun onQueryChanged(query: String) {
-         _defaultRecipes =*//*recipeRepository.searchResults(query).asLiveData()*//*
-    }*/
+    fun onQueryChanged(query: String) {
+        if (query.isEmpty()) {
+            getDefaultRecipes()
+        } else {
+            viewModelScope.launch {
+                recipeRepository.searchResults(query).catch { }.collect {
+                    _defaultRecipes.value = it
+                }
+            }
+        }
+    }
 }

@@ -50,10 +50,7 @@ fun DefaultRecipesScreen(
                 },
                 onValueChange = {
                     query = it
-//                    recipeViewModel.onQueryChanged(query)
-                    coroutineScope.launch {
-                        recipeViewModel.query.emit(it)
-                    }
+                    recipeViewModel.onQueryChanged(query)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
