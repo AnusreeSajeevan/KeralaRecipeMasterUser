@@ -23,5 +23,7 @@ data class RecipeResponse(
     @SerializedName("meal_type")
     val mealType: String,
 
-    val diet: String
+    val diet: String,
+
+    val rating: Int
 )

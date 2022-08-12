@@ -7,6 +7,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -64,17 +67,32 @@ fun RecipeComponent(recipe: RecipeEntity, recipeViewModel: RecipeListViewModel) 
                     R.drawable.ic_veg
                 }
 
-                Image(
-                    painter = painterResource(id = dietLogo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(15.dp)
-                        .width(15.dp)
-                )
+                Row( verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = dietLogo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(15.dp)
+                            .width(15.dp),
+
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    RatingBar(recipe.rating)
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
         }
+    }
+}
+
+@Composable
+fun RatingBar(rating: Int) {
+    val ratingState by remember {
+        mutableStateOf(rating)
+    }
+    for (i in 1..5) {
+        Icon(painter = painterResource(id = R.drawable.ic_star_border), contentDescription = null)
     }
 }
 /*

@@ -1,6 +1,7 @@
 package com.keralarecipemaster.admin.domain.db
 
 import android.content.Context
+import android.media.Rating
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -34,42 +35,45 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             recipeDao.deleteAll()
             insertRecipe(
                 recipeDao,
-                1,
-                "Vegetable biriyani",
-                "This is a tasty biriyani",
-                listOf("veggies", "jira rice", "spices"),
-                "Prepare like this",
-                "image url",
-                Meal.LUNCH,
-                Diet.VEG,
-                "Thalassery Restaurant",
-                "latitude",
-                "longitude",
-                "Kerala",
-                UserType.ADMIN.name
+                id = 1,
+                rating = 2,
+                recipeName = "Vegetable biriyani",
+                description = "This is a tasty biriyani",
+                ingredients = listOf("veggies", "jira rice", "spices"),
+                preparationMethod = "Prepare like this",
+                imageUrl = "image url",
+                meal = Meal.LUNCH,
+                diet = Diet.VEG,
+                restaurantName = "Thalassery Restaurant",
+                latitude = "latitude",
+                longitude = "longitude",
+                state = "Kerala",
+                userType = UserType.ADMIN.name
             )
 
             insertRecipe(
                 recipeDao,
-                2,
-                "Nirvana",
-                "Sepcial",
-                listOf("fish", "milk", "spices"),
-                "Prepare like this",
-                "image url",
-                Meal.DINNER,
-                Diet.NON_VEG,
-                "Thalassery Restaurant",
-                "latitude",
-                "longitude",
-                "Kerala",
-                UserType.USER.name
+                id = 2,
+                rating = 5,
+                recipeName = "Nirvana",
+                description = "Sepcial",
+                ingredients = listOf("fish", "milk", "spices"),
+                preparationMethod = "Prepare like this",
+                imageUrl = "image url",
+                meal = Meal.DINNER,
+                diet = Diet.NON_VEG,
+                restaurantName = "Thalassery Restaurant",
+                latitude = "latitude",
+                longitude = "longitude",
+                state = "Kerala",
+                userType = UserType.USER.name
             )
         }
 
         private suspend fun insertRecipe(
             recipeDao: RecipeDao,
             id: Int,
+            rating: Int,
             recipeName: String,
             description: String,
             ingredients: List<String>,
@@ -86,6 +90,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             recipeDao.insertRecipe(
                 RecipeEntity(
                     id = id,
+                    rating = rating,
                     recipeName = recipeName,
                     description = description,
                     ingredients = ingredients,

@@ -64,6 +64,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     private var _longitude = mutableStateOf(EMPTY_STRING)
     private var _state = mutableStateOf(EMPTY_STRING)
     private var _isRestaurantChecked = mutableStateOf(false)
+    private var _rating = mutableStateOf(0)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
@@ -121,7 +122,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                         restaurantLatitude = latitude.value,
                         restaurantLongitude = longitude.value,
                         restaurantName = restaurantName.value,
-                        addedBy = UserType.ADMIN.name
+                        addedBy = UserType.ADMIN.name,
+                        rating = _rating.value
                     )
                 )
             }
