@@ -16,7 +16,7 @@
             android:value="AIzaSyCOgvzowaNHKK0wI69viNyPvhyLarFvpck">
         </meta-data>
         <activity
-            android:name="com.keralarecipemaster.admin.presentation.ui.recipe.AddRecipeActivity"
+            android:name="com.keralarecipemaster.admin.presentation.ui.recipe.add.AddRecipeActivity"
             android:exported="false" />
         <!-- android:theme="@style/Theme.KeralaRecipeMasterAdmin"> -->
         <activity

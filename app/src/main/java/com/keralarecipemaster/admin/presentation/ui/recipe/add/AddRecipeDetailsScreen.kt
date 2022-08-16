@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.recipe.add
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.keralarecipemaster.admin.R
-import com.keralarecipemaster.admin.presentation.ui.recipe.AddRecipeDestinations
+import com.keralarecipemaster.admin.presentation.ui.RatingBarView
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.admin.utils.Diet
@@ -104,7 +104,7 @@ fun AddRecipeScreen(
                 Button(
                     onClick = {
                         if (viewModel.validateRecipeDetails()) {
-                            navController.navigate(AddRecipeDestinations.Restaurant.name)
+                            navController.navigate(AddRecipeDestinations.AddRestaurant.name)
                         } else {
                             Toast.makeText(
                                 context,

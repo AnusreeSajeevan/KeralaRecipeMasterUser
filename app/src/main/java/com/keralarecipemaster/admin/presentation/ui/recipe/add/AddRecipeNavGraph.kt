@@ -1,10 +1,9 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.recipe.add
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.keralarecipemaster.admin.presentation.ui.recipe.AddRecipeDestinations
 import com.keralarecipemaster.admin.presentation.ui.view.PickRestaurantScreen
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 
@@ -12,15 +11,15 @@ import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 fun AddRecipeNavHost(addRecipeViewModel: AddRecipeViewModel, navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = AddRecipeDestinations.RecipeDetails.name
+        startDestination = AddRecipeDestinations.AddRecipeDetails.name
     ) {
-        composable(AddRecipeDestinations.RecipeDetails.name) {
+        composable(AddRecipeDestinations.AddRecipeDetails.name) {
             AddRecipeScreen(
                 navController = navController,
                 viewModel = addRecipeViewModel
             )
         }
-        composable(AddRecipeDestinations.Restaurant.name) {
+        composable(AddRecipeDestinations.AddRestaurant.name) {
             PickRestaurantScreen(addRecipeViewModel)
         }
     }

@@ -10,12 +10,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.keralarecipemaster.admin.presentation.ui.AddRecipeNavHost
+import com.keralarecipemaster.admin.presentation.ui.recipe.add.AddRecipeNavHost
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddRecipeActivity : ComponentActivity() {
+class RecipeDetailsActivity : ComponentActivity() {
 
     private val viewModel: AddRecipeViewModel by viewModels()
 

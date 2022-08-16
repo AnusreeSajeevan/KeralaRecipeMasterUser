@@ -1,15 +1,15 @@
-package com.keralarecipemaster.admin.presentation.ui.recipe
+package com.keralarecipemaster.admin.presentation.ui.recipe.add
 
 enum class AddRecipeDestinations() {
-    RecipeDetails,
-    Restaurant;
+    AddRecipeDetails,
+    AddRestaurant;
 
     companion object {
         fun fromRoute(route: String?): AddRecipeDestinations =
             when (route?.substringBefore("/")) {
-                RecipeDetails.name -> RecipeDetails
-                Restaurant.name -> Restaurant
-                null -> RecipeDetails
+                AddRecipeDetails.name -> AddRecipeDetails
+                AddRestaurant.name -> AddRestaurant
+                null -> AddRecipeDetails
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }
     }
