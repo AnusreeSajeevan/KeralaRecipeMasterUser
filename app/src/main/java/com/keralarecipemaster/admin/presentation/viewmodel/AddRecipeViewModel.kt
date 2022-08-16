@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
-import com.keralarecipemaster.admin.presentation.ui.view.OnRatingBarCheck
+import com.keralarecipemaster.admin.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.admin.repository.RecipeRepository
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) : ViewModel(), OnRatingBarCheck {
+class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) : ViewModel(),
+    OnRatingBarCheck {
 
     companion object {
         const val EMPTY_STRING = ""

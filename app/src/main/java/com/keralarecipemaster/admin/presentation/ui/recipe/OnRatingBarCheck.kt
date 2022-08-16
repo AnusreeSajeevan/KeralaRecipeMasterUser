@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui.view
+package com.keralarecipemaster.admin.presentation.ui.recipe
 
 interface OnRatingBarCheck {
     fun onChangeRating(rating: Int)

@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.recipe
 
 enum class AddRecipeDestinations() {
     RecipeDetails,

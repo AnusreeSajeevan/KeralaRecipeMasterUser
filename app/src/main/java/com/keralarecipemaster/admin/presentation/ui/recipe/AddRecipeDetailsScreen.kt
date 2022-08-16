@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.keralarecipemaster.admin.R
+import com.keralarecipemaster.admin.presentation.ui.recipe.AddRecipeDestinations
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.admin.utils.Diet

@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui.view
+package com.keralarecipemaster.admin.presentation.ui.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

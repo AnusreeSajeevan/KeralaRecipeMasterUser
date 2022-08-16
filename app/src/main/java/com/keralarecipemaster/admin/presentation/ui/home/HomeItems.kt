@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*

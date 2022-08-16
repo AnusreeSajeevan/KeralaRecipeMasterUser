@@ -16,11 +16,11 @@
             android:value="AIzaSyCOgvzowaNHKK0wI69viNyPvhyLarFvpck">
         </meta-data>
         <activity
-            android:name="com.keralarecipemaster.admin.presentation.ui.view.AddRecipeActivity"
+            android:name="com.keralarecipemaster.admin.presentation.ui.recipe.AddRecipeActivity"
             android:exported="false" />
         <!-- android:theme="@style/Theme.KeralaRecipeMasterAdmin"> -->
         <activity
-            android:name="com.keralarecipemaster.admin.presentation.ui.view.HomeActivity"
+            android:name="com.keralarecipemaster.admin.presentation.ui.home.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

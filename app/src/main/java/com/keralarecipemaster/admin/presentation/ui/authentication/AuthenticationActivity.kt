@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui.view
+package com.keralarecipemaster.admin.presentation.ui.authentication
 
 import android.os.Bundle
 import android.util.Log
