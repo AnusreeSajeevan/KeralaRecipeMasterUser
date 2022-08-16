@@ -1,6 +1,5 @@
 package com.keralarecipemaster.admin.presentation.ui
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,9 +8,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.keralarecipemaster.admin.R
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.admin.utils.Diet
@@ -27,10 +29,7 @@ fun AddRecipeScreen(
     val description = viewModel.description.value
     val preparationMethod = viewModel.preparationMethod.value
     val ingredients = viewModel.ingredients.value
-    val restaurantName = viewModel.restaurantName.value
-    val latitude = viewModel.latitude.value
-    val longitude = viewModel.longitude.value
-    val state = viewModel.state.value
+    val rating = viewModel.rating.value
 
     val context = LocalContext.current
 
@@ -89,57 +88,28 @@ fun AddRecipeScreen(
                 ShowMealTypeDropDown(viewModel)
                 Spacer(modifier = Modifier.height(20.dp))
                 ShowDietCategory(viewModel)
-                Spacer(modifier = Modifier.height(20.dp))
 
-                OutlinedTextField(
-                    value = restaurantName,
-                    label = {
-                        Text(text = "Restaurant Name")
+                RatingBarView(
+                    rating = remember {
+                        mutableStateOf(0)
                     },
-                    onValueChange = {
-                        viewModel.onRestaurantNameChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    isRatingEditable = true,
+                    ratedStarsColor = Color(255, 220, 0),
+                    starIcon = painterResource(id = R.drawable.ic_star_filled),
+                    unRatedStarsColor = Color.LightGray,
+                    viewModel = viewModel
                 )
 
-                OutlinedTextField(
-                    value = latitude,
-                    label = {
-                        Text(text = "latitude")
-                    },
-                    onValueChange = {
-                        viewModel.onLatitudeChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = longitude,
-                    label = {
-                        Text(text = "longitude")
-                    },
-                    onValueChange = {
-                        viewModel.onLongitudeChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = state,
-                    label = {
-                        Text(text = "state")
-                    },
-                    onValueChange = {
-                        viewModel.onStateChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
                 Button(
                     onClick = {
                         if (viewModel.validateRecipeDetails()) {
                             navController.navigate(AddRecipeDestinations.Restaurant.name)
                         } else {
-                            Toast.makeText(context, "Enter all mandatory fields", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Enter all mandatory fields",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
                     modifier = Modifier.align(Alignment.End)

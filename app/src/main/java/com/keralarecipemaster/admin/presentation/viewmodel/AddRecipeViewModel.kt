@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
+import com.keralarecipemaster.admin.presentation.ui.view.OnRatingBarCheck
 import com.keralarecipemaster.admin.repository.RecipeRepository
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) : ViewModel() {
+class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) : ViewModel(), OnRatingBarCheck {
 
     companion object {
         const val EMPTY_STRING = ""
@@ -52,6 +53,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
     val hasRestaurantDetails: MutableState<Boolean>
         get() = _hasRestaurantDetails
+
+    val rating: MutableState<Int>
+        get() = _rating
 
     private var _recipeName = mutableStateOf(EMPTY_STRING)
     private var _dietType = mutableStateOf(Diet.VEG.name)
@@ -109,11 +113,15 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     fun addRecipe() {
         if (validateRecipeDetails()) {
             if (_hasRestaurantDetails.value) {
-                if(validateRestaurantDetails()) addRecipeToDb()
+                if (validateRestaurantDetails()) addRecipeToDb()
             } else {
                 addRecipeToDb()
             }
         }
+    }
+
+    fun onRatingChange(rating: Int) {
+        _rating.value = rating
     }
 
     private fun addRecipeToDb() {
@@ -148,5 +156,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
     fun onRestaurantCheckChange(restaurantChecked: Boolean) {
         _hasRestaurantDetails.value = restaurantChecked
+    }
+
+    override fun onChangeRating(rating: Int) {
+        _rating.value = rating
     }
 }

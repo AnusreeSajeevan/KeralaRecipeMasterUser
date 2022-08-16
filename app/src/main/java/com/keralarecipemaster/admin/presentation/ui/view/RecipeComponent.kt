@@ -6,12 +6,10 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -20,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keralarecipemaster.admin.R
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
+import com.keralarecipemaster.admin.presentation.ui.RatingBarView
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.admin.utils.Diet
 
@@ -34,7 +33,7 @@ fun RecipeComponent(recipe: RecipeEntity, recipeViewModel: RecipeListViewModel) 
                     ),
                     contentDescription = null,
                     modifier = Modifier
-                        .height(200.dp)
+                        .height(150.dp)
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
@@ -59,62 +58,32 @@ fun RecipeComponent(recipe: RecipeEntity, recipeViewModel: RecipeListViewModel) 
                     text = recipe.mealType.type,
                     style = TextStyle(fontSize = 14.sp, fontStyle = FontStyle.Italic)
                 )
-                Spacer(modifier = Modifier.height(10.dp))
 
                 val dietLogo = if (recipe.diet.type == Diet.NON_VEG.type) {
                     R.drawable.ic_non_veg
                 } else {
                     R.drawable.ic_veg
                 }
+                RatingBarView(
+                    rating = remember {
+                        mutableStateOf(recipe.rating)
+                    },
+                    isRatingEditable = false,
+                    ratedStarsColor = Color(255, 220, 0),
+                    starIcon = painterResource(id = R.drawable.ic_star_filled),
+                    unRatedStarsColor = Color.LightGray
+                )
+                Image(
+                    painter = painterResource(id = dietLogo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(15.dp)
+                        .width(15.dp)
 
-                Row( verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = dietLogo),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(15.dp)
-                            .width(15.dp),
-
-                    )
-                    Spacer(modifier = Modifier.size(10.dp))
-                    RatingBar(recipe.rating)
-                }
+                )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
-
-@Composable
-fun RatingBar(rating: Int) {
-    val ratingState by remember {
-        mutableStateOf(rating)
-    }
-    for (i in 1..5) {
-        Icon(painter = painterResource(id = R.drawable.ic_star_border), contentDescription = null)
-    }
-}
-/*
-@Composable
-@Preview(showBackground = true)
-fun previewRecipe() {
-    RecipeComponent(
-        recipe = Recipe(
-            id = 4,
-            recipeName = "recipeName",
-            description = "description",
-            ingredients = listOf("ingredients"),
-            preparationMethod = "preparationMethod",
-            image = "imageUrl",
-            restaurantName = "restaurantName",
-            restaurantLatitude = "latitude",
-            restaurantLongitude = "longitude",
-            restaurantState = "state",
-            mealType = Meal.DINNER,
-            diet = Diet.VEG,
-            addedBy = UserType.ADMIN.name
-        ),
-        recipeViewModel =
-    )
-}*/
