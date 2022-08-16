@@ -1,5 +1,7 @@
 package com.keralarecipemaster.admin.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -7,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
@@ -18,7 +21,6 @@ import com.keralarecipemaster.admin.utils.Meal
 @Composable
 fun AddRecipeScreen(
     viewModel: AddRecipeViewModel,
-    onAddButtonClick: () -> Unit,
     navController: NavHostController
 ) {
     val recipeName = viewModel.recipeName.value
@@ -29,6 +31,8 @@ fun AddRecipeScreen(
     val latitude = viewModel.latitude.value
     val longitude = viewModel.longitude.value
     val state = viewModel.state.value
+
+    val context = LocalContext.current
 
     KeralaRecipeMasterAdminTheme {
         Scaffold {
@@ -132,7 +136,11 @@ fun AddRecipeScreen(
                 )
                 Button(
                     onClick = {
-                        navController.navigate(AddRecipeDestinations.Restaurant.name)
+                        if (viewModel.validateRecipeDetails()) {
+                            navController.navigate(AddRecipeDestinations.Restaurant.name)
+                        } else {
+                            Toast.makeText(context, "Enter all mandatory fields", Toast.LENGTH_SHORT).show()
+                        }
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {

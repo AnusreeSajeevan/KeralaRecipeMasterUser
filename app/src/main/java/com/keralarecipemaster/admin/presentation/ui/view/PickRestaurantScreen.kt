@@ -1,11 +1,14 @@
 package com.keralarecipemaster.admin.presentation.ui.view
 
+import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
@@ -19,9 +22,12 @@ fun PickRestaurantScreen(
     val latitude = viewModel.latitude.value
     val longitude = viewModel.longitude.value
     val state = viewModel.state.value
-    val isRestaurantChecked = viewModel.isRestaurantChecked.value
+    val hasRestaurantDetails = viewModel.hasRestaurantDetails.value
 
-    var restaurantChecked by remember {
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+
+    var hasRestaurantChecked by remember {
         mutableStateOf(false)
     }
 
@@ -83,11 +89,11 @@ fun PickRestaurantScreen(
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
-                        checked = isRestaurantChecked,
+                        checked = hasRestaurantDetails,
                         onCheckedChange = {
-                            restaurantChecked = it
-                            viewModel.onRestaurantCheckChange(restaurantChecked)
-                            shouldShowAddRecipeButton = !restaurantChecked
+                            hasRestaurantChecked = it
+                            viewModel.onRestaurantCheckChange(hasRestaurantChecked)
+                            shouldShowAddRecipeButton = !hasRestaurantChecked
                         }
                     )
                     Spacer(modifier = Modifier.size(10.dp))
@@ -95,13 +101,27 @@ fun PickRestaurantScreen(
                     Text(text = "Add famous restaurant")
                 }
 
-                if (shouldShowAddRecipeButton) {
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Add Recipe")
-                    }
+                Button(
+                    onClick = {
+                        if (hasRestaurantChecked) {
+                            if (viewModel.validateRestaurantDetails()) {
+                                viewModel.addRecipe()
+                                activity?.finish()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Add restaurant details",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            viewModel.addRecipe()
+                            activity?.finish()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Add Recipe")
                 }
             }
         }

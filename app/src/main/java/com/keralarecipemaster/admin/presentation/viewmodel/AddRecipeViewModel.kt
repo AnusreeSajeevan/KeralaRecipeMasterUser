@@ -50,8 +50,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val state: MutableState<String>
         get() = _state
 
-    val isRestaurantChecked: MutableState<Boolean>
-        get() = _isRestaurantChecked
+    val hasRestaurantDetails: MutableState<Boolean>
+        get() = _hasRestaurantDetails
 
     private var _recipeName = mutableStateOf(EMPTY_STRING)
     private var _dietType = mutableStateOf(Diet.VEG.name)
@@ -63,7 +63,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     private var _latitude = mutableStateOf(EMPTY_STRING)
     private var _longitude = mutableStateOf(EMPTY_STRING)
     private var _state = mutableStateOf(EMPTY_STRING)
-    private var _isRestaurantChecked = mutableStateOf(false)
+    private var _hasRestaurantDetails = mutableStateOf(false)
     private var _rating = mutableStateOf(0)
 
     fun onRecipeNameChange(recipeName: String) {
@@ -107,42 +107,46 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun addRecipe() {
-        if (validateFields()) {
-            viewModelScope.launch {
-                repository.addRecipe(
-                    RecipeEntity(
-                        id = repository.count() + 1,
-                        recipeName = _recipeName.value,
-                        description = _description.value,
-                        preparationMethod = _preparationMethod.value,
-                        ingredients = listOf(_ingredients.value),
-                        diet = Diet.valueOf(_dietType.value),
-                        mealType = Meal.valueOf(mealType.value),
-                        restaurantState = state.value,
-                        restaurantLatitude = latitude.value,
-                        restaurantLongitude = longitude.value,
-                        restaurantName = restaurantName.value,
-                        addedBy = UserType.ADMIN.name,
-                        rating = _rating.value
-                    )
-                )
+        if (validateRecipeDetails()) {
+            if (_hasRestaurantDetails.value) {
+                if(validateRestaurantDetails()) addRecipeToDb()
+            } else {
+                addRecipeToDb()
             }
         }
     }
 
-    fun validateFields(): Boolean {
-        return validateRecipeDetails() && validateRestaurantDetails()
+    private fun addRecipeToDb() {
+        viewModelScope.launch {
+            repository.addRecipe(
+                RecipeEntity(
+                    id = repository.count() + 1,
+                    recipeName = _recipeName.value,
+                    description = _description.value,
+                    preparationMethod = _preparationMethod.value,
+                    ingredients = listOf(_ingredients.value),
+                    diet = Diet.valueOf(_dietType.value),
+                    mealType = Meal.valueOf(mealType.value),
+                    restaurantState = state.value,
+                    restaurantLatitude = latitude.value,
+                    restaurantLongitude = longitude.value,
+                    restaurantName = restaurantName.value,
+                    addedBy = UserType.ADMIN.name,
+                    rating = _rating.value
+                )
+            )
+        }
     }
 
-    private fun validateRestaurantDetails(): Boolean {
-        return true
+    fun validateRestaurantDetails(): Boolean {
+        return !(restaurantName.value == EMPTY_STRING || latitude.value == EMPTY_STRING || longitude.value == EMPTY_STRING || state.value == EMPTY_STRING)
     }
 
-    private fun validateRecipeDetails(): Boolean {
+    fun validateRecipeDetails(): Boolean {
         return !(recipeName.value == EMPTY_STRING || ingredients.value == EMPTY_STRING || preparationMethod.value == EMPTY_STRING)
     }
 
     fun onRestaurantCheckChange(restaurantChecked: Boolean) {
-        _isRestaurantChecked.value = restaurantChecked
+        _hasRestaurantDetails.value = restaurantChecked
     }
 }

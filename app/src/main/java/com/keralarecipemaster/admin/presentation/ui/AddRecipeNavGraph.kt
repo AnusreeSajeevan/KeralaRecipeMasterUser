@@ -17,8 +17,7 @@ fun AddRecipeNavHost(addRecipeViewModel: AddRecipeViewModel, navController: NavH
         composable(AddRecipeDestinations.RecipeDetails.name) {
             AddRecipeScreen(
                 navController = navController,
-                viewModel = addRecipeViewModel,
-                onAddButtonClick = {}
+                viewModel = addRecipeViewModel
             )
         }
         composable(AddRecipeDestinations.Restaurant.name) {
