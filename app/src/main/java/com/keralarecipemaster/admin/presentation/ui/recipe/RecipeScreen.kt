@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.recipe
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavController
 import com.keralarecipemaster.admin.presentation.ui.view.RecipeComponent
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.admin.utils.UserType
@@ -21,7 +22,8 @@ import com.keralarecipemaster.admin.utils.UserType
 fun RecipesScreen(
     onFabClick: (() -> Unit)? = null,
     recipeViewModel: RecipeListViewModel,
-    userType: UserType
+    userType: UserType,
+    navController: NavController
 ) {
     val recipes =
         if (userType == UserType.ADMIN) recipeViewModel.defaultRecipes else recipeViewModel.userAddedRecipes
@@ -67,7 +69,8 @@ fun RecipesScreen(
                 items(recipesList) { recipe ->
                     RecipeComponent(
                         recipe,
-                        recipeViewModel
+                        recipeViewModel,
+                        navController
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                 }

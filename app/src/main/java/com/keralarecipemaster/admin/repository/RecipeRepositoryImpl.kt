@@ -1,6 +1,5 @@
 package com.keralarecipemaster.admin.repository
 
-import androidx.lifecycle.LiveData
 import com.keralarecipemaster.admin.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.admin.domain.db.RecipeDao
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
@@ -54,6 +53,12 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun deleteRecipe(recipe: RecipeEntity) {
         withContext(Dispatchers.IO) {
             recipeDao.deleteRecipe(recipe)
+        }
+    }
+
+    override suspend fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity> {
+        return withContext(Dispatchers.IO) {
+            recipeDao.getRecipeDetails(recipeId)
         }
     }
 

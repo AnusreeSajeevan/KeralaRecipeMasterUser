@@ -60,11 +60,11 @@ class RecipeListViewModel @Inject constructor(
 
     fun onQueryChanged(query: String, addedBy: UserType) {
         if (query.isEmpty()) {
-           if (addedBy == UserType.ADMIN) getDefaultRecipes() else getUserAddedeRecipes()
+            if (addedBy == UserType.ADMIN) getDefaultRecipes() else getUserAddedeRecipes()
         } else {
             viewModelScope.launch {
                 recipeRepository.searchResults(query, addedBy).catch { }.collect {
-                    if (addedBy == UserType.ADMIN)_defaultRecipes.value = it
+                    if (addedBy == UserType.ADMIN) _defaultRecipes.value = it
                     else _userAddedRecipes.value = it
                 }
             }
