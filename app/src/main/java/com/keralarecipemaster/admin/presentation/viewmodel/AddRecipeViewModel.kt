@@ -11,65 +11,70 @@ import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
 import com.keralarecipemaster.admin.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) : ViewModel(),
+class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
+    ViewModel(),
     OnRatingBarCheck {
 
     companion object {
         const val EMPTY_STRING = ""
     }
 
-    val recipeName: MutableState<String>
+    val recipeName: StateFlow<String>
         get() = _recipeName
 
-    val description: MutableState<String>
+    val description: StateFlow<String>
         get() = _description
 
-    val dietType: MutableState<String>
+    val dietType: StateFlow<String>
         get() = _dietType
 
-    val mealType: MutableState<String>
+    val mealType: StateFlow<String>
         get() = _mealType
 
-    val ingredients: MutableState<String>
+    val ingredients: StateFlow<String>
         get() = _ingredients
 
-    val preparationMethod: MutableState<String>
+    val preparationMethod: StateFlow<String>
         get() = _preparationMethod
 
-    val restaurantName: MutableState<String>
+    val restaurantName: StateFlow<String>
         get() = _restaurantName
 
-    val latitude: MutableState<String>
+    val latitude: StateFlow<String>
         get() = _latitude
 
-    val longitude: MutableState<String>
+    val longitude: StateFlow<String>
         get() = _longitude
 
-    val state: MutableState<String>
+    val state: StateFlow<String>
         get() = _state
 
     val hasRestaurantDetails: MutableState<Boolean>
         get() = _hasRestaurantDetails
 
-    val rating: MutableState<Int>
+    val rating: StateFlow<Int>
         get() = _rating
 
-    private var _recipeName = mutableStateOf(EMPTY_STRING)
-    private var _dietType = mutableStateOf(Diet.VEG.name)
-    private var _mealType = mutableStateOf(Meal.BREAKFAST.name)
-    private var _ingredients = mutableStateOf(EMPTY_STRING)
-    private var _description = mutableStateOf(EMPTY_STRING)
-    private var _preparationMethod = mutableStateOf(EMPTY_STRING)
-    private var _restaurantName = mutableStateOf(EMPTY_STRING)
-    private var _latitude = mutableStateOf(EMPTY_STRING)
-    private var _longitude = mutableStateOf(EMPTY_STRING)
-    private var _state = mutableStateOf(EMPTY_STRING)
+    private var _recipeName = MutableStateFlow(EMPTY_STRING)
+    private var _dietType = MutableStateFlow(Diet.VEG.name)
+    private var _mealType = MutableStateFlow(Meal.BREAKFAST.name)
+    private var _ingredients = MutableStateFlow(EMPTY_STRING)
+    private var _description = MutableStateFlow(EMPTY_STRING)
+    private var _preparationMethod = MutableStateFlow(EMPTY_STRING)
+    private var _restaurantName = MutableStateFlow(EMPTY_STRING)
+    private var _latitude = MutableStateFlow(EMPTY_STRING)
+    private var _longitude = MutableStateFlow(EMPTY_STRING)
+    private var _state = MutableStateFlow(EMPTY_STRING)
     private var _hasRestaurantDetails = mutableStateOf(false)
-    private var _rating = mutableStateOf(0)
+    private var _rating = MutableStateFlow(0)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
@@ -121,8 +126,16 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         }
     }
 
-    fun onRatingChange(rating: Int) {
-        _rating.value = rating
+    fun updateRecipe(recipeId: Int?) {
+        recipeId?.let {
+            if (validateRecipeDetails()) {
+                if (_hasRestaurantDetails.value) {
+                    if (validateRestaurantDetails()) updateRecipeInDb(recipeId = recipeId)
+                } else {
+                    updateRecipeInDb(recipeId = recipeId)
+                }
+            }
+        }
     }
 
     private fun addRecipeToDb() {
@@ -147,6 +160,31 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         }
     }
 
+    private fun updateRecipeInDb(recipeId: Int) {
+        viewModelScope.launch {
+            repository.updateRecipe(
+                recipeName = recipeName.value,
+                rating = rating.value,
+                recipeId = recipeId,
+                /*recipe = RecipeEntity(
+                    id = recipeId,
+                    recipeName = _recipeName.value,
+                    description = _description.value,
+                    preparationMethod = _preparationMethod.value,
+                    ingredients = listOf(_ingredients.value),
+                    diet = Diet.valueOf(_dietType.value),
+                    mealType = Meal.valueOf(mealType.value),
+                    restaurantState = state.value,
+                    restaurantLatitude = latitude.value,
+                    restaurantLongitude = longitude.value,
+                    restaurantName = restaurantName.value,
+                    addedBy = UserType.ADMIN.name,
+                    rating = rating.value
+                )*/
+            )
+        }
+    }
+
     fun validateRestaurantDetails(): Boolean {
         return !(restaurantName.value == EMPTY_STRING || latitude.value == EMPTY_STRING || longitude.value == EMPTY_STRING || state.value == EMPTY_STRING)
     }
@@ -161,5 +199,21 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
     override fun onChangeRating(rating: Int) {
         _rating.value = rating
+    }
+
+    fun getRecipeDetails(recipeId: Int) {
+        viewModelScope.launch {
+            repository.getRecipeDetails(recipeId).catch { }.collect {
+                _recipeName.value = it.recipeName
+                _state.value = it.restaurantState
+                _restaurantName.value = it.restaurantName
+                _description.value = it.description
+                _ingredients.value = it.ingredients.toString()
+                _preparationMethod.value = it.preparationMethod
+                _dietType.value = it.diet.name
+                _mealType.value = it.mealType.name
+                _rating.value = it.rating
+            }
+        }
     }
 }

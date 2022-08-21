@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.recipe
 
 import android.R
 import android.view.MotionEvent
@@ -20,7 +20,6 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.keralarecipemaster.admin.presentation.ui.recipe.OnRatingBarCheck
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

@@ -1,6 +1,5 @@
 package com.keralarecipemaster.admin.repository
 
-import androidx.lifecycle.LiveData
 import com.keralarecipemaster.admin.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.admin.domain.db.RecipeDao
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
@@ -26,7 +25,7 @@ class RecipeRepositoryImpl @Inject constructor(
             try {
                 val recipes: RecipeResponseWrapper = recipeApi.fetchRecipes()
                 recipeDtoMapper.toRecipeEntityList(recipes.defaultRecipes).forEach {
-                    recipeDao.insertRecipe(it)
+                    recipeDao.insertRecipe(recipe = it)
                 }
             } catch (exception: Exception) {
             }
@@ -42,7 +41,7 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override fun searchResults(query: String, addedBy: UserType): Flow<List<RecipeEntity>> {
-        return recipeDao.search(query, addedBy.name)
+        return recipeDao.search(queryString = query, addedBy = addedBy.name)
     }
 
     override suspend fun count(): Int {
@@ -53,11 +52,23 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun deleteRecipe(recipe: RecipeEntity) {
         withContext(Dispatchers.IO) {
-            recipeDao.deleteRecipe(recipe)
+            recipeDao.deleteRecipe(recipe = recipe)
+        }
+    }
+
+    override suspend fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity> {
+        return withContext(Dispatchers.IO) {
+            recipeDao.getRecipeDetails(recipeId = recipeId)
         }
     }
 
     override suspend fun addRecipe(recipe: RecipeEntity) {
-        recipeDao.insertRecipe(recipe)
+        recipeDao.insertRecipe(recipe = recipe)
+    }
+
+    override suspend fun updateRecipe(recipeName: String, recipeId: Int, rating: Int) {
+        withContext(Dispatchers.IO) {
+            recipeDao.updateRecipe(recipeName = recipeName, id = recipeId, rating = rating)
+        }
     }
 }
