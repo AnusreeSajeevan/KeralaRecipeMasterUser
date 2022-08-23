@@ -178,11 +178,11 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun validateRestaurantDetails(): Boolean {
-        return !(restaurantName.value == EMPTY_STRING || latitude.value == EMPTY_STRING || longitude.value == EMPTY_STRING || state.value == EMPTY_STRING)
+        return !(restaurantName.value.trim() == EMPTY_STRING || latitude.value.trim() == EMPTY_STRING || longitude.value.trim() == EMPTY_STRING || state.value.trim() == EMPTY_STRING)
     }
 
     fun validateRecipeDetails(): Boolean {
-        return !(recipeName.value == EMPTY_STRING || ingredients.value.isEmpty() || preparationMethod.value == EMPTY_STRING)
+        return !(recipeName.value.trim() == EMPTY_STRING || ingredients.value.isEmpty() || preparationMethod.value.trim() == EMPTY_STRING)
     }
 
     fun onRestaurantCheckChange(restaurantChecked: Boolean) {

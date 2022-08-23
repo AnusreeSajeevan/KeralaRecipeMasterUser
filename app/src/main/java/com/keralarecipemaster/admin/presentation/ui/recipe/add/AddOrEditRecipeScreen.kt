@@ -17,7 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import com.keralarecipemaster.admin.R
-import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
@@ -60,13 +59,6 @@ fun AddOrEditRecipeScreen(
         preparationMethodValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
     val preparationMethod by preparationMethodFlowLifecycleAware.collectAsState("")
-
-    /*// ingredients
-    val ingredientsValue = addRecipeViewModel.ingredients
-    val ingredientsFlowLifeCycleAware = remember(ingredientsValue, lifeCycleOwner) {
-        ingredientsValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
-    }
-    val ingredients by ingredientsFlowLifeCycleAware.collectAsState("")*/
 
     // ingredients
     val ingredientsValue = addRecipeViewModel.ingredients
@@ -129,10 +121,6 @@ fun AddOrEditRecipeScreen(
 
     val hasRestaurantDetails = addRecipeViewModel.hasRestaurantDetails.value
 
-//    val ingredients by remember {
-//        mutableStateOf(addRecipeViewModel.ingredients.value)
-//    }
-
     var hasRestaurantChecked by remember {
         mutableStateOf(false)
     }
@@ -182,17 +170,6 @@ fun AddOrEditRecipeScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                /*  OutlinedTextField(
-                      value = ingredients,
-                      label = {
-                          Text(text = "Ingredients (comma separated list) *")
-                      },
-                      onValueChange = {
-                          addRecipeViewModel.onIngredientsChange(it)
-                      },
-                      modifier = Modifier.fillMaxWidth()
-                  )*/
-
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(text = "Ingredients*")
 
@@ -232,7 +209,7 @@ fun AddOrEditRecipeScreen(
                 }
                 Row {
                     Button(onClick = {
-                        if (ingredientName.isNotEmpty() && ingredientQuantity.isNotEmpty()) {
+                        if (ingredientName.trim().isNotEmpty() && ingredientQuantity.trim().isNotEmpty()) {
                             addRecipeViewModel.onAddRecipeClick(
                                 ingredientName,
                                 ingredientQuantity
@@ -342,6 +319,8 @@ fun AddOrEditRecipeScreen(
                     Text(text = "Add famous restaurant")
                 }
 
+                // Show map to select location
+
                 if (shouldShowAddRecipeButton) {
                     Button(
                         onClick = {
@@ -350,7 +329,6 @@ fun AddOrEditRecipeScreen(
                                     if (addRecipeViewModel.validateRestaurantDetails()) {
                                         if (actionType == "edit") {
                                             addRecipeViewModel.updateRecipe(recipeId)
-//                                            navController.popBackStack()
                                         } else {
                                             addRecipeViewModel.addRecipe()
                                             activity?.finish()
@@ -365,7 +343,6 @@ fun AddOrEditRecipeScreen(
                                 } else {
                                     if (actionType == "edit") {
                                         addRecipeViewModel.updateRecipe(recipeId)
-//                                        navController.popBackStack()
                                     } else {
                                         addRecipeViewModel.addRecipe()
                                         activity?.finish()
@@ -388,15 +365,6 @@ fun AddOrEditRecipeScreen(
             }
         }
     }
-}
-
-@Composable
-fun IngredientsComponent(
-    ingredientName: String,
-    ingredientQuantity: String,
-    ingredients: List<Ingredient>,
-    addRecipeViewModel: AddRecipeViewModel
-) {
 }
 
 @Composable
