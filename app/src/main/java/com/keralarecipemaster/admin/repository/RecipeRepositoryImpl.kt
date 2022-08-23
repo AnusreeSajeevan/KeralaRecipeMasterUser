@@ -7,6 +7,7 @@ import com.keralarecipemaster.admin.domain.model.RecipeResponseWrapper
 import com.keralarecipemaster.admin.network.RecipeApi
 import com.keralarecipemaster.admin.network.model.RecipeDtoMapper
 import com.keralarecipemaster.admin.utils.Diet
+import com.keralarecipemaster.admin.utils.Meal
 import com.keralarecipemaster.admin.utils.UserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -71,14 +72,16 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeId: Int,
         recipeName: String,
         description: String,
-        diet: Diet
+        diet: Diet,
+        meal: Meal
     ) {
         withContext(Dispatchers.IO) {
             recipeDao.updateRecipe(
                 recipeName = recipeName,
                 id = recipeId,
                 description = description,
-                diet = diet
+                diet = diet,
+                meal = meal
             )
         }
     }

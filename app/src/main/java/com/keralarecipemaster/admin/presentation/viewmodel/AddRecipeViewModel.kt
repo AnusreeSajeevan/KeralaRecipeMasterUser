@@ -169,7 +169,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                 recipeName = recipeName.value,
                 description = _description.value,
                 recipeId = recipeId,
-                diet = Diet.valueOf(_dietType.value)
+                diet = Diet.valueOf(_dietType.value),
+                meal = Meal.valueOf(_mealType.value)
             )
         }
     }

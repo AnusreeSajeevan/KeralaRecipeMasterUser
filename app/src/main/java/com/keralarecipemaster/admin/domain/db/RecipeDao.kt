@@ -3,6 +3,7 @@ package com.keralarecipemaster.admin.domain.db
 import androidx.room.*
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.utils.Diet
+import com.keralarecipemaster.admin.utils.Meal
 import com.keralarecipemaster.admin.utils.UserType
 import kotlinx.coroutines.flow.Flow
 
@@ -20,8 +21,8 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 
-    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet WHERE id = :id")
-     fun updateRecipe(id: Int, recipeName: String, description: String, diet: Diet)
+    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal WHERE id = :id")
+     fun updateRecipe(id: Int, recipeName: String, description: String, diet: Diet, meal: Meal)
 
     @Query("SELECT * from recipe WHERE id = :recipeId")
     fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity>
