@@ -68,9 +68,9 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeDao.insertRecipe(recipe = recipe)
     }
 
-    override suspend fun updateRecipe(recipeName: String, recipeId: Int, rating: Int) {
+    override suspend fun updateRecipe(recipeName: String, description:String, recipeId: Int) {
         withContext(Dispatchers.IO) {
-            recipeDao.updateRecipe(recipeName = recipeName, id = recipeId, rating = rating)
+            recipeDao.updateRecipe(recipeName = recipeName, id = recipeId, description = description)
         }
     }
 }

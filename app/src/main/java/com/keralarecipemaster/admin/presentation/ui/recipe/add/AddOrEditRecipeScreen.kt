@@ -278,7 +278,7 @@ fun AddOrEditRecipeScreen(
                                 } else {
                                     addRecipeViewModel.addRecipe()
                                 }
-                                activity?.finish()
+                                navController.popBackStack()
                             }
                         },
                         modifier = Modifier.fillMaxWidth()

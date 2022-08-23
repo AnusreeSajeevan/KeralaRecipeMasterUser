@@ -19,8 +19,8 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 
-    @Query("UPDATE recipe SET recipeName=:recipeName, rating=:rating WHERE id = :id")
-     fun updateRecipe(recipeName: String, id: Int, rating: Int)
+    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description WHERE id = :id")
+     fun updateRecipe(recipeName: String, id: Int, description: String)
 
     @Query("SELECT * from recipe WHERE id = :recipeId")
     fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity>

@@ -164,23 +164,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         viewModelScope.launch {
             repository.updateRecipe(
                 recipeName = recipeName.value,
-                rating = rating.value,
-                recipeId = recipeId,
-                /*recipe = RecipeEntity(
-                    id = recipeId,
-                    recipeName = _recipeName.value,
-                    description = _description.value,
-                    preparationMethod = _preparationMethod.value,
-                    ingredients = listOf(_ingredients.value),
-                    diet = Diet.valueOf(_dietType.value),
-                    mealType = Meal.valueOf(mealType.value),
-                    restaurantState = state.value,
-                    restaurantLatitude = latitude.value,
-                    restaurantLongitude = longitude.value,
-                    restaurantName = restaurantName.value,
-                    addedBy = UserType.ADMIN.name,
-                    rating = rating.value
-                )*/
+                description = _description.value,
+                recipeId = recipeId
             )
         }
     }
