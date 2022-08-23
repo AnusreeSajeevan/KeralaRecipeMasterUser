@@ -15,8 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
-import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.DietFilter
+import com.keralarecipemaster.admin.utils.MealFilter
 import com.keralarecipemaster.admin.utils.UserType
 import kotlinx.coroutines.launch
 
@@ -54,6 +54,13 @@ fun RecipesScreen(
     }
     val dietFilter by dietFlowLifeCycleAware.collectAsState(DietFilter.ALL.name)
 
+    // Meal filter
+    val mealFilterValue = recipeViewModel.mealTypeFilter
+    val mealFlowLifeCycleAware = remember(mealFilterValue, lifeCycleOwner) {
+        mealFilterValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
+    }
+    val mealFilter by mealFlowLifeCycleAware.collectAsState(MealFilter.ALL.name)
+
     BackdropScaffold(
         scaffoldState = scaffoldState,
         appBar = {
@@ -89,7 +96,8 @@ fun RecipesScreen(
             )
         },
         backLayerContent = {
-            ShowDietFilter(recipeViewModel, dietFilter, userType)
+            DietFilterComponent(recipeViewModel, dietFilter)
+            MealFilterComponent(recipeViewModel, mealFilter)
         },
         frontLayerContent = {
             Scaffold(
@@ -150,7 +158,7 @@ fun RecipesScreen(
 }
 
 @Composable
-fun ShowDietFilter(recipeViewModel: RecipeListViewModel, selectedDietType: String, userType: UserType) {
+fun DietFilterComponent(recipeViewModel: RecipeListViewModel, selectedDietType: String) {
     Column(Modifier.padding(16.dp)) {
         Spacer(Modifier.size(10.dp))
         Text(text = "Filter by diet")
@@ -160,11 +168,32 @@ fun ShowDietFilter(recipeViewModel: RecipeListViewModel, selectedDietType: Strin
                 RadioButton(
                     selected = it.name == selectedDietType,
                     onClick = {
-                        recipeViewModel.onDietCategoryChange(filter = it.name, userType = userType)
+                        recipeViewModel.onDietFilterChange(diet = it.name)
                     }
                 )
                 Text(text = it.type)
                 Spacer(modifier = Modifier.size(10.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun MealFilterComponent(recipeViewModel: RecipeListViewModel, selectedMealType: String) {
+    Column(Modifier.padding(4.dp)) {
+        Spacer(Modifier.size(8.dp))
+        Text(text = "Filter by Meal")
+        Spacer(Modifier.size(8.dp))
+        Row {
+            MealFilter.values().forEach {
+                RadioButton(
+                    selected = it.name == selectedMealType,
+                    onClick = {
+                        recipeViewModel.onMealFilterChange(meal = it.name)
+                    }
+                )
+                Text(text = it.type)
+                Spacer(modifier = Modifier.size(4.dp))
             }
         }
     }

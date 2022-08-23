@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.repository.RecipeRepository
 import com.keralarecipemaster.admin.utils.DietFilter
+import com.keralarecipemaster.admin.utils.MealFilter
 import com.keralarecipemaster.admin.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,7 +19,8 @@ class RecipeListViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     private var _defaultRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     private var _userAddedRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
-    private val _dietTypeFilter = MutableStateFlow<String>(DietFilter.ALL.name)
+    private val _dietTypeFilter = MutableStateFlow(DietFilter.ALL.name)
+    private val _mealTypeFilter = MutableStateFlow(MealFilter.ALL.name)
 
     val defaultRecipes: StateFlow<List<RecipeEntity>>
         get() = _defaultRecipes
@@ -28,6 +30,9 @@ class RecipeListViewModel @Inject constructor(
 
     val dietTypeFilter: StateFlow<String>
         get() = _dietTypeFilter
+
+    val mealTypeFilter: StateFlow<String>
+        get() = _mealTypeFilter
 
     init {
 //        fetchAllRecipes()
@@ -43,28 +48,40 @@ class RecipeListViewModel @Inject constructor(
 
     fun getDefaultRecipes() {
         viewModelScope.launch {
-            recipeRepository.getDefaultRecipes().catch { }.collect { defaultRecipes ->
+            recipeRepository.getDefaultRecipes().catch { }.collect { recipes ->
+                var list = recipes
                 if (_dietTypeFilter.value != DietFilter.ALL.name) {
-                    _defaultRecipes.value = defaultRecipes.filter {
+                    list = recipes.filter {
                         it.diet.name == _dietTypeFilter.value
                     }
-                } else {
-                    _defaultRecipes.value = defaultRecipes
                 }
+
+                if (_mealTypeFilter.value != MealFilter.ALL.name) {
+                    list = list.filter {
+                        it.mealType.name == _mealTypeFilter.value
+                    }
+                }
+                _defaultRecipes.value = list
             }
         }
     }
 
     fun getUserAddedeRecipes() {
         viewModelScope.launch {
-            recipeRepository.getUserAddedRecipes().catch { }.collect { userAddedRecipes ->
+            recipeRepository.getUserAddedRecipes().catch { }.collect { recipes ->
+                var list = recipes
                 if (_dietTypeFilter.value != DietFilter.ALL.name) {
-                    _userAddedRecipes.value = userAddedRecipes.filter {
+                    list = recipes.filter {
                         it.diet.name == _dietTypeFilter.value
                     }
-                } else {
-                    _userAddedRecipes.value = userAddedRecipes
                 }
+
+                if (_mealTypeFilter.value != MealFilter.ALL.name) {
+                    list = list.filter {
+                        it.mealType.name == _mealTypeFilter.value
+                    }
+                }
+                _userAddedRecipes.value = list
             }
         }
     }
@@ -88,8 +105,14 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    fun onDietCategoryChange(filter: String, userType: UserType) {
-        _dietTypeFilter.value = filter
+    fun onDietFilterChange(diet: String) {
+        _dietTypeFilter.value = diet
+        getDefaultRecipes()
+        getUserAddedeRecipes()
+    }
+
+    fun onMealFilterChange(meal: String) {
+        _mealTypeFilter.value = meal
         getDefaultRecipes()
         getUserAddedeRecipes()
     }
