@@ -63,6 +63,7 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
+
     override suspend fun addRecipe(recipe: RecipeEntity) {
         recipeDao.insertRecipe(recipe = recipe)
     }
