@@ -40,7 +40,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 rating = 2,
                 recipeName = "Vegetable biriyani",
                 description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                ingredients = listOf(
+                ingredients = arrayListOf(
                     Ingredient("carrot", "2"),
                     Ingredient("jira rice", "1 kg"),
                     Ingredient("salt", "2 tspoon")),
@@ -61,7 +61,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 rating = 5,
                 recipeName = "Nirvana",
                 description = "Sepcial",
-                ingredients = listOf(
+                ingredients = arrayListOf(
                     Ingredient("fish", "5"),
                     Ingredient("milk", "2 cup"),
                     Ingredient("pepper", "3 tblspoon")),
@@ -83,7 +83,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             rating: Int,
             recipeName: String,
             description: String,
-            ingredients: List<Ingredient>,
+            ingredients: ArrayList<Ingredient>,
             preparationMethod: String,
             imageUrl: String,
             meal: Meal,

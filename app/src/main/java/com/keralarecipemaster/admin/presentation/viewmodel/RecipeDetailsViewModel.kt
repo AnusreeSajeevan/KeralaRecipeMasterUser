@@ -43,6 +43,6 @@ class RecipeDetailsViewModel @Inject constructor(val repository: RecipeRepositor
     }
 
     override fun onChangeRating(rating: Int) {
-        //
+
     }
 }

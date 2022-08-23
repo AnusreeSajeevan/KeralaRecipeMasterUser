@@ -17,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import com.keralarecipemaster.admin.R
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
@@ -68,14 +69,14 @@ fun AddOrEditRecipeScreen(
     val ingredients by ingredientsFlowLifeCycleAware.collectAsState("")*/
 
     // ingredients
-    val numberOfIngredientsValue = addRecipeViewModel.numberOfIngredients
-    val ingredientsFlowLifeCycleAware = remember(numberOfIngredientsValue, lifeCycleOwner) {
-        numberOfIngredientsValue.flowWithLifecycle(
+    val ingredientsValue = addRecipeViewModel.ingredients
+    val ingredientsFlowLifeCycleAware = remember(ingredientsValue, lifeCycleOwner) {
+        ingredientsValue.flowWithLifecycle(
             lifeCycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
-    val numberOfIngredients by ingredientsFlowLifeCycleAware.collectAsState(1)
+    val ingredients by ingredientsFlowLifeCycleAware.collectAsState(listOf())
 
     // rating
     val ratingValue = addRecipeViewModel.rating
@@ -128,6 +129,10 @@ fun AddOrEditRecipeScreen(
 
     val hasRestaurantDetails = addRecipeViewModel.hasRestaurantDetails.value
 
+//    val ingredients by remember {
+//        mutableStateOf(addRecipeViewModel.ingredients.value)
+//    }
+
     var hasRestaurantChecked by remember {
         mutableStateOf(false)
     }
@@ -138,6 +143,14 @@ fun AddOrEditRecipeScreen(
 
     val context = LocalContext.current
     val activity = (context as? Activity)
+
+    var ingredientName by remember {
+        mutableStateOf("")
+    }
+
+    var ingredientQuantity by remember {
+        mutableStateOf("")
+    }
 
     KeralaRecipeMasterAdminTheme {
         Scaffold {
@@ -180,8 +193,66 @@ fun AddOrEditRecipeScreen(
                       modifier = Modifier.fillMaxWidth()
                   )*/
 
-                Spacer(modifier = Modifier.size(10.dp))
-                IngredientsComponent(numberOfIngredients, addRecipeViewModel)
+                Spacer(modifier = Modifier.size(16.dp))
+                Text(text = "Ingredients*")
+
+                var str = ""
+                if (ingredients.isNotEmpty()) {
+                    ingredients.forEach {
+                        str = str + it.name + "  -  " + it.quantity + "\n"
+                    }
+                }
+
+                Text(
+                    text = str
+                )
+                Row {
+                    TextField(
+                        label = {
+                            Text(text = "Name")
+                        },
+                        value = ingredientName,
+                        onValueChange = {
+                            ingredientName = it
+                        },
+                        modifier = Modifier.weight(0.6.toFloat())
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+
+                    TextField(
+                        label = {
+                            Text(text = "Quantity")
+                        },
+                        value = ingredientQuantity,
+                        onValueChange = {
+                            ingredientQuantity = it
+                        },
+                        modifier = Modifier.weight(0.4.toFloat())
+                    )
+                }
+                Row {
+                    Button(onClick = {
+                        if (ingredientName.isNotEmpty() && ingredientQuantity.isNotEmpty()) {
+                            addRecipeViewModel.onAddRecipeClick(
+                                ingredientName,
+                                ingredientQuantity
+                            )
+                            ingredientName = ""
+                            ingredientQuantity = ""
+                        }
+                    }) {
+                        Text(text = "Add ingredient")
+                    }
+                    Spacer(Modifier.size(6.dp))
+                    Button(onClick = {
+                        addRecipeViewModel.clearIngredients()
+                        ingredientName = ""
+                        ingredientQuantity = ""
+                    }) {
+                        Text(text = "Clear ingredients")
+                    }
+                }
+
                 Spacer(modifier = Modifier.size(10.dp))
 
                 OutlinedTextField(
@@ -271,28 +342,39 @@ fun AddOrEditRecipeScreen(
                 if (shouldShowAddRecipeButton) {
                     Button(
                         onClick = {
-                            if (hasRestaurantChecked) {
-                                if (addRecipeViewModel.validateRestaurantDetails()) {
+                            if (addRecipeViewModel.validateRecipeDetails()) {
+                                if (hasRestaurantChecked) {
+                                    if (addRecipeViewModel.validateRestaurantDetails()) {
+                                        if (actionType == "edit") {
+                                            addRecipeViewModel.updateRecipe(recipeId)
+//                                            navController.popBackStack()
+                                        } else {
+                                            addRecipeViewModel.addRecipe()
+                                            activity?.finish()
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Add restaurant details",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
                                     if (actionType == "edit") {
                                         addRecipeViewModel.updateRecipe(recipeId)
+//                                        navController.popBackStack()
                                     } else {
                                         addRecipeViewModel.addRecipe()
+                                        activity?.finish()
                                     }
-                                    activity?.finish()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Add restaurant details",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else {
-                                if (actionType == "edit") {
-                                    addRecipeViewModel.updateRecipe(recipeId)
-                                } else {
-                                    addRecipeViewModel.addRecipe()
                                 }
                                 navController.popBackStack()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Add all mandatory details",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -306,35 +388,12 @@ fun AddOrEditRecipeScreen(
 }
 
 @Composable
-fun IngredientsComponent(numberOfIngredients: Int, addRecipeViewModel: AddRecipeViewModel) {
-    Text(text = "Ingredients")
-    Spacer(modifier = Modifier.size(10.dp))
-    for (i in 1..numberOfIngredients) {
-        Row {
-            TextField(
-                label = {
-                    Text(text = "Name")
-                },
-                value = "",
-                onValueChange = {
-                },
-                modifier = Modifier.weight(0.6.toFloat())
-            )
-            Spacer(modifier = Modifier.size(4.dp))
-            TextField(
-                label = {
-                    Text(text = "Quantity")
-                },
-                value = "",
-                onValueChange = {
-                },
-                modifier = Modifier.weight(0.4.toFloat())
-            )
-        }
-    }
-    Button(onClick = { addRecipeViewModel.onAddNewIngredient() }) {
-        Text(text = "Add ingredient")
-    }
+fun IngredientsComponent(
+    ingredientName: String,
+    ingredientQuantity: String,
+    ingredients: List<Ingredient>,
+    addRecipeViewModel: AddRecipeViewModel
+) {
 }
 
 @Composable

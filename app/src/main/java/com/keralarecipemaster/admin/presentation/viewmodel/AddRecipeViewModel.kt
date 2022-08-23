@@ -63,8 +63,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val rating: StateFlow<Int>
         get() = _rating
 
-    val numberOfIngredients: StateFlow<Int>
-        get() = _numberOfIngredients
+//    val numberOfIngredients: StateFlow<Int>
+//        get() = _numberOfIngredients
 
     private var _recipeName = MutableStateFlow(EMPTY_STRING)
     private var _dietType = MutableStateFlow(Diet.VEG.name)
@@ -78,15 +78,14 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     private var _state = MutableStateFlow(EMPTY_STRING)
     private var _hasRestaurantDetails = mutableStateOf(false)
     private var _rating = MutableStateFlow(0)
-    private var _numberOfIngredients = MutableStateFlow(1)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
     }
 
- /*   fun onIngredientsChange(ingredients: String) {
-        this._ingredients.value = ingredients
-    }*/
+    /*   fun onIngredientsChange(ingredients: String) {
+           this._ingredients.value = ingredients
+       }*/
 
     fun onDescriptionChange(description: String) {
         this._description.value = description
@@ -169,7 +168,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
             repository.updateRecipe(
                 recipeName = recipeName.value,
                 description = _description.value,
-                recipeId = recipeId
+                recipeId = recipeId,
+                diet = Diet.valueOf(_dietType.value)
             )
         }
     }
@@ -206,7 +206,29 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         }
     }
 
-    fun onAddNewIngredient() {
-        _numberOfIngredients.value = _numberOfIngredients.value + 1
+    private fun List<Ingredient>.getArrayListFromList(): ArrayList<Ingredient> {
+        val arrayList = arrayListOf<Ingredient>()
+        this.forEach {
+            arrayList.add(Ingredient(name = it.name, quantity = it.quantity))
+        }
+        return arrayList
     }
+
+    fun onAddRecipeClick(ingredientName: String, ingredientQuantity: String) {
+        val list: ArrayList<Ingredient> = arrayListOf()
+        _ingredients.value.forEach {
+            list.add(it)
+        }
+
+        list.add(Ingredient(name = ingredientName, quantity = ingredientQuantity))
+        _ingredients.value = list
+    }
+
+    fun clearIngredients() {
+        _ingredients.value = emptyList()
+    }
+
+    /* fun onAddNewIngredient() {
+         _numberOfIngredients.value = _numberOfIngredients.value + 1
+     }*/
 }
