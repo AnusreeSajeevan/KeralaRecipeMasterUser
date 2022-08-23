@@ -1,6 +1,5 @@
 package com.keralarecipemaster.admin.domain.db
 
-import android.media.Rating
 import androidx.room.*
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.utils.UserType
@@ -34,4 +33,13 @@ interface RecipeDao {
 
     @Query("SELECT * from recipe WHERE recipeName LIKE '%' || :queryString || '%' AND addedBy =:addedBy")
     fun search(queryString: String, addedBy: String): Flow<List<RecipeEntity>>
+
+    @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
+    fun filterByDietType(diet: String, userType: UserType): Flow<List<RecipeEntity>>
+
+    @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
+    fun filterDefaultRecipesByDietType(diet: String, userType: UserType = UserType.ADMIN): Flow<List<RecipeEntity>>
+
+    @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
+    fun filterUserAddedRecipesByDietType(diet: String, userType: UserType = UserType.USER): Flow<List<RecipeEntity>>
 }

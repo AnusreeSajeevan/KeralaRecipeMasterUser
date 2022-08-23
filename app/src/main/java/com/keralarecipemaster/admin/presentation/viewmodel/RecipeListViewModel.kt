@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.repository.RecipeRepository
+import com.keralarecipemaster.admin.utils.DietFilter
 import com.keralarecipemaster.admin.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -15,14 +16,18 @@ class RecipeListViewModel @Inject constructor(
     val recipeRepository: RecipeRepository,
     application: Application
 ) : AndroidViewModel(application) {
-
     private var _defaultRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
+    private var _userAddedRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
+    private val _dietTypeFilter = MutableStateFlow<String>(DietFilter.ALL.name)
+
     val defaultRecipes: StateFlow<List<RecipeEntity>>
         get() = _defaultRecipes
 
-    private var _userAddedRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     val userAddedRecipes: StateFlow<List<RecipeEntity>>
         get() = _userAddedRecipes
+
+    val dietTypeFilter: StateFlow<String>
+        get() = _dietTypeFilter
 
     init {
 //        fetchAllRecipes()
@@ -38,16 +43,28 @@ class RecipeListViewModel @Inject constructor(
 
     fun getDefaultRecipes() {
         viewModelScope.launch {
-            recipeRepository.getDefaultRecipes().catch { }.collect {
-                _defaultRecipes.value = it
+            recipeRepository.getDefaultRecipes().catch { }.collect { defaultRecipes ->
+                if (_dietTypeFilter.value != DietFilter.ALL.name) {
+                    _defaultRecipes.value = defaultRecipes.filter {
+                        it.diet.name == _dietTypeFilter.value
+                    }
+                } else {
+                    _defaultRecipes.value = defaultRecipes
+                }
             }
         }
     }
 
     fun getUserAddedeRecipes() {
         viewModelScope.launch {
-            recipeRepository.getUserAddedRecipes().catch { }.collect {
-                _userAddedRecipes.value = it
+            recipeRepository.getUserAddedRecipes().catch { }.collect { userAddedRecipes ->
+                if (_dietTypeFilter.value != DietFilter.ALL.name) {
+                    _userAddedRecipes.value = userAddedRecipes.filter {
+                        it.diet.name == _dietTypeFilter.value
+                    }
+                } else {
+                    _userAddedRecipes.value = userAddedRecipes
+                }
             }
         }
     }
@@ -69,5 +86,11 @@ class RecipeListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onDietCategoryChange(filter: String, userType: UserType) {
+        _dietTypeFilter.value = filter
+        getDefaultRecipes()
+        getUserAddedeRecipes()
     }
 }

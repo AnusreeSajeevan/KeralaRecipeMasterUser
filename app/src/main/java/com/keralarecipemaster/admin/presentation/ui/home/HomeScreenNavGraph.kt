@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.presentation.ui
+package com.keralarecipemaster.admin.presentation.ui.home
 
 import android.content.Intent
 import androidx.compose.runtime.Composable
@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.keralarecipemaster.admin.presentation.ui.recipe.add.AddRecipeActivity
-import com.keralarecipemaster.admin.presentation.ui.home.HomeItems
 import com.keralarecipemaster.admin.presentation.ui.recipe.RecipesScreen
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.admin.utils.UserType

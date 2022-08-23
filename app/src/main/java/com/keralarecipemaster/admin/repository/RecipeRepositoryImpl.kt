@@ -6,6 +6,7 @@ import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.domain.model.RecipeResponseWrapper
 import com.keralarecipemaster.admin.network.RecipeApi
 import com.keralarecipemaster.admin.network.model.RecipeDtoMapper
+import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.UserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
