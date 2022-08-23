@@ -1,6 +1,7 @@
 package com.keralarecipemaster.admin.domain.db
 
 import androidx.room.*
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
@@ -21,8 +22,8 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 
-    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal WHERE id = :id")
-     fun updateRecipe(id: Int, recipeName: String, description: String, diet: Diet, meal: Meal)
+    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal,ingredients=:ingredients  WHERE id = :id")
+     fun updateRecipe(id: Int, recipeName: String, description: String, diet: Diet, meal: Meal, ingredients: List<Ingredient>)
 
     @Query("SELECT * from recipe WHERE id = :recipeId")
     fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity>

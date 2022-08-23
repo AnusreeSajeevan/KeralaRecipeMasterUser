@@ -2,6 +2,7 @@ package com.keralarecipemaster.admin.repository
 
 import com.keralarecipemaster.admin.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.admin.domain.db.RecipeDao
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.domain.model.RecipeResponseWrapper
 import com.keralarecipemaster.admin.network.RecipeApi
@@ -73,7 +74,8 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeName: String,
         description: String,
         diet: Diet,
-        meal: Meal
+        meal: Meal,
+        ingredients: List<Ingredient>
     ) {
         withContext(Dispatchers.IO) {
             recipeDao.updateRecipe(
@@ -81,7 +83,8 @@ class RecipeRepositoryImpl @Inject constructor(
                 id = recipeId,
                 description = description,
                 diet = diet,
-                meal = meal
+                meal = meal,
+                ingredients = ingredients
             )
         }
     }
