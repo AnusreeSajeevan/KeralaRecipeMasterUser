@@ -75,7 +75,8 @@ class RecipeRepositoryImpl @Inject constructor(
         description: String,
         diet: Diet,
         meal: Meal,
-        ingredients: List<Ingredient>
+        ingredients: List<Ingredient>,
+        preparationMethod: String
     ) {
         withContext(Dispatchers.IO) {
             recipeDao.updateRecipe(
@@ -84,7 +85,8 @@ class RecipeRepositoryImpl @Inject constructor(
                 description = description,
                 diet = diet,
                 meal = meal,
-                ingredients = ingredients
+                ingredients = ingredients,
+                preparationMethod = preparationMethod
             )
         }
     }

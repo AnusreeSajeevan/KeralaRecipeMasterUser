@@ -22,8 +22,16 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 
-    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal,ingredients=:ingredients  WHERE id = :id")
-     fun updateRecipe(id: Int, recipeName: String, description: String, diet: Diet, meal: Meal, ingredients: List<Ingredient>)
+    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal,ingredients=:ingredients, preparationMethod=:preparationMethod  WHERE id = :id")
+    fun updateRecipe(
+        id: Int,
+        recipeName: String,
+        description: String,
+        diet: Diet,
+        meal: Meal,
+        ingredients: List<Ingredient>,
+        preparationMethod: String
+    )
 
     @Query("SELECT * from recipe WHERE id = :recipeId")
     fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity>
@@ -41,8 +49,14 @@ interface RecipeDao {
     fun filterByDietType(diet: String, userType: UserType): Flow<List<RecipeEntity>>
 
     @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
-    fun filterDefaultRecipesByDietType(diet: String, userType: UserType = UserType.ADMIN): Flow<List<RecipeEntity>>
+    fun filterDefaultRecipesByDietType(
+        diet: String,
+        userType: UserType = UserType.ADMIN
+    ): Flow<List<RecipeEntity>>
 
     @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
-    fun filterUserAddedRecipesByDietType(diet: String, userType: UserType = UserType.USER): Flow<List<RecipeEntity>>
+    fun filterUserAddedRecipesByDietType(
+        diet: String,
+        userType: UserType = UserType.USER
+    ): Flow<List<RecipeEntity>>
 }

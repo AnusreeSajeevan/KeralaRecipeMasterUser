@@ -281,6 +281,9 @@ fun AddOrEditRecipeScreen(
                     viewModel = addRecipeViewModel
                 )
 
+                Spacer(modifier = Modifier.size(10.dp))
+                val restaurantMandatory = if (hasRestaurantChecked) "*" else ""
+                Text(text = "Famous Restaurant Details $restaurantMandatory")
                 OutlinedTextField(
                     value = restaurantName,
                     label = {
