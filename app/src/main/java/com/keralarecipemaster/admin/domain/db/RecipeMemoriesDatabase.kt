@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 import com.keralarecipemaster.admin.utils.*
 import kotlinx.coroutines.CoroutineScope
@@ -39,25 +40,31 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 rating = 2,
                 recipeName = "Vegetable biriyani",
                 description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                ingredients = listOf("veggies", "jira rice", "spices"),
-                preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-                imageUrl = "image url",
-                meal = Meal.LUNCH,
-                diet = Diet.VEG,
-                restaurantName = "Thalassery Restaurant",
-                latitude = "latitude",
-                longitude = "longitude",
-                state = "Kerala",
-                userType = UserType.ADMIN.name
-            )
+                ingredients = listOf(
+                    Ingredient("carrot", "2"),
+                    Ingredient("jira rice", "1 kg"),
+                    Ingredient("salt", "2 tspoon")),
+                    preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
+                    imageUrl = "image url",
+                    meal = Meal.LUNCH,
+                    diet = Diet.VEG,
+                    restaurantName = "Thalassery Restaurant",
+                    latitude = "latitude",
+                    longitude = "longitude",
+                    state = "Kerala",
+                    userType = UserType.ADMIN.name
+                )
 
-            insertRecipe(
-                recipeDao,
+                        insertRecipe (
+                        recipeDao,
                 id = 2,
                 rating = 5,
                 recipeName = "Nirvana",
                 description = "Sepcial",
-                ingredients = listOf("fish", "milk", "spices"),
+                ingredients = listOf(
+                    Ingredient("fish", "5"),
+                    Ingredient("milk", "2 cup"),
+                    Ingredient("pepper", "3 tblspoon")),
                 preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                 imageUrl = "image url",
                 meal = Meal.DINNER,
@@ -76,7 +83,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             rating: Int,
             recipeName: String,
             description: String,
-            ingredients: List<String>,
+            ingredients: List<Ingredient>,
             preparationMethod: String,
             imageUrl: String,
             meal: Meal,

@@ -2,11 +2,23 @@ package com.keralarecipemaster.admin.utils
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.keralarecipemaster.admin.domain.model.Ingredient
+import java.lang.reflect.Type
+
 
 class IngredientsTypeConverter {
     @TypeConverter
-    fun listToJson(value: List<String>?) = Gson().toJson(value)
+    fun fromIngredientsList(ingredients: List<Ingredient> ): String? {
+        val gson = Gson()
+        val type: Type = object : TypeToken<List<Ingredient?>?>() {}.type
+        return gson.toJson(ingredients, type)
+    }
 
     @TypeConverter
-    fun jsonToList(value: String) = Gson().fromJson(value, Array<String>::class.java).toList()
+    fun toIngredientsList(ingredients: String): List<Ingredient> {
+        val gson = Gson()
+        val type = object : TypeToken<List<Ingredient?>?>() {}.type
+        return gson.fromJson(ingredients, type)
+    }
 }

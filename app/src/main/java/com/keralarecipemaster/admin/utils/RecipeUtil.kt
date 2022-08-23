@@ -1,5 +1,6 @@
 package com.keralarecipemaster.admin.utils
 
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.domain.model.RecipeEntity
 
 class RecipeUtil {
@@ -8,7 +9,7 @@ class RecipeUtil {
             id: Int = 0,
             recipeName: String = "",
             description: String = "",
-            ingredients: List<String> = listOf(),
+            ingredients: List<Ingredient> = listOf(),
             image: String? = null,
             restaurantName: String = "",
             restaurantLatitude: String = "",

@@ -1,6 +1,7 @@
 package com.keralarecipemaster.admin.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.keralarecipemaster.admin.domain.model.Ingredient
 import com.keralarecipemaster.admin.domain.model.Restaurant
 
 data class RecipeResponse(
@@ -11,7 +12,7 @@ data class RecipeResponse(
 
     val description: String,
 
-    val ingredients: List<String>,
+    val ingredients: List<Ingredient>,
 
     val image: String? = null,
 

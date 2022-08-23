@@ -60,12 +60,22 @@ fun AddOrEditRecipeScreen(
     }
     val preparationMethod by preparationMethodFlowLifecycleAware.collectAsState("")
 
-    // ingredients
+    /*// ingredients
     val ingredientsValue = addRecipeViewModel.ingredients
     val ingredientsFlowLifeCycleAware = remember(ingredientsValue, lifeCycleOwner) {
         ingredientsValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-    val ingredients by ingredientsFlowLifeCycleAware.collectAsState("")
+    val ingredients by ingredientsFlowLifeCycleAware.collectAsState("")*/
+
+    // ingredients
+    val numberOfIngredientsValue = addRecipeViewModel.numberOfIngredients
+    val ingredientsFlowLifeCycleAware = remember(numberOfIngredientsValue, lifeCycleOwner) {
+        numberOfIngredientsValue.flowWithLifecycle(
+            lifeCycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        )
+    }
+    val numberOfIngredients by ingredientsFlowLifeCycleAware.collectAsState(1)
 
     // rating
     val ratingValue = addRecipeViewModel.rating
@@ -159,16 +169,20 @@ fun AddOrEditRecipeScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                OutlinedTextField(
-                    value = ingredients,
-                    label = {
-                        Text(text = "Ingredients (comma separated list) *")
-                    },
-                    onValueChange = {
-                        addRecipeViewModel.onIngredientsChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                /*  OutlinedTextField(
+                      value = ingredients,
+                      label = {
+                          Text(text = "Ingredients (comma separated list) *")
+                      },
+                      onValueChange = {
+                          addRecipeViewModel.onIngredientsChange(it)
+                      },
+                      modifier = Modifier.fillMaxWidth()
+                  )*/
+
+                Spacer(modifier = Modifier.size(10.dp))
+                IngredientsComponent(numberOfIngredients, addRecipeViewModel)
+                Spacer(modifier = Modifier.size(10.dp))
 
                 OutlinedTextField(
                     value = preparationMethod,
@@ -288,6 +302,38 @@ fun AddOrEditRecipeScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun IngredientsComponent(numberOfIngredients: Int, addRecipeViewModel: AddRecipeViewModel) {
+    Text(text = "Ingredients")
+    Spacer(modifier = Modifier.size(10.dp))
+    for (i in 1..numberOfIngredients) {
+        Row {
+            TextField(
+                label = {
+                    Text(text = "Name")
+                },
+                value = "",
+                onValueChange = {
+                },
+                modifier = Modifier.weight(0.6.toFloat())
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            TextField(
+                label = {
+                    Text(text = "Quantity")
+                },
+                value = "",
+                onValueChange = {
+                },
+                modifier = Modifier.weight(0.4.toFloat())
+            )
+        }
+    }
+    Button(onClick = { addRecipeViewModel.onAddNewIngredient() }) {
+        Text(text = "Add ingredient")
     }
 }
 

@@ -141,14 +141,17 @@ fun RecipeDetailsScreen(
             )
             Spacer(Modifier.size(4.dp))
 
-            Text(
-                text = recipeEntity.ingredients.toString(),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Normal
+            recipeEntity.ingredients.forEach {
+                Text(
+                    text = it.name + "  -  " + it.quantity,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Normal
+                    )
                 )
-            )
+                Spacer(Modifier.size(2.dp))
+            }
 
             Spacer(Modifier.size(20.dp))
 
