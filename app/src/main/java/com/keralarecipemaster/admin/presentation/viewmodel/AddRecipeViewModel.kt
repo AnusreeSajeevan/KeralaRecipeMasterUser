@@ -1,5 +1,10 @@
 package com.keralarecipemaster.admin.presentation.viewmodel
 
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.os.CountDownTimer
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,7 +21,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
@@ -65,6 +72,18 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
 //    val numberOfIngredients: StateFlow<Int>
 //        get() = _numberOfIngredients
+
+    val location = MutableStateFlow(getInitialLocation())
+    val addressText = mutableStateOf("")
+    var isMapEditable = mutableStateOf(true)
+    var timer: CountDownTimer? = null
+
+    fun getInitialLocation(): Location {
+        val initialLocation = Location("")
+        initialLocation.latitude = 51.506874
+        initialLocation.longitude = -0.139800
+        return initialLocation
+    }
 
     private var _recipeName = MutableStateFlow(EMPTY_STRING)
     private var _dietType = MutableStateFlow(Diet.VEG.name)
@@ -234,4 +253,68 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     /* fun onAddNewIngredient() {
          _numberOfIngredients.value = _numberOfIngredients.value + 1
      }*/
+
+    fun onTextChanged(context: Context, text: String) {
+        if (text == "") {
+            return
+        }
+        timer?.cancel()
+        timer = object : CountDownTimer(1000, 1500) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                location.value = getLocationFromAddress(context, text)
+            }
+        }.start()
+    }
+
+    fun getLocationFromAddress(context: Context, strAddress: String): Location {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val address: Address?
+
+        val addresses: List<Address>? = geocoder.getFromLocationName(strAddress, 1)
+
+        addresses?.let {
+            if (it.isNotEmpty()) {
+                address = it[0]
+
+                var loc = Location("")
+                loc.latitude = address.latitude
+                loc.longitude = address.longitude
+                return loc
+            }
+        }
+
+        return location.value
+    }
+
+    fun updateLocation(latitude: Double, longitude: Double) {
+        if (latitude != location.value.latitude) {
+            val location = Location("")
+            location.latitude = latitude
+            location.longitude = longitude
+            setLocation(location)
+        }
+    }
+
+    fun setLocation(loc: Location) {
+        location.value = loc
+    }
+
+    fun getAddressFromLocation(context: Context): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        var addresses: List<Address>? = null
+        var addressText = ""
+
+        try {
+            addresses =
+                geocoder.getFromLocation(location.value.latitude, location.value.longitude, 1)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        val address: Address? = addresses?.get(0)
+        addressText = address?.getAddressLine(0) ?: ""
+
+        return addressText
+    }
 }

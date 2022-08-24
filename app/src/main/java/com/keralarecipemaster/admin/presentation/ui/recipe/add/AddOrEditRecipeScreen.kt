@@ -2,26 +2,38 @@ package com.keralarecipemaster.admin.presentation.ui.recipe.add
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.keralarecipemaster.admin.R
 import com.keralarecipemaster.admin.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdminTheme
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
+import com.keralarecipemaster.admin.utils.rememberMapViewWithLifecycle
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -209,7 +221,9 @@ fun AddOrEditRecipeScreen(
                 }
                 Row {
                     Button(onClick = {
-                        if (ingredientName.trim().isNotEmpty() && ingredientQuantity.trim().isNotEmpty()) {
+                        if (ingredientName.trim().isNotEmpty() && ingredientQuantity.trim()
+                            .isNotEmpty()
+                        ) {
                             addRecipeViewModel.onAddRecipeClick(
                                 ingredientName,
                                 ingredientQuantity
@@ -320,6 +334,7 @@ fun AddOrEditRecipeScreen(
                 }
 
                 // Show map to select location
+                MapAddressPickerView(addRecipeViewModel)
 
                 if (shouldShowAddRecipeButton) {
                     Button(
@@ -396,6 +411,107 @@ fun ShowMealTypeDropDown(viewModel: AddRecipeViewModel, selectedMealType: String
             )
             Text(text = it.type)
             Spacer(modifier = Modifier.size(10.dp))
+        }
+    }
+}
+
+@Composable
+fun MapAddressPickerView(viewModel: AddRecipeViewModel) {
+    Surface(color = MaterialTheme.colors.background) {
+        val mapView = rememberMapViewWithLifecycle()
+        val currentLocation = viewModel.location.collectAsState()
+        var text by remember { viewModel.addressText }
+        val context = LocalContext.current
+
+        Column(Modifier.fillMaxWidth()) {
+            Box {
+                TextField(
+                    value = text,
+                    onValueChange = {
+                        text = it
+                        if (!viewModel.isMapEditable.value) {
+                            viewModel.onTextChanged(context, text)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(end = 80.dp),
+                    enabled = !viewModel.isMapEditable.value,
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent)
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(10.dp).padding(bottom = 20.dp),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Button(
+                        onClick = {
+                            viewModel.isMapEditable.value = !viewModel.isMapEditable.value
+                        }
+                    ) {
+                        Text(text = if (viewModel.isMapEditable.value) "Edit" else "Save")
+                    }
+                }
+            }
+
+            Box(modifier = Modifier.height(500.dp)) {
+                currentLocation.value.let {
+                    if (viewModel.isMapEditable.value) {
+                        text = viewModel.getAddressFromLocation(context)
+                    }
+                    MapViewContainer(viewModel.isMapEditable.value, mapView, viewModel)
+                }
+
+                MapPinOverlay()
+            }
+        }
+    }
+}
+
+@Composable
+fun MapPinOverlay() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                modifier = Modifier.size(50.dp),
+                bitmap = ImageBitmap.imageResource(id = R.drawable.pin).asAndroidBitmap()
+                    .asImageBitmap(),
+                contentDescription = "Pin Image"
+            )
+        }
+        Box(
+            Modifier.weight(1f)
+        ) {}
+    }
+}
+
+@Composable
+private fun MapViewContainer(
+    isEnabled: Boolean,
+    mapView: MapView,
+    viewModel: AddRecipeViewModel
+) {
+    AndroidView(
+        factory = { mapView }
+    ) {
+        mapView.getMapAsync { map ->
+
+            map.uiSettings.setAllGesturesEnabled(isEnabled)
+
+            val location = viewModel.location.value
+            val position = LatLng(location.latitude, location.longitude)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15f))
+
+            map.setOnCameraIdleListener {
+                val cameraPosition = map.cameraPosition
+                viewModel.updateLocation(
+                    cameraPosition.target.latitude,
+                    cameraPosition.target.longitude
+                )
+            }
         }
     }
 }
