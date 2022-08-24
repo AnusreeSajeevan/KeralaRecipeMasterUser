@@ -2,7 +2,6 @@ package com.keralarecipemaster.admin.presentation.ui.recipe.add
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,21 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.keralarecipemaster.admin.R
 import com.keralarecipemaster.admin.presentation.ui.location.MapAddressPickerView
@@ -34,7 +25,6 @@ import com.keralarecipemaster.admin.presentation.ui.theme.KeralaRecipeMasterAdmi
 import com.keralarecipemaster.admin.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.admin.utils.Diet
 import com.keralarecipemaster.admin.utils.Meal
-import com.keralarecipemaster.admin.utils.rememberMapViewWithLifecycle
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -273,52 +263,7 @@ fun AddOrEditRecipeScreen(
                     viewModel = addRecipeViewModel
                 )
 
-                Spacer(modifier = Modifier.size(10.dp))
-                val restaurantMandatory = if (hasRestaurantChecked) "*" else ""
-                Text(text = "Famous Restaurant Details $restaurantMandatory")
-                OutlinedTextField(
-                    value = restaurantName,
-                    label = {
-                        Text(text = "Restaurant Name")
-                    },
-                    onValueChange = {
-                        addRecipeViewModel.onRestaurantNameChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = latitude,
-                    label = {
-                        Text(text = "latitude")
-                    },
-                    onValueChange = {
-                        addRecipeViewModel.onLatitudeChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = longitude,
-                    label = {
-                        Text(text = "longitude")
-                    },
-                    onValueChange = {
-                        addRecipeViewModel.onLongitudeChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = state,
-                    label = {
-                        Text(text = "state")
-                    },
-                    onValueChange = {
-                        addRecipeViewModel.onStateChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Spacer(modifier = Modifier.size(16.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
@@ -329,55 +274,103 @@ fun AddOrEditRecipeScreen(
                             shouldShowAddRecipeButton = !hasRestaurantChecked
                         }
                     )
-                    Spacer(modifier = Modifier.size(10.dp))
+                    Spacer(modifier = Modifier.size(10.dp).align(Alignment.CenterVertically))
 
-                    Text(text = "Add famous restaurant")
+                    Text(text = "Check this box to add famous restaurant details")
                 }
 
-                // Show map to select location
-                MapAddressPickerView(addRecipeViewModel)
+                if (hasRestaurantChecked) {
+                    Spacer(modifier = Modifier.size(16.dp))
 
-                if (shouldShowAddRecipeButton) {
-                    Button(
-                        onClick = {
-                            if (addRecipeViewModel.validateRecipeDetails()) {
-                                if (hasRestaurantChecked) {
-                                    if (addRecipeViewModel.validateRestaurantDetails()) {
-                                        if (actionType == "edit") {
-                                            addRecipeViewModel.updateRecipe(recipeId)
-                                        } else {
-                                            addRecipeViewModel.addRecipe()
-                                            activity?.finish()
-                                        }
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Add restaurant details",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                } else {
+                    OutlinedTextField(
+                        value = restaurantName,
+                        label = {
+                            Text(text = "Restaurant Name")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onRestaurantNameChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = latitude,
+                        label = {
+                            Text(text = "latitude")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onLatitudeChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = longitude,
+                        label = {
+                            Text(text = "longitude")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onLongitudeChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = state,
+                        label = {
+                            Text(text = "state")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onStateChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Show map to select location
+                    MapAddressPickerView(addRecipeViewModel)
+                }
+
+//                if (shouldShowAddRecipeButton) {
+                Button(
+                    onClick = {
+                        if (addRecipeViewModel.validateRecipeDetails()) {
+                            if (hasRestaurantChecked) {
+                                if (addRecipeViewModel.validateRestaurantDetails()) {
                                     if (actionType == "edit") {
                                         addRecipeViewModel.updateRecipe(recipeId)
                                     } else {
                                         addRecipeViewModel.addRecipe()
                                         activity?.finish()
                                     }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Add restaurant details",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-                                navController.popBackStack()
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Add all mandatory details",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                if (actionType == "edit") {
+                                    addRecipeViewModel.updateRecipe(recipeId)
+                                } else {
+                                    addRecipeViewModel.addRecipe()
+                                    activity?.finish()
+                                }
                             }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Add Recipe")
-                    }
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Add all mandatory details",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Add Recipe")
                 }
+//                }
             }
         }
     }
