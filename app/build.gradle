@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.keralarecipemaster.admin"
+        applicationId "com.keralarecipemaster.user"
         minSdk 21
         targetSdk 32
         versionCode 1
