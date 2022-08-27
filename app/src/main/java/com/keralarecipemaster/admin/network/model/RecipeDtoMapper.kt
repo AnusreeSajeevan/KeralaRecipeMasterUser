@@ -20,7 +20,7 @@ class RecipeDtoMapper @Inject constructor() :
             restaurantName = entity.restaurant.name,
             restaurantLatitude = entity.restaurant.latitude,
             restaurantLongitude = entity.restaurant.longitude,
-            restaurantState = entity.restaurant.state,
+            restaurantAddress = entity.restaurant.address,
             preparationMethod = entity.preparationMethod,
             mealType = Meal.valueOf(entity.mealType),
             diet = Diet.valueOf(entity.diet),
@@ -40,7 +40,7 @@ class RecipeDtoMapper @Inject constructor() :
                 name = domainModel.restaurantName,
                 latitude = domainModel.restaurantLatitude,
                 longitude = domainModel.restaurantLongitude,
-                state = domainModel.restaurantState
+                address = domainModel.restaurantAddress
             ),
             preparationMethod = domainModel.preparationMethod,
             mealType = domainModel.mealType.name,

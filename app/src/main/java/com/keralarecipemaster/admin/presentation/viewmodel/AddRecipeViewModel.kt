@@ -5,7 +5,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.CountDownTimer
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,16 +54,10 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     val restaurantName: StateFlow<String>
         get() = _restaurantName
 
-    val latitude: StateFlow<String>
-        get() = _latitude
+    val address: StateFlow<String>
+        get() = _address
 
-    val longitude: StateFlow<String>
-        get() = _longitude
-
-    val state: StateFlow<String>
-        get() = _state
-
-    val hasRestaurantDetails: MutableState<Boolean>
+    val hasRestaurantDetails: StateFlow<Boolean>
         get() = _hasRestaurantDetails
 
     val rating: StateFlow<Int>
@@ -94,8 +87,8 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     private var _restaurantName = MutableStateFlow(EMPTY_STRING)
     private var _latitude = MutableStateFlow(EMPTY_STRING)
     private var _longitude = MutableStateFlow(EMPTY_STRING)
-    private var _state = MutableStateFlow(EMPTY_STRING)
-    private var _hasRestaurantDetails = mutableStateOf(false)
+    private var _address = MutableStateFlow(EMPTY_STRING)
+    private var _hasRestaurantDetails = MutableStateFlow(false)
     private var _rating = MutableStateFlow(0)
 
     fun onRecipeNameChange(recipeName: String) {
@@ -127,7 +120,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun onStateChange(state: String) {
-        this._state.value = state
+        this._address.value = state
     }
 
     fun onMealCategoryChange(mealType: String) {
@@ -171,9 +164,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                     ingredients = _ingredients.value,
                     diet = Diet.valueOf(_dietType.value),
                     mealType = Meal.valueOf(mealType.value),
-                    restaurantState = state.value,
-                    restaurantLatitude = latitude.value,
-                    restaurantLongitude = longitude.value,
+                    restaurantAddress = address.value,
+                    restaurantLatitude = location.value.latitude.toString(),
+                    restaurantLongitude = location.value.longitude.toString(),
                     restaurantName = restaurantName.value,
                     addedBy = UserType.ADMIN.name,
                     rating = _rating.value
@@ -197,7 +190,11 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
     }
 
     fun validateRestaurantDetails(): Boolean {
-        return !(restaurantName.value.trim() == EMPTY_STRING || latitude.value.trim() == EMPTY_STRING || longitude.value.trim() == EMPTY_STRING || state.value.trim() == EMPTY_STRING)
+        return !(
+            restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
+                .trim() == EMPTY_STRING || location.value.longitude.toString()
+                .trim() == EMPTY_STRING || address.value.trim() == EMPTY_STRING
+            )
     }
 
     fun validateRecipeDetails(): Boolean {
@@ -216,7 +213,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         viewModelScope.launch {
             repository.getRecipeDetails(recipeId).catch { }.collect {
                 _recipeName.value = it.recipeName
-                _state.value = it.restaurantState
+                _address.value = it.restaurantAddress
                 _restaurantName.value = it.restaurantName
                 _description.value = it.description
                 _ingredients.value = it.ingredients
@@ -263,6 +260,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
                 location.value = getLocationFromAddress(context, text)
+                _restaurantName.value = text
             }
         }.start()
     }
@@ -316,5 +314,9 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
         addressText = address?.getAddressLine(0) ?: ""
 
         return addressText
+    }
+
+    fun onGetAddressFromLocation(text: String) {
+        _address.value = text
     }
 }

@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
-import com.google.maps.android.compose.*
 import com.keralarecipemaster.admin.R
 import com.keralarecipemaster.admin.presentation.ui.location.MapAddressPickerView
 import com.keralarecipemaster.admin.presentation.ui.recipe.RatingBarView
@@ -101,36 +100,38 @@ fun AddOrEditRecipeScreen(
     }
     val restaurantName by restaurantNameFlowLifeCycleAware.collectAsState("")
 
-    // latitude
-    val latitudeValue = addRecipeViewModel.latitude
-    val latitudeValueFlowLifeCycleAware = remember(latitudeValue, lifeCycleOwner) {
-        latitudeValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
+    // address
+    val addressValue = addRecipeViewModel.address
+    val addressFlowLifeCycleAware = remember(addressValue, lifeCycleOwner) {
+        addressValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-    val latitude by latitudeValueFlowLifeCycleAware.collectAsState("")
+    val address by addressFlowLifeCycleAware.collectAsState("")
 
-    // longitude
-    val longitudeValue = addRecipeViewModel.longitude
-    val longitudeValueFlowLifeCycleAware = remember(longitudeValue, lifeCycleOwner) {
-        longitudeValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
+    // location
+    val locationValue = addRecipeViewModel.location
+    val locationValueFlowLifeCycleAware = remember(locationValue, lifeCycleOwner) {
+        locationValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-    val longitude by longitudeValueFlowLifeCycleAware.collectAsState("")
+    val location by locationValueFlowLifeCycleAware.collectAsState(addRecipeViewModel.getInitialLocation())
 
-    // state
-    val stateValue = addRecipeViewModel.state
-    val stateValueFlowLifeCycleAware = remember(stateValue, lifeCycleOwner) {
-        stateValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
-    }
-    val state by stateValueFlowLifeCycleAware.collectAsState("")
-
-    val hasRestaurantDetails = addRecipeViewModel.hasRestaurantDetails.value
-
+    // has restaurant details
+    val hasRestaurantDetailsValue = addRecipeViewModel.hasRestaurantDetails
+    val hasRestaurantDetailsFlowLifeCycleAware =
+        remember(hasRestaurantDetailsValue, lifeCycleOwner) {
+            hasRestaurantDetailsValue.flowWithLifecycle(
+                lifeCycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val hasRestaurantDetails by hasRestaurantDetailsFlowLifeCycleAware.collectAsState(false)
+/*
     var hasRestaurantChecked by remember {
         mutableStateOf(false)
-    }
+    }*/
 
-    var shouldShowAddRecipeButton by remember {
+   /* var shouldShowAddRecipeButton by remember {
         mutableStateOf(true)
-    }
+    }*/
 
     val context = LocalContext.current
     val activity = (context as? Activity)
@@ -223,7 +224,7 @@ fun AddOrEditRecipeScreen(
                             ingredientQuantity = ""
                         }
                     }) {
-                        Text(text = "Add ingredient")
+                        Text(text = "Save ingredient")
                     }
                     Spacer(Modifier.size(6.dp))
                     Button(onClick = {
@@ -231,7 +232,7 @@ fun AddOrEditRecipeScreen(
                         ingredientName = ""
                         ingredientQuantity = ""
                     }) {
-                        Text(text = "Clear ingredients")
+                        Text(text = "Clear")
                     }
                 }
 
@@ -269,9 +270,8 @@ fun AddOrEditRecipeScreen(
                     Checkbox(
                         checked = hasRestaurantDetails,
                         onCheckedChange = {
-                            hasRestaurantChecked = it
-                            addRecipeViewModel.onRestaurantCheckChange(hasRestaurantChecked)
-                            shouldShowAddRecipeButton = !hasRestaurantChecked
+                            addRecipeViewModel.onRestaurantCheckChange(it)
+//                            shouldShowAddRecipeButton = !hasRestaurantDetails
                         }
                     )
                     Spacer(modifier = Modifier.size(10.dp).align(Alignment.CenterVertically))
@@ -279,7 +279,7 @@ fun AddOrEditRecipeScreen(
                     Text(text = "Check this box to add famous restaurant details")
                 }
 
-                if (hasRestaurantChecked) {
+                if (hasRestaurantDetails) {
                     Spacer(modifier = Modifier.size(16.dp))
 
                     OutlinedTextField(
@@ -294,36 +294,39 @@ fun AddOrEditRecipeScreen(
                     )
 
                     OutlinedTextField(
-                        value = latitude,
+                        value = location.latitude.toString(),
                         label = {
                             Text(text = "latitude")
                         },
                         onValueChange = {
                             addRecipeViewModel.onLatitudeChange(it)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
                     )
 
                     OutlinedTextField(
-                        value = longitude,
+                        value = location.longitude.toString(),
                         label = {
                             Text(text = "longitude")
                         },
                         onValueChange = {
                             addRecipeViewModel.onLongitudeChange(it)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
                     )
 
                     OutlinedTextField(
-                        value = state,
+                        value = address,
                         label = {
-                            Text(text = "state")
+                            Text(text = "Address")
                         },
                         onValueChange = {
                             addRecipeViewModel.onStateChange(it)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
                     )
 
                     // Show map to select location
@@ -334,7 +337,7 @@ fun AddOrEditRecipeScreen(
                 Button(
                     onClick = {
                         if (addRecipeViewModel.validateRecipeDetails()) {
-                            if (hasRestaurantChecked) {
+                            if (hasRestaurantDetails) {
                                 if (addRecipeViewModel.validateRestaurantDetails()) {
                                     if (actionType == "edit") {
                                         addRecipeViewModel.updateRecipe(recipeId)

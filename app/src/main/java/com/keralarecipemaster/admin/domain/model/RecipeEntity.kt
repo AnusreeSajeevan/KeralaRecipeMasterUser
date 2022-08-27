@@ -16,7 +16,7 @@ data class RecipeEntity(
     val restaurantName: String,
     val restaurantLatitude: String,
     val restaurantLongitude: String,
-    val restaurantState: String,
+    val restaurantAddress: String,
     val preparationMethod: String,
     val mealType: Meal,
     val diet: Diet,

@@ -51,6 +51,7 @@ fun MapAddressPickerView(viewModel: AddRecipeViewModel) {
                     Button(
                         onClick = {
                             viewModel.isMapEditable.value = !viewModel.isMapEditable.value
+                            /*if (viewModel.isMapEditable.value)*/ text = ""
                         }
                     ) {
                         Text(text = if (viewModel.isMapEditable.value) "Edit" else "Save")
@@ -62,6 +63,7 @@ fun MapAddressPickerView(viewModel: AddRecipeViewModel) {
                 currentLocation.value.let {
                     if (viewModel.isMapEditable.value) {
                         text = viewModel.getAddressFromLocation(context)
+                        viewModel.onGetAddressFromLocation(text)
                     }
                     MapViewContainer(viewModel.isMapEditable.value, mapView, viewModel)
                 }

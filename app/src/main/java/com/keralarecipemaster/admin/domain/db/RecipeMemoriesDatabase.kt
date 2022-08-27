@@ -1,7 +1,6 @@
 package com.keralarecipemaster.admin.domain.db
 
 import android.content.Context
-import android.media.Rating
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -51,7 +50,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                     restaurantName = "Thalassery Restaurant",
                     latitude = "latitude",
                     longitude = "longitude",
-                    state = "Kerala",
+                    address = "Kerala",
                     userType = UserType.ADMIN.name
                 )
 
@@ -72,7 +71,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 restaurantName = "Thalassery Restaurant",
                 latitude = "latitude",
                 longitude = "longitude",
-                state = "Kerala",
+                address = "Kerala",
                 userType = UserType.USER.name
             )
         }
@@ -91,7 +90,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             restaurantName: String,
             latitude: String,
             longitude: String,
-            state: String,
+            address: String,
             userType: String
         ) {
             recipeDao.insertRecipe(
@@ -106,7 +105,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                     restaurantName = restaurantName,
                     restaurantLatitude = latitude,
                     restaurantLongitude = longitude,
-                    restaurantState = state,
+                    restaurantAddress = address,
                     mealType = meal,
                     diet = diet,
                     addedBy = userType

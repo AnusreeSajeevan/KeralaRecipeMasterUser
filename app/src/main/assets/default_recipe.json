@@ -12,7 +12,7 @@
       "meal_category": "lunch",
       "restaurant": {
         "name": "Calicut Rahmat",
-        "state": "Kerala",
+        "address": "Kerala",
         "latitude": "12.4",
         "longitude": "34.67"
       }
@@ -29,7 +29,7 @@
       "meal_category": "lunch",
       "restaurant": {
         "name": "Restaurant Chef Pillai",
-        "state": "Kerala",
+        "address": "Kerala",
         "latitude": "12.4",
         "longitude": "34.67"
       }

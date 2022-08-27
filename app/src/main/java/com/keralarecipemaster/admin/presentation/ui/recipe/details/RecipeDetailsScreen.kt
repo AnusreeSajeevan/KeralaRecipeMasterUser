@@ -173,6 +173,12 @@ fun RecipeDetailsScreen(
                     fontWeight = FontWeight.Normal
                 )
             )
+
+            // Restaurant Details
+            Spacer(Modifier.size(16.dp))
+            Text(text = "Famous Restaurant", modifier = Modifier.align(Alignment.CenterHorizontally), style = TextStyle(fontSize = 14.sp))
+            Text(text = recipeEntity.restaurantName)
+            Text(text = recipeEntity.restaurantAddress)
         }
     }
 }

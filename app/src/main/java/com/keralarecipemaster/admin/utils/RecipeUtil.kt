@@ -29,7 +29,7 @@ class RecipeUtil {
                 restaurantName = restaurantName,
                 restaurantLatitude = restaurantLatitude,
                 restaurantLongitude = restaurantLongitude,
-                restaurantState = restaurantState,
+                restaurantAddress = restaurantState,
                 preparationMethod = preparationMethod,
                 mealType = Meal.valueOf(mealType.name),
                 diet = Diet.valueOf(diet.name),

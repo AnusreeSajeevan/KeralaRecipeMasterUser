@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.keralarecipemaster.admin.presentation.ui.RecipeApp
+import com.keralarecipemaster.admin.presentation.ui.recipe.RecipeApp
 import com.keralarecipemaster.admin.presentation.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
