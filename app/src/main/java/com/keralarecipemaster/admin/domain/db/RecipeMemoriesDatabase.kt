@@ -42,20 +42,21 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 ingredients = arrayListOf(
                     Ingredient("carrot", "2"),
                     Ingredient("jira rice", "1 kg"),
-                    Ingredient("salt", "2 tspoon")),
-                    preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-                    imageUrl = "image url",
-                    meal = Meal.LUNCH,
-                    diet = Diet.VEG,
-                    restaurantName = "Thalassery Restaurant",
-                    latitude = "latitude",
-                    longitude = "longitude",
-                    address = "Kerala",
-                    userType = UserType.ADMIN.name
-                )
+                    Ingredient("salt", "2 tspoon")
+                ),
+                preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
+                imageUrl = "image url",
+                meal = Meal.LUNCH,
+                diet = Diet.VEG,
+                restaurantName = "Thalassery Restaurant",
+                latitude = "latitude",
+                longitude = "longitude",
+                address = "Kerala",
+                userType = UserType.ADMIN.name
+            )
 
-                        insertRecipe (
-                        recipeDao,
+            insertRecipe(
+                recipeDao,
                 id = 2,
                 rating = 5,
                 recipeName = "Nirvana",
@@ -63,7 +64,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 ingredients = arrayListOf(
                     Ingredient("fish", "5"),
                     Ingredient("milk", "2 cup"),
-                    Ingredient("pepper", "3 tblspoon")),
+                    Ingredient("pepper", "3 tblspoon")
+                ),
                 preparationMethod = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                 imageUrl = "image url",
                 meal = Meal.DINNER,
