@@ -13,8 +13,7 @@
         android:supportsRtl="true">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCOgvzowaNHKK0wI69viNyPvhyLarFvpck">
-        </meta-data>
+            android:value="AIzaSyCOgvzowaNHKK0wI69viNyPvhyLarFvpck"></meta-data>
         <activity
             android:name="com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity"
             android:exported="false" />

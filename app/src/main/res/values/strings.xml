@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">KeralaRecipeMasterUser</string>
     <string name="login">Login</string>
+    <string name="continue_as_guest">Continue as Guest</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
 </resources>

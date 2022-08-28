@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.keralarecipemaster.user.presentation.viewmodel.AddRecipeViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Constants.Companion.INVALID_RECIPE_ID
@@ -19,8 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RecipeDetailsActivity : ComponentActivity() {
 
-    private val viewModel: RecipeDetailsViewModel by viewModels()
+    private val recipeDetailsViewModel: RecipeDetailsViewModel by viewModels()
     private val addRecipeViewModel: AddRecipeViewModel by viewModels()
+    private val authenticationViewModel: AuthenticationViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
@@ -36,10 +38,11 @@ class RecipeDetailsActivity : ComponentActivity() {
 //                viewModel.getRecipeDetails(recipeId)
             Scaffold(modifier = Modifier.fillMaxWidth()) {
                 RecipeDetailsNavHost(
-                    navController = navController,
-                    recipeDetailsViewModel = viewModel,
                     recipeId = recipeId,
-                    addRecipeViewModel = addRecipeViewModel
+                    recipeDetailsViewModel = recipeDetailsViewModel,
+                    addRecipeViewModel = addRecipeViewModel,
+                    authenticationViewModel = authenticationViewModel,
+                    navController = navController
                 )
             }
         }

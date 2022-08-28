@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.RecipeUtil
@@ -32,9 +33,10 @@ import com.keralarecipemaster.user.utils.UserType
 
 @Composable
 fun RecipeDetailsScreen(
-    navController: NavController,
+    recipeId: Int,
     recipeDetailsViewModel: RecipeDetailsViewModel,
-    recipeId: Int
+    authenticationViewModel: AuthenticationViewModel,
+    navController: NavController
 ) {
     recipeDetailsViewModel.getRecipeDetails(recipeId)
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -65,7 +67,7 @@ fun RecipeDetailsScreen(
                 contentScale = ContentScale.Crop
             )
 
-            if (recipeEntity.addedBy == UserType.ADMIN.name) {
+            if (recipeEntity.addedBy == UserType.USER.name) {
                 IconButton(onClick = {
                     navController.navigate(AddRecipeDestinations.AddRecipeDetails.name)
                 }, modifier = Modifier.align(Alignment.BottomEnd)) {

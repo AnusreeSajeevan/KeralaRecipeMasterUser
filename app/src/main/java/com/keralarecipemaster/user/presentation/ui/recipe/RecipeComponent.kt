@@ -16,20 +16,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.details.RecipeDetailsActivity
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
+import com.keralarecipemaster.user.utils.UserType
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecipeComponent(
     recipe: RecipeEntity,
-    recipeViewModel: RecipeListViewModel,
-    navController: NavController
+    recipeListViewModel: RecipeListViewModel,
+    authenticationViewModel: AuthenticationViewModel
 ) {
     val context = LocalContext.current
     Card(onClick = {
@@ -53,15 +54,18 @@ fun RecipeComponent(
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
-                IconButton(onClick = {
-                    recipeViewModel.deleteRecipe(recipe)
-                }, modifier = Modifier.align(Alignment.BottomEnd)) {
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.ic_delete
-                        ),
-                        contentDescription = null
-                    )
+
+                if (recipe.addedBy == UserType.USER.name) {
+                    IconButton(onClick = {
+                        recipeListViewModel.deleteRecipe(recipe)
+                    }, modifier = Modifier.align(Alignment.BottomEnd)) {
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.ic_delete
+                            ),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 

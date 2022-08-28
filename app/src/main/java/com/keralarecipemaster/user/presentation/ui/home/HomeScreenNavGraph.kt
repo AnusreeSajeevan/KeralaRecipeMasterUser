@@ -8,27 +8,34 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipesScreen
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.UserType
 
 @Composable
-fun RecipeNavHost(viewModel: RecipeListViewModel, navController: NavHostController) {
+fun RecipeNavHost(
+    recipeListViewModel: RecipeListViewModel,
+    authenticationViewModel: AuthenticationViewModel,
+    navController: NavHostController
+) {
     NavHost(navController = navController, startDestination = HomeItems.Famous.name) {
         composable(HomeItems.Famous.name) {
             val context = LocalContext.current
             RecipesScreen(
+                authenticationViewModel = authenticationViewModel,
                 onFabClick =
                 {
                     context.startActivity(Intent(context, AddRecipeActivity::class.java))
                 },
-                recipeViewModel = viewModel,
+                recipeViewModel = recipeListViewModel,
                 userType = UserType.ADMIN,
                 navController = navController
             )
         }
         composable(HomeItems.UserAdded.name) {
             RecipesScreen(
-                recipeViewModel = viewModel,
+                authenticationViewModel = authenticationViewModel,
+                recipeViewModel = recipeListViewModel,
                 userType = UserType.USER,
                 navController = navController
             )

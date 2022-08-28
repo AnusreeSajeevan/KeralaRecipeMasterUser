@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.DietFilter
 import com.keralarecipemaster.user.utils.MealFilter
@@ -25,6 +27,7 @@ import kotlinx.coroutines.launch
 fun RecipesScreen(
     onFabClick: (() -> Unit)? = null,
     recipeViewModel: RecipeListViewModel,
+    authenticationViewModel: AuthenticationViewModel,
     userType: UserType,
     navController: NavController
 ) {
@@ -60,6 +63,15 @@ fun RecipesScreen(
         mealFilterValue.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
     val mealFilter by mealFlowLifeCycleAware.collectAsState(MealFilter.ALL.name)
+
+    val authenticationStateValue = authenticationViewModel.authenticationState
+    val authenticationStateLifeCycleAware = remember(authenticationStateValue, lifeCycleOwner) {
+        authenticationStateValue.flowWithLifecycle(
+            lifecycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        )
+    }
+    val authenticationState by authenticationStateLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
     BackdropScaffold(
         scaffoldState = scaffoldState,
@@ -102,12 +114,14 @@ fun RecipesScreen(
         frontLayerContent = {
             Scaffold(
                 floatingActionButton = {
-                    onFabClick?.let {
-                        FloatingActionButton(
-                            onClick = onFabClick!!,
-                            modifier = Modifier.padding(bottom = 100.dp)
-                        ) {
-                            Icon(Icons.Filled.Add, "")
+                    if (authenticationState == AuthenticationState.AUTHENTICATED) {
+                        onFabClick?.let {
+                            FloatingActionButton(
+                                onClick = onFabClick!!,
+                                modifier = Modifier.padding(bottom = 100.dp)
+                            ) {
+                                Icon(Icons.Filled.Add, "")
+                            }
                         }
                     }
                 }
@@ -143,9 +157,9 @@ fun RecipesScreen(
                     LazyColumn {
                         items(recipesList) { recipe ->
                             RecipeComponent(
-                                recipe,
-                                recipeViewModel,
-                                navController
+                                recipe = recipe,
+                                recipeListViewModel = recipeViewModel,
+                                authenticationViewModel = authenticationViewModel
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                         }
