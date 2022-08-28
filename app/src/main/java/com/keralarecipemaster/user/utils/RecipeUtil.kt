@@ -37,5 +37,27 @@ class RecipeUtil {
                 rating = rating
             )
         }
+
+        fun generateRecipeDetailsToShare(recipe: RecipeEntity): String {
+            var recipeDetails = Constants.EMPTY_STRING
+            recipeDetails = recipe.recipeName + "\n\n"
+            recipeDetails += "Self rating - " + recipe.rating.toString() + "\n"
+            recipeDetails += recipe.diet.type + "\n"
+            recipeDetails += recipe.mealType.type + "\n"
+            recipeDetails += recipe.description + "\n\n"
+            recipeDetails += "Ingredients : " + "\n"
+
+            recipe.ingredients.forEach {
+                recipeDetails += it.name + " - " + it.quantity + "\n"
+            }
+
+            recipeDetails += "\nPreparation Method\n" + recipe.preparationMethod
+            if (recipe.restaurantName != Constants.EMPTY_STRING) {
+                recipeDetails += "\n\nFamous Restaurant"
+                recipeDetails += "\n" + recipe.restaurantName
+                recipeDetails += "\n" + recipe.restaurantAddress
+            }
+            return recipeDetails
+        }
     }
 }

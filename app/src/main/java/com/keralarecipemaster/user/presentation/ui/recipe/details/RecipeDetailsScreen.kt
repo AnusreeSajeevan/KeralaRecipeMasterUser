@@ -1,5 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui.recipe.details
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -38,6 +40,8 @@ fun RecipeDetailsScreen(
     authenticationViewModel: AuthenticationViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current
+
     recipeDetailsViewModel.getRecipeDetails(recipeId)
     val lifecycleOwner = LocalLifecycleOwner.current
     val recipe = recipeDetailsViewModel.recipe
@@ -122,8 +126,27 @@ fun RecipeDetailsScreen(
                         .align(Alignment.CenterVertically)
 
                 )
-            }
 
+                if (recipeEntity.addedBy == UserType.USER.name) {
+                    IconButton(onClick = {
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, RecipeUtil.generateRecipeDetailsToShare(recipeEntity))
+                            type = "text/plain"
+                        }
+
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.ic_share
+                            ),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.size(10.dp))
 
             Text(
@@ -178,7 +201,11 @@ fun RecipeDetailsScreen(
 
             // Restaurant Details
             Spacer(Modifier.size(16.dp))
-            Text(text = "Famous Restaurant", modifier = Modifier.align(Alignment.CenterHorizontally), style = TextStyle(fontSize = 14.sp))
+            Text(
+                text = "Famous Restaurant",
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                style = TextStyle(fontSize = 14.sp)
+            )
             Text(text = recipeEntity.restaurantName)
             Text(text = recipeEntity.restaurantAddress)
         }
