@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KeralaRecipeMasterAdmin</string>
+    <string name="app_name">KeralaRecipeMasterUser</string>
     <string name="login">Login</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
