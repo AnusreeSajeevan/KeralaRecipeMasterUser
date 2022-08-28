@@ -25,7 +25,10 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 
 @Composable
-fun RecipeApp(recipeListViewModel: RecipeListViewModel, authenticationViewModel: AuthenticationViewModel) {
+fun RecipeApp(
+    recipeListViewModel: RecipeListViewModel,
+    authenticationViewModel: AuthenticationViewModel
+) {
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
         val backstackEntry = navController.currentBackStackEntryAsState()
@@ -43,42 +46,42 @@ fun RecipeApp(recipeListViewModel: RecipeListViewModel, authenticationViewModel:
             }
         val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
-        if (authenticationState == AuthenticationState.INITIAL_STATE) {
-            ShowLoginScreen(authenticationViewModel)
-        } else {
-            Scaffold(
-                modifier = Modifier.fillMaxWidth(),
-                bottomBar = {
+//        if (authenticationState == AuthenticationState.INITIAL_STATE) {
+//            ShowLoginScreen(authenticationViewModel)
+//        } else {
+        Scaffold(
+            modifier = Modifier.fillMaxWidth(),
+            bottomBar = {
 
-                    val items = arrayListOf<HomeItems>()
-                    HomeItems.values().forEach {
-                        if (it == HomeItems.UserAdded) {
-                            if (authenticationState == AuthenticationState.AUTHENTICATED) {
-                                items.add(it)
-                            }
-                        } else {
+                val items = arrayListOf<HomeItems>()
+                HomeItems.values().forEach {
+                    if (it == HomeItems.UserAdded) {
+                        if (authenticationState == AuthenticationState.AUTHENTICATED) {
                             items.add(it)
                         }
+                    } else {
+                        items.add(it)
                     }
+                }
 
 
-                    BottomNavigationBar(items = items, onTabSelected = { screen ->
+                BottomNavigationBar(items = items, onTabSelected = { screen ->
 //                    bottomBarOffsetHeightPx.value = 0f
-                        if (screen != currentScreen) {
-                            navController.navigate(screen.name) {
-                                // popUpTo(MainMenuItems.Home.name)
-                                navController.popBackStack()
-                            }
+                    if (screen != currentScreen) {
+                        navController.navigate(screen.name) {
+                            // popUpTo(MainMenuItems.Home.name)
+                            navController.popBackStack()
                         }
-                    }, currentScreen = currentScreen, modifier = Modifier.fillMaxWidth())
+                    }
+                }, currentScreen = currentScreen, modifier = Modifier.fillMaxWidth())
 //                BottomNavigationBar(allScreens, navController)
-                },
-                scaffoldState = scaffoldState
-            ) {
-                RecipeNavHost(recipeListViewModel, authenticationViewModel, navController)
-            }
+            },
+            scaffoldState = scaffoldState
+        ) {
+            RecipeNavHost(recipeListViewModel, authenticationViewModel, navController)
         }
     }
+//    }
 }
 
 @Composable

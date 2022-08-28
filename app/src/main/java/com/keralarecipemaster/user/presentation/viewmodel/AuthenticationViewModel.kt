@@ -19,7 +19,7 @@ class AuthenticationViewModel @Inject constructor(private val prefsStore: PrefsS
         get() = _authenticationState
 
     private val _authenticationState =
-        MutableStateFlow<AuthenticationState>(AuthenticationState.INITIAL_STATE)
+        MutableStateFlow(AuthenticationState.INITIAL_STATE)
 
     init {
         viewModelScope.launch {

@@ -6,8 +6,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity
+import com.keralarecipemaster.user.presentation.ui.authentication.UserProfileScreen
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipesScreen
+import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.UserType
@@ -18,9 +19,9 @@ fun RecipeNavHost(
     authenticationViewModel: AuthenticationViewModel,
     navController: NavHostController
 ) {
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination = HomeItems.Famous.name) {
         composable(HomeItems.Famous.name) {
-            val context = LocalContext.current
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 onFabClick =
@@ -41,6 +42,7 @@ fun RecipeNavHost(
             )
         }
         composable(HomeItems.Account.name) {
+            UserProfileScreen(authenticationViewModel)
         }
     }
 }
