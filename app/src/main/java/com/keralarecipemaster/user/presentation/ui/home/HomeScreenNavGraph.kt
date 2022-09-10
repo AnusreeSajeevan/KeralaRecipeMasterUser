@@ -29,11 +29,11 @@ fun RecipeNavHost(
                     context.startActivity(Intent(context, AddRecipeActivity::class.java))
                 },
                 recipeViewModel = recipeListViewModel,
-                userType = UserType.ADMIN,
+                userType = UserType.RESTAURANT,
                 navController = navController
             )
         }
-        composable(HomeItems.UserAdded.name) {
+        composable(HomeItems.MyRecipes.name) {
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 recipeViewModel = recipeListViewModel,

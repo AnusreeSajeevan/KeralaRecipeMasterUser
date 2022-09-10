@@ -45,7 +45,7 @@ class RecipeUtil {
                 preparationMethod = preparationMethod,
                 mealType = Meal.valueOf(mealType.name),
                 diet = Diet.valueOf(diet.name),
-                addedBy = UserType.ADMIN.name,
+                addedBy = UserType.USER.name,
                 rating = rating
             )
         }

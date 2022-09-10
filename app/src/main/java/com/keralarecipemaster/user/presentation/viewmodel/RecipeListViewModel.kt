@@ -17,13 +17,13 @@ class RecipeListViewModel @Inject constructor(
     val recipeRepository: RecipeRepository,
     application: Application
 ) : AndroidViewModel(application) {
-    private var _defaultRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
+    private var _famousRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     private var _userAddedRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     private val _dietTypeFilter = MutableStateFlow(DietFilter.ALL.name)
     private val _mealTypeFilter = MutableStateFlow(MealFilter.ALL.name)
 
-    val defaultRecipes: StateFlow<List<RecipeEntity>>
-        get() = _defaultRecipes
+    val famousRecipes: StateFlow<List<RecipeEntity>>
+        get() = _famousRecipes
 
     val userAddedRecipes: StateFlow<List<RecipeEntity>>
         get() = _userAddedRecipes
@@ -36,7 +36,7 @@ class RecipeListViewModel @Inject constructor(
 
     init {
 //        fetchAllRecipes()
-        getDefaultRecipes()
+        getRestaurantAddedRecipes()
         getUserAddedeRecipes()
     }
 
@@ -46,9 +46,9 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    fun getDefaultRecipes() {
+    fun getRestaurantAddedRecipes() {
         viewModelScope.launch {
-            recipeRepository.getDefaultRecipes().catch { }.collect { recipes ->
+            recipeRepository.getFamousRecipes().catch { }.collect { recipes ->
                 var list = recipes
                 if (_dietTypeFilter.value != DietFilter.ALL.name) {
                     list = recipes.filter {
@@ -61,7 +61,7 @@ class RecipeListViewModel @Inject constructor(
                         it.mealType.name == _mealTypeFilter.value
                     }
                 }
-                _defaultRecipes.value = list
+                _famousRecipes.value = list
             }
         }
     }
@@ -94,11 +94,11 @@ class RecipeListViewModel @Inject constructor(
 
     fun onQueryChanged(query: String, addedBy: UserType) {
         if (query.isEmpty()) {
-            if (addedBy == UserType.ADMIN) getDefaultRecipes() else getUserAddedeRecipes()
+            if (addedBy == UserType.RESTAURANT) getRestaurantAddedRecipes() else getUserAddedeRecipes()
         } else {
             viewModelScope.launch {
                 recipeRepository.searchResults(query, addedBy).catch { }.collect {
-                    if (addedBy == UserType.ADMIN) _defaultRecipes.value = it
+                    if (addedBy == UserType.RESTAURANT) _famousRecipes.value = it
                     else _userAddedRecipes.value = it
                 }
             }
@@ -107,13 +107,13 @@ class RecipeListViewModel @Inject constructor(
 
     fun onDietFilterChange(diet: String) {
         _dietTypeFilter.value = diet
-        getDefaultRecipes()
+        getRestaurantAddedRecipes()
         getUserAddedeRecipes()
     }
 
     fun onMealFilterChange(meal: String) {
         _mealTypeFilter.value = meal
-        getDefaultRecipes()
+        getRestaurantAddedRecipes()
         getUserAddedeRecipes()
     }
 }

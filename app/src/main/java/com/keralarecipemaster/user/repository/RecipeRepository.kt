@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
     suspend fun fetchAllRecipes()
-    suspend fun getDefaultRecipes(): Flow<List<RecipeEntity>>
+    suspend fun getFamousRecipes(): Flow<List<RecipeEntity>>
     suspend fun getUserAddedRecipes(): Flow<List<RecipeEntity>>
     fun searchResults(querString: String, addedBy: UserType): Flow<List<RecipeEntity>>
     suspend fun addRecipe(recipe: RecipeEntity)

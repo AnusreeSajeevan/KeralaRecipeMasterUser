@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">KeralaRecipeMasterUser</string>
-    <string name="login">Login</string>
+    <string name="login_as_user">Login as User</string>
+    <string name="login_as_restaurant_owner">Login as Restaurant Owner</string>
     <string name="continue_as_guest">Continue as Guest</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="register_user">Register as User</string>
+    <string name="register_restaurant_owner">Register as Restaurant Owner</string>
 </resources>

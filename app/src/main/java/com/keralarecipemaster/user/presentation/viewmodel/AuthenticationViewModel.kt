@@ -29,15 +29,28 @@ class AuthenticationViewModel @Inject constructor(private val prefsStore: PrefsS
         }
     }
 
-    fun login() {
+    fun loginAsUser() {
         viewModelScope.launch {
-            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED.name)
+            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
         }
     }
+
+    fun loginAsRestaurantOwner() {
+        viewModelScope.launch {
+            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+        }
+    }
+
 
     fun continueAsGuestUser() {
         viewModelScope.launch {
             prefsStore.updateAuthenticationState(AuthenticationState.LOGGED_IN_AS_GUEST.name)
+        }
+    }
+
+    fun registerUser() {
+        viewModelScope.launch {
+            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
         }
     }
 }

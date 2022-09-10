@@ -168,7 +168,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                     restaurantLatitude = location.value.latitude.toString(),
                     restaurantLongitude = location.value.longitude.toString(),
                     restaurantName = restaurantName.value,
-                    addedBy = UserType.ADMIN.name,
+                    addedBy = UserType.USER.name,
                     rating = _rating.value
                 )
             )

@@ -31,12 +31,17 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             }
         }
 
-        private suspend fun populateDatabase(recipeDao: RecipeDao) {
+        private suspend fun populateDatabase(
+            recipeDao: RecipeDao
+        ) {
             recipeDao.deleteAll()
+            populateRecipes(recipeDao)
+        }
+
+        private suspend fun populateRecipes(recipeDao: RecipeDao) {
             insertRecipe(
                 recipeDao,
                 id = 1,
-                rating = 2,
                 recipeName = "Vegetable biriyani",
                 description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                 ingredients = arrayListOf(
@@ -48,11 +53,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 imageUrl = "image url",
                 meal = Meal.LUNCH,
                 diet = Diet.VEG,
-                restaurantName = "Thalassery Restaurant",
-                latitude = "latitude",
-                longitude = "longitude",
-                address = "Kerala",
-                userType = UserType.ADMIN.name
+                rating = 2,
+                userType = UserType.USER.name
             )
 
             insertRecipe(
@@ -70,11 +72,11 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 imageUrl = "image url",
                 meal = Meal.DINNER,
                 diet = Diet.NON_VEG,
-                restaurantName = "Thalassery Restaurant",
+                restaurantName = "Restaurant Chef Pillai",
                 latitude = "latitude",
                 longitude = "longitude",
                 address = "Kerala",
-                userType = UserType.USER.name
+                userType = UserType.RESTAURANT.name
             )
         }
 
@@ -89,10 +91,10 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             imageUrl: String,
             meal: Meal,
             diet: Diet,
-            restaurantName: String,
-            latitude: String,
-            longitude: String,
-            address: String,
+            restaurantName: String = Constants.EMPTY_STRING,
+            latitude: String = Constants.EMPTY_STRING,
+            longitude: String = Constants.EMPTY_STRING,
+            address: String = Constants.EMPTY_STRING,
             userType: String
         ) {
             recipeDao.insertRecipe(
@@ -115,6 +117,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             )
         }
     }
+
+
 
     companion object {
         @Volatile

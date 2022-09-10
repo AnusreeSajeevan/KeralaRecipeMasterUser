@@ -32,7 +32,7 @@ fun RecipesScreen(
     navController: NavController
 ) {
     val recipes =
-        if (userType == UserType.ADMIN) recipeViewModel.defaultRecipes else recipeViewModel.userAddedRecipes
+        if (userType == UserType.RESTAURANT) recipeViewModel.famousRecipes else recipeViewModel.userAddedRecipes
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val recipesRecipesFlowLifecycleAware = remember(recipes, lifecycleOwner) {
@@ -114,7 +114,7 @@ fun RecipesScreen(
         frontLayerContent = {
             Scaffold(
                 floatingActionButton = {
-                    if (authenticationState == AuthenticationState.AUTHENTICATED) {
+                    if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
                         onFabClick?.let {
                             FloatingActionButton(
                                 onClick = onFabClick!!,
@@ -153,15 +153,22 @@ fun RecipesScreen(
                     Spacer(modifier = Modifier.size(10.dp))
 
                     Spacer(modifier = Modifier.size(10.dp))
-
                     LazyColumn {
                         items(recipesList) { recipe ->
-                            RecipeComponent(
-                                recipe = recipe,
-                                recipeListViewModel = recipeViewModel,
-                                authenticationViewModel = authenticationViewModel
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
+                            if (userType == UserType.RESTAURANT) {
+                                RestaurantRecipeComponent(
+                                    recipe,
+                                    recipeViewModel,
+                                    navController
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                            } else {
+                                UserRecipeComponent(
+                                    recipe,
+                                    recipeViewModel
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                            }
                         }
                     }
                 }

@@ -1,7 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui.authentication
 
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
@@ -15,14 +14,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
-import com.keralarecipemaster.user.presentation.ui.home.HomeActivity
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 
 @Composable
-fun ShowLoginScreen(authenticationViewModel: AuthenticationViewModel, isFromProfileScreen: Boolean = false) {
-
+fun ShowLoginScreen(
+    authenticationViewModel: AuthenticationViewModel,
+    isFromProfileScreen: Boolean = false,
+    navController: NavController
+) {
     val context = LocalContext.current
     val activity = (context as? Activity)
     val lifeCycleOwner = LocalLifecycleOwner.current
@@ -58,14 +60,26 @@ fun ShowLoginScreen(authenticationViewModel: AuthenticationViewModel, isFromProf
         Spacer(Modifier.size(20.dp))
         Button(
             onClick = {
-                authenticationViewModel.login()
+                authenticationViewModel.loginAsUser()
 //                if (authenticationState != AuthenticationState.INITIAL_STATE) {
-                    activity?.finish()
+                activity?.finish()
 //                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.login))
+            Text(text = stringResource(id = R.string.login_as_user))
+        }
+
+        Button(
+            onClick = {
+                authenticationViewModel.loginAsRestaurantOwner()
+//                if (authenticationState != AuthenticationState.INITIAL_STATE) {
+                activity?.finish()
+//                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(id = R.string.login_as_restaurant_owner))
         }
 
         if (!isFromProfileScreen) {
@@ -78,6 +92,105 @@ fun ShowLoginScreen(authenticationViewModel: AuthenticationViewModel, isFromProf
             ) {
                 Text(text = stringResource(id = R.string.continue_as_guest))
             }
+        }
+
+        Button(
+            onClick = {
+                navController.navigate(AuthenticationDestinations.RegisterUser.name)
+//                activity?.finish()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(id = R.string.register_user))
+        }
+
+        Button(
+            onClick = {
+                navController.navigate(AuthenticationDestinations.RegisterRestaurantOwner.name)
+//                activity?.finish()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(id = R.string.register_restaurant_owner))
+        }
+    }
+}
+
+@Composable
+fun ShowUserRegistrationScreen() {
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+    val name = remember {
+        mutableStateOf("")
+    }
+
+    val userName = remember {
+        mutableStateOf("")
+    }
+
+    val password = remember {
+        mutableStateOf("")
+    }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        OutlinedTextField(value = name.value, onValueChange = {
+            name.value = it
+        }, label = { Text(text = "Name") }, modifier = Modifier.fillMaxWidth())
+
+        OutlinedTextField(value = userName.value, onValueChange = {
+            userName.value = it
+        }, label = { Text(text = "Username") }, modifier = Modifier.fillMaxWidth())
+
+        OutlinedTextField(value = password.value, onValueChange = {
+            password.value = it
+        }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
+
+        Button(onClick = { activity?.finish() }) {
+            Text(text = "Register")
+        }
+    }
+}
+
+@Composable
+fun ShowRestaurantOwnerRegistrationScreen() {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    val restaurantName = remember {
+        mutableStateOf("")
+    }
+
+    val restaurantAddress = remember {
+        mutableStateOf("")
+    }
+
+    val userName = remember {
+        mutableStateOf("")
+    }
+
+    val password = remember {
+        mutableStateOf("")
+    }
+
+    Column {
+        OutlinedTextField(value = restaurantName.value, onValueChange = {
+            restaurantName.value = it
+        }, label = { Text(text = "Name") }, modifier = Modifier.fillMaxWidth())
+
+        OutlinedTextField(value = restaurantAddress.value, onValueChange = {
+            restaurantAddress.value = it
+        }, label = { Text(text = "Restaurant Address") }, modifier = Modifier.fillMaxWidth())
+
+        OutlinedTextField(value = userName.value, onValueChange = {
+            userName.value = it
+        }, label = { Text(text = "Username") }, modifier = Modifier.fillMaxWidth())
+
+        OutlinedTextField(value = password.value, onValueChange = {
+            password.value = it
+        }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
+
+        Button(onClick = { activity?.finish() }) {
+            Text(text = "Register")
         }
     }
 }

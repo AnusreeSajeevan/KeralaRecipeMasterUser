@@ -17,7 +17,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
-import com.keralarecipemaster.user.presentation.ui.authentication.ShowLoginScreen
 import com.keralarecipemaster.user.presentation.ui.home.HomeItems
 import com.keralarecipemaster.user.presentation.ui.home.RecipeNavHost
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
@@ -52,18 +51,16 @@ fun RecipeApp(
         Scaffold(
             modifier = Modifier.fillMaxWidth(),
             bottomBar = {
-
                 val items = arrayListOf<HomeItems>()
                 HomeItems.values().forEach {
-                    if (it == HomeItems.UserAdded) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED) {
+                    if (it == HomeItems.MyRecipes) {
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
                             items.add(it)
                         }
                     } else {
                         items.add(it)
                     }
                 }
-
 
                 BottomNavigationBar(items = items, onTabSelected = { screen ->
 //                    bottomBarOffsetHeightPx.value = 0f

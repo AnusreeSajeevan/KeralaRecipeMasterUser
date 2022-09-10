@@ -13,7 +13,7 @@ enum class HomeItems(
         icon = Icons.Outlined.Home,
         selectedIcon = Icons.Filled.Home
     ),
-    UserAdded(
+    MyRecipes(
         icon = Icons.Outlined.Menu,
         selectedIcon = Icons.Filled.Menu
     ),
@@ -26,7 +26,7 @@ enum class HomeItems(
         fun fromRoute(route: String?): HomeItems =
             when (route?.substringBefore("/")) {
                 Famous.name -> Famous
-                UserAdded.name -> UserAdded
+                MyRecipes.name -> MyRecipes
                 Account.name -> Account
                 null -> Famous
                 else -> throw IllegalArgumentException("Route $route is not recognized.")

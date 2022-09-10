@@ -19,12 +19,17 @@ fun AuthenticationNavHost(
         composable(AuthenticationDestinations.Login.name) {
             ShowLoginScreen(
                 authenticationViewModel = authenticationViewModel,
-                isFromProfileScreen = isFromProfileScreen
+                isFromProfileScreen = isFromProfileScreen,
+                navController = navController
             )
         }
 
-        composable(AuthenticationDestinations.Register.name) {
+        composable(AuthenticationDestinations.RegisterUser.name) {
+            ShowUserRegistrationScreen()
+        }
 
+        composable(AuthenticationDestinations.RegisterRestaurantOwner.name) {
+            ShowRestaurantOwnerRegistrationScreen()
         }
     }
 }

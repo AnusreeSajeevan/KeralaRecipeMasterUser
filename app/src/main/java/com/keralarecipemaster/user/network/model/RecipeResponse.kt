@@ -3,6 +3,7 @@ package com.keralarecipemaster.user.network.model
 import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.Restaurant
+import com.keralarecipemaster.user.utils.UserType
 
 data class RecipeResponse(
     val id: Int,
@@ -26,5 +27,7 @@ data class RecipeResponse(
 
     val diet: String,
 
-    val rating: Int
+    val rating: Int,
+
+    val addedBy: UserType
 )

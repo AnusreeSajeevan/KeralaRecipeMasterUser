@@ -27,7 +27,7 @@ class RecipeRepositoryImpl @Inject constructor(
         withContext(ioDispatcher) {
             try {
                 val recipes: RecipeResponseWrapper = recipeApi.fetchRecipes()
-                recipeDtoMapper.toRecipeEntityList(recipes.defaultRecipes).forEach {
+                recipeDtoMapper.toRecipeEntityList(recipes.famousRecipes).forEach {
                     recipeDao.insertRecipe(recipe = it)
                 }
             } catch (exception: Exception) {
@@ -35,8 +35,8 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDefaultRecipes(): Flow<List<RecipeEntity>> {
-        return recipeDao.getAllDefaultRecipes()
+    override suspend fun getFamousRecipes(): Flow<List<RecipeEntity>> {
+        return recipeDao.getAllFamousRecipes()
     }
 
     override suspend fun getUserAddedRecipes(): Flow<List<RecipeEntity>> {
