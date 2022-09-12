@@ -85,7 +85,7 @@ fun RecipeDetailsScreen(
                 contentScale = ContentScale.Crop
             )
 
-            if (recipeEntity.addedBy == UserType.USER.name) {
+            if (recipeEntity.addedBy == UserType.USER) {
                 IconButton(onClick = {
                     navController.navigate(AddRecipeDestinations.AddRecipeDetails.name)
                 }, modifier = Modifier.align(Alignment.BottomEnd)) {
@@ -141,7 +141,7 @@ fun RecipeDetailsScreen(
 
                 )
 
-                if (recipeEntity.addedBy == UserType.USER.name) {
+                if (recipeEntity.addedBy == UserType.USER) {
                     IconButton(onClick = {
                         val name = createPdf(
                             context,

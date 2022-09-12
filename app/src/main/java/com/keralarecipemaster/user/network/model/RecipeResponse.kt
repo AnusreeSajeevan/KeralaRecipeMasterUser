@@ -6,6 +6,7 @@ import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.utils.UserType
 
 data class RecipeResponse(
+    @SerializedName("recipe_id")
     val id: Int,
 
     @SerializedName("recipe_name")
@@ -17,17 +18,19 @@ data class RecipeResponse(
 
     val image: String? = null,
 
-    val restaurant: Restaurant,
+    val restaurant: Restaurant?,
 
     @SerializedName("preparation_method")
     val preparationMethod: String,
 
-    @SerializedName("meal_type")
+    @SerializedName("meal_category")
     val mealType: String,
 
+    @SerializedName("diet_category")
     val diet: String,
 
     val rating: Int,
 
-    val addedBy: UserType
+    @SerializedName("added_by")
+    val addedBy: String
 )

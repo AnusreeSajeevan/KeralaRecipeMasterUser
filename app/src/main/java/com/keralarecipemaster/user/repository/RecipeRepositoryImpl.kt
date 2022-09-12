@@ -27,7 +27,7 @@ class RecipeRepositoryImpl @Inject constructor(
         withContext(ioDispatcher) {
             try {
                 val recipes: RecipeResponseWrapper = recipeApi.fetchRecipes()
-                recipeDtoMapper.toRecipeEntityList(recipes.famousRecipes).forEach {
+                recipeDtoMapper.toRecipeEntityList(recipes.recipes).forEach {
                     recipeDao.insertRecipe(recipe = it)
                 }
             } catch (exception: Exception) {

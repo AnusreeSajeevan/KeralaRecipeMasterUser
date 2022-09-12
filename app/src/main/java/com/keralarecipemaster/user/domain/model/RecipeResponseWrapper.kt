@@ -5,5 +5,5 @@ import com.keralarecipemaster.user.network.model.RecipeResponse
 
 data class RecipeResponseWrapper(
     @SerializedName("recipes")
-    val famousRecipes: List<RecipeResponse>
+    val recipes: List<RecipeResponse>
 )

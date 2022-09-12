@@ -24,11 +24,11 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
     class RecipeDatabaseCallback(private val scope: CoroutineScope) : Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            INSTANCE?.let { database ->
+           /* INSTANCE?.let { database ->
                 scope.launch {
                     populateDatabase(database.getRecipeDao())
                 }
-            }
+            }*/
         }
 
         private suspend fun populateDatabase(
@@ -54,7 +54,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 meal = Meal.LUNCH,
                 diet = Diet.VEG,
                 rating = 2,
-                userType = UserType.USER.name
+                userType = UserType.USER
             )
 
             insertRecipe(
@@ -76,7 +76,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 latitude = "latitude",
                 longitude = "longitude",
                 address = "Kerala",
-                userType = UserType.RESTAURANT.name
+                userType = UserType.RESTAURANT
             )
         }
 
@@ -95,7 +95,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             latitude: String = Constants.EMPTY_STRING,
             longitude: String = Constants.EMPTY_STRING,
             address: String = Constants.EMPTY_STRING,
-            userType: String
+            userType: UserType
         ) {
             recipeDao.insertRecipe(
                 RecipeEntity(

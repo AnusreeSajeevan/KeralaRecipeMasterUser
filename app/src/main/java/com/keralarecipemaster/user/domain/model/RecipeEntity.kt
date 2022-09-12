@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
+import com.keralarecipemaster.user.utils.UserType
 
 @Entity(tableName = "recipe")
 data class RecipeEntity(
@@ -20,6 +21,6 @@ data class RecipeEntity(
     val preparationMethod: String,
     val mealType: Meal,
     val diet: Diet,
-    val addedBy: String,
+    val addedBy: UserType,
     val rating: Int
 )

@@ -1,8 +1,10 @@
 package com.keralarecipemaster.user.network.model
 
+import androidx.compose.ui.text.toUpperCase
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.domain.model.util.DomainMapper
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
@@ -17,14 +19,14 @@ class RecipeDtoMapper @Inject constructor() :
             description = entity.description,
             ingredients = entity.ingredients,
             image = entity.image,
-            restaurantName = entity.restaurant.name,
-            restaurantLatitude = entity.restaurant.latitude,
-            restaurantLongitude = entity.restaurant.longitude,
-            restaurantAddress = entity.restaurant.address,
+            restaurantName = entity.restaurant?.name ?: Constants.EMPTY_STRING,
+            restaurantLatitude = entity.restaurant?.latitude ?: Constants.EMPTY_STRING,
+            restaurantLongitude = entity.restaurant?.longitude ?: Constants.EMPTY_STRING,
+            restaurantAddress = entity.restaurant?.address ?: Constants.EMPTY_STRING,
             preparationMethod = entity.preparationMethod,
-            mealType = Meal.valueOf(entity.mealType),
-            diet = Diet.valueOf(entity.diet),
-            addedBy = entity.addedBy.name,
+            mealType = Meal.valueOf(entity.mealType.toUpperCase()),
+            diet = Diet.valueOf(entity.diet.toUpperCase()),
+            addedBy = UserType.valueOf(entity.addedBy.toUpperCase()),
             rating = entity.rating
         )
     }
@@ -46,7 +48,7 @@ class RecipeDtoMapper @Inject constructor() :
             mealType = domainModel.mealType.name,
             diet = domainModel.diet.name,
             rating = domainModel.rating,
-            addedBy = UserType.valueOf(domainModel.addedBy)
+            addedBy = domainModel.addedBy.name
         )
     }
 

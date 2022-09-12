@@ -54,7 +54,7 @@ fun UserRecipeComponent(
                     contentScale = ContentScale.Crop
                 )
 
-                if (recipe.addedBy == UserType.USER.name) {
+                if (recipe.addedBy == UserType.USER) {
                     IconButton(onClick = {
                         recipeListViewModel.deleteRecipe(recipe)
                     }, modifier = Modifier.align(Alignment.BottomEnd)) {

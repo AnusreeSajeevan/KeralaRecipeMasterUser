@@ -35,7 +35,7 @@ class RecipeListViewModel @Inject constructor(
         get() = _mealTypeFilter
 
     init {
-//        fetchAllRecipes()
+        fetchAllRecipes()
         getRestaurantAddedRecipes()
         getUserAddedeRecipes()
     }

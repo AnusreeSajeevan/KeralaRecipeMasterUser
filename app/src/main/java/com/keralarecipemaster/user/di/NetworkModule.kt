@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private val BASE_URL = "https://food2fork.ca/api/recipe/"
+    private const val BASE_URL = "http://192.168.29.176:3002/"
 
     @Singleton
     @Provides

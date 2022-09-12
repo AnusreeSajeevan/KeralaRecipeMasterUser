@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface RecipeApi {
     @GET("/recipes")
-    fun fetchRecipes(): RecipeResponseWrapper
+    suspend fun fetchRecipes(): RecipeResponseWrapper
 }

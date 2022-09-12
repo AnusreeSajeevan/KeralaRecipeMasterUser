@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.CountDownTimer
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
@@ -168,7 +169,7 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
                     restaurantLatitude = location.value.latitude.toString(),
                     restaurantLongitude = location.value.longitude.toString(),
                     restaurantName = restaurantName.value,
-                    addedBy = UserType.USER.name,
+                    addedBy = UserType.valueOf(UserType.USER.name),
                     rating = _rating.value
                 )
             )
