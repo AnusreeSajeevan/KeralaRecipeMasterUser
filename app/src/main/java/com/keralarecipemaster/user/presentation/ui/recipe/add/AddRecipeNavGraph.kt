@@ -5,10 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.keralarecipemaster.user.presentation.viewmodel.AddRecipeViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 
 @Composable
 fun AddOrEditRecipeNavHost(
     addRecipeViewModel: AddRecipeViewModel,
+    authenticationViewModel: AuthenticationViewModel,
     navController: NavHostController
 ) {
     NavHost(
@@ -19,6 +21,7 @@ fun AddOrEditRecipeNavHost(
             AddOrEditRecipeScreen(
                 navController = navController,
                 addRecipeViewModel = addRecipeViewModel,
+                authenticationViewModel = authenticationViewModel,
                 actionType = "add"
             )
         }

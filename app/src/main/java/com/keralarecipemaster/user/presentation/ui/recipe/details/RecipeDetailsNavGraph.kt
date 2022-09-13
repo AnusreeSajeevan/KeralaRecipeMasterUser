@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddOrEditRecipeScreen
+import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
 import com.keralarecipemaster.user.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
@@ -32,7 +32,13 @@ fun RecipeDetailsNavHost(
         }
 
         composable(AddRecipeDestinations.AddRecipeDetails.name) {
-            AddOrEditRecipeScreen(addRecipeViewModel = addRecipeViewModel, navController = navController, actionType = "edit", recipeId = recipeId)
+            AddOrEditRecipeScreen(
+                addRecipeViewModel = addRecipeViewModel,
+                authenticationViewModel = authenticationViewModel,
+                navController = navController,
+                actionType = "edit",
+                recipeId = recipeId
+            )
         }
     }
 }

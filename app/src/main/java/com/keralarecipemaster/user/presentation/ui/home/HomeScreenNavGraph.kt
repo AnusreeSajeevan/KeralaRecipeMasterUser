@@ -37,6 +37,10 @@ fun RecipeNavHost(
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 recipeViewModel = recipeListViewModel,
+                onFabClick =
+                {
+                    context.startActivity(Intent(context, AddRecipeActivity::class.java))
+                },
                 userType = UserType.USER,
                 navController = navController
             )

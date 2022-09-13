@@ -11,12 +11,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.keralarecipemaster.user.presentation.viewmodel.AddRecipeViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddRecipeActivity : ComponentActivity() {
 
     private val viewModel: AddRecipeViewModel by viewModels()
+    private val authenticationViewModel: AuthenticationViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +27,7 @@ class AddRecipeActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             Scaffold(modifier = Modifier.fillMaxWidth()) {
-                AddOrEditRecipeNavHost(addRecipeViewModel = viewModel, navController)
+                AddOrEditRecipeNavHost(addRecipeViewModel = viewModel, navController = navController, authenticationViewModel = authenticationViewModel)
             }
         }
     }

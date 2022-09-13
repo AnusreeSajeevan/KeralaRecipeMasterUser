@@ -114,7 +114,8 @@ fun RecipesScreen(
         frontLayerContent = {
             Scaffold(
                 floatingActionButton = {
-                    if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                    if ((authenticationState == AuthenticationState.AUTHENTICATED_USER && userType == UserType.USER) ||
+                        authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER && userType == UserType.RESTAURANT) {
                         onFabClick?.let {
                             FloatingActionButton(
                                 onClick = onFabClick!!,
