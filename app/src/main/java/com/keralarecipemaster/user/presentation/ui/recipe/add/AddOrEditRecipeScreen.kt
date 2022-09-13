@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.location.MapAddressPickerView
@@ -165,7 +166,11 @@ fun AddOrEditRecipeScreen(
         mutableStateOf("")
     }
 
-    var imageUri = remember {
+    var hasImage by remember {
+        mutableStateOf(false)
+    }
+
+    var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
 
@@ -173,7 +178,8 @@ fun AddOrEditRecipeScreen(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             uri?.let {
-                imageUri.value = it
+                hasImage = it != null
+                imageUri = it
             }
         }
     )
@@ -187,16 +193,27 @@ fun AddOrEditRecipeScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Box {
-                    Image(
-                        painter = painterResource(
-                            id = R.drawable.recipe_place_holder
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (hasImage && imageUri != null) {
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = "Selected recipe image",
+                            modifier = Modifier
+                                .height(150.dp)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.recipe_place_holder
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(150.dp)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                     IconButton(onClick = {
                         imagePicker.launch("image/*")
                     }) {
