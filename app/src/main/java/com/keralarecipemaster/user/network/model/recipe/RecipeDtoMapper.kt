@@ -1,6 +1,5 @@
-package com.keralarecipemaster.user.network.model
+package com.keralarecipemaster.user.network.model.recipe
 
-import androidx.compose.ui.text.toUpperCase
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.domain.model.util.DomainMapper

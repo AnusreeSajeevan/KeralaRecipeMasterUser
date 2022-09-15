@@ -1,5 +1,7 @@
 package com.keralarecipemaster.user.di
 
+import com.keralarecipemaster.user.repository.AuthenticationRepository
+import com.keralarecipemaster.user.repository.AuthenticationRepositoryImpl
 import com.keralarecipemaster.user.repository.RecipeRepository
 import com.keralarecipemaster.user.repository.RecipeRepositoryImpl
 import dagger.Binds
@@ -9,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class RecipeRepositoryModule {
+abstract class AuthenticationRepositoryModule {
     @Binds
-    abstract fun provideRecipeRepository(repository: RecipeRepositoryImpl): RecipeRepository
+    abstract fun provideAuthenticationRepository(repository: AuthenticationRepositoryImpl): AuthenticationRepository
 }

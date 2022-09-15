@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.di
 
-import com.keralarecipemaster.user.network.RecipeApi
+import com.keralarecipemaster.user.network.service.AuthenticationApi
+import com.keralarecipemaster.user.network.service.RecipeApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val BASE_URL = "http://192.168.29.176:3002/"
+    private const val BASE_URL = "http://192.168.18.77:3003/"
 
     @Singleton
     @Provides
@@ -43,8 +44,13 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTravelService(retrofit: Retrofit): RecipeApi =
+    fun provideRecipeService(retrofit: Retrofit): RecipeApi =
         retrofit.create(RecipeApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAuthenticationService(retrofit: Retrofit): AuthenticationApi =
+        retrofit.create(AuthenticationApi::class.java)
 }
 
 

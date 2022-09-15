@@ -5,8 +5,8 @@ import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeResponseWrapper
-import com.keralarecipemaster.user.network.RecipeApi
-import com.keralarecipemaster.user.network.model.RecipeDtoMapper
+import com.keralarecipemaster.user.network.service.RecipeApi
+import com.keralarecipemaster.user.network.model.recipe.RecipeDtoMapper
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType

@@ -1,4 +1,4 @@
-package com.keralarecipemaster.user.network.model
+package com.keralarecipemaster.user.network.model.recipe
 
 import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.user.domain.model.Ingredient

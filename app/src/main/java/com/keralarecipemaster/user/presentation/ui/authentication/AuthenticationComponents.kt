@@ -1,6 +1,8 @@
 package com.keralarecipemaster.user.presentation.ui.authentication
 
 import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
@@ -12,15 +14,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.presentation.ui.home.HomeActivity
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.utils.Constants
 
 @Composable
-fun ShowLoginScreen(
+fun LoginScreen(
     authenticationViewModel: AuthenticationViewModel,
     isFromProfileScreen: Boolean = false,
     navController: NavController
@@ -28,11 +33,11 @@ fun ShowLoginScreen(
     val context = LocalContext.current
     val activity = (context as? Activity)
     val lifeCycleOwner = LocalLifecycleOwner.current
-    val username = remember {
-        mutableStateOf("")
+    var username by remember {
+        mutableStateOf(Constants.EMPTY_STRING)
     }
-    val password = remember {
-        mutableStateOf("")
+    var password by remember {
+        mutableStateOf(Constants.EMPTY_STRING)
     }
 
     val authenticationStateValue = authenticationViewModel.authenticationState
@@ -45,24 +50,33 @@ fun ShowLoginScreen(
         }
     val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
+   /* if (authenticationState != AuthenticationState.INITIAL_STATE) {
+        context.startActivity(Intent(context, HomeActivity::class.java))
+        activity?.finish()
+    }*/
     Column(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = CenterHorizontally
     ) {
-        OutlinedTextField(value = username.value, onValueChange = {
-            username.value = it
-        }, label = { Text(text = "Username") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = username, onValueChange = {
+            username = it
+        }, label = { Text(text = "Username*") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = password.value, onValueChange = {
-            password.value = it
-        }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = password, onValueChange = {
+            password = it
+        }, label = { Text(text = "Password*") }, modifier = Modifier.fillMaxWidth())
 
         Spacer(Modifier.size(20.dp))
         Button(
             onClick = {
-                authenticationViewModel.loginAsUser()
+                if (isAllFieldsValid(username = username, password = password)) {
+                    authenticationViewModel.loginAsUser(username = username, password = password)
+                } else {
+                    Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
+                }
+
 //                if (authenticationState != AuthenticationState.INITIAL_STATE) {
-                activity?.finish()
+//                activity?.finish()
 //                }
             },
             modifier = Modifier.fillMaxWidth()
@@ -114,6 +128,10 @@ fun ShowLoginScreen(
             Text(text = stringResource(id = R.string.register_restaurant_owner))
         }
     }
+}
+
+fun isAllFieldsValid(username: String, password: String): Boolean {
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty()
 }
 
 @Composable

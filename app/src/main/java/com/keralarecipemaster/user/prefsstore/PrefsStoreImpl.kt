@@ -6,9 +6,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Context) : PrefsStore {
@@ -23,15 +21,18 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
 
     private val dataStore = context.createDataStore(name = RECIPE_DATA_STORE)
 
-    override fun getAuthenticationState(): Flow<String> {
-        return dataStore.data.catch { exception ->
-            if (exception is Exception) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
+    override suspend fun getAuthenticationState(): Flow<String> {
+//        return dataStore.data.
+        return flow {
+            dataStore.data.catch { exception ->
+                if (exception is Exception) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.collect {
+               emit(it[PreferencesKeys.AUTHENTICATION_STATE] ?: AuthenticationState.INITIAL_STATE.name)
             }
-        }.map {
-            it[PreferencesKeys.AUTHENTICATION_STATE] ?: AuthenticationState.INITIAL_STATE.name
         }
     }
 

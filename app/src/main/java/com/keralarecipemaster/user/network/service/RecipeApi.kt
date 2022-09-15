@@ -1,4 +1,4 @@
-package com.keralarecipemaster.user.network
+package com.keralarecipemaster.user.network.service
 
 import com.keralarecipemaster.user.domain.model.RecipeResponseWrapper
 import retrofit2.http.GET

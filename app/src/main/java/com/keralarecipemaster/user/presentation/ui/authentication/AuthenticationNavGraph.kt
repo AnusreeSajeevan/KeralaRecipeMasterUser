@@ -17,7 +17,7 @@ fun AuthenticationNavHost(
         startDestination = AuthenticationDestinations.Login.name
     ) {
         composable(AuthenticationDestinations.Login.name) {
-            ShowLoginScreen(
+            LoginScreen(
                 authenticationViewModel = authenticationViewModel,
                 isFromProfileScreen = isFromProfileScreen,
                 navController = navController

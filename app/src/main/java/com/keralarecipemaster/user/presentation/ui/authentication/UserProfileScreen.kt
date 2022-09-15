@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.presentation.ui.authentication
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.compose.material.Button
@@ -33,7 +34,6 @@ fun UserProfileScreen(authenticationViewModel: AuthenticationViewModel) {
         }
     val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
-
     if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
         Button(onClick = {
             val intent = Intent(activity, AuthenticationActivity::class.java)
@@ -44,5 +44,25 @@ fun UserProfileScreen(authenticationViewModel: AuthenticationViewModel) {
         }) {
             Text(text = "Login")
         }
+    } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+        Button(onClick = {
+            logout(
+                authenticationViewModel = authenticationViewModel,
+                activity = activity,
+                context = context
+            )
+        }) {
+            Text(text = "Logout")
+        }
     }
+}
+
+fun logout(
+    authenticationViewModel: AuthenticationViewModel,
+    activity: Activity?,
+    context: Context
+) {
+    authenticationViewModel.logout()
+    activity?.finish()
+    context.startActivity(Intent(context, AuthenticationActivity::class.java))
 }
