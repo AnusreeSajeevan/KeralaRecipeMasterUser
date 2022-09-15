@@ -11,4 +11,10 @@ interface AuthenticationApi {
         @Query("username") username: String,
         @Query("password") password: String
     ): Response<LoginResponse>
+
+    @POST("/login-user")
+    suspend fun loginRestaurantOwner(
+        @Query("username") username: String,
+        @Query("password") password: String
+    ): Response<LoginResponse>
 }

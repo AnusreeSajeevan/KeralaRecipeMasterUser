@@ -24,8 +24,14 @@ class AuthenticationRepositoryImpl @Inject constructor(
         return flow { emit(result.isSuccessful) }
     }
 
-    override suspend fun loginAsRestaurantOwner() {
-        TODO("Not yet implemented")
+    override suspend fun loginAsRestaurantOwner(username: String, password: String) : Flow<Boolean>{
+        val result = authenticationApi.loginRestaurantOwner(username = username, password = password)
+        withContext(ioDispatcher) {
+            launch {
+                prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+            }
+        }
+        return flow { emit(result.isSuccessful) }
     }
 
     override suspend fun registerUser() {

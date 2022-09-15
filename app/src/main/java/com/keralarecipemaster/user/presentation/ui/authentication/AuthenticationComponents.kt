@@ -1,7 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui.authentication
 
 import android.app.Activity
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -14,13 +13,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
-import com.keralarecipemaster.user.presentation.ui.home.HomeActivity
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.utils.Constants
 
@@ -50,10 +47,10 @@ fun LoginScreen(
         }
     val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
-   /* if (authenticationState != AuthenticationState.INITIAL_STATE) {
-        context.startActivity(Intent(context, HomeActivity::class.java))
-        activity?.finish()
-    }*/
+    /* if (authenticationState != AuthenticationState.INITIAL_STATE) {
+         context.startActivity(Intent(context, HomeActivity::class.java))
+         activity?.finish()
+     }*/
     Column(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = CenterHorizontally
@@ -86,10 +83,15 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                authenticationViewModel.loginAsRestaurantOwner()
-//                if (authenticationState != AuthenticationState.INITIAL_STATE) {
-                activity?.finish()
-//                }
+                if (isAllFieldsValid(username = username, password = password)) {
+                    authenticationViewModel.loginAsRestaurantOwner(
+                        username = username,
+                        password = password
+                    )
+                } else {
+                    Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
+                }
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {

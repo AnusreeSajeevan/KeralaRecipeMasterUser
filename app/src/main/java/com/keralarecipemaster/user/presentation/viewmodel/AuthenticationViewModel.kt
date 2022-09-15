@@ -41,7 +41,7 @@ class AuthenticationViewModel @Inject constructor(
                     .catch {
                         Log.d("CheckResponse", "catch")
                     }.collect {
-                       if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
+                        if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
                     }
 
                 // prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
@@ -49,9 +49,16 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun loginAsRestaurantOwner() {
-        viewModelScope.launch {
-            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+    fun loginAsRestaurantOwner(username: String, password: String) {
+        if (username.trim().isNotEmpty() && password.trim().isNotEmpty()) {
+            viewModelScope.launch {
+                authenticationRepository.loginAsRestaurantOwner(
+                    username = username,
+                    password = password
+                ).catch { }.collect {
+                    if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                }
+            }
         }
     }
 
