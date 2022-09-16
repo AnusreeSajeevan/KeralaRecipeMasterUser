@@ -12,7 +12,7 @@ interface RecipeRequestsDao {
     @Query("DELETE from recipe_requests")
     fun deleteAll()
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipeRequest(recipeRequest: RecipeRequestEntity)
 
     @Delete

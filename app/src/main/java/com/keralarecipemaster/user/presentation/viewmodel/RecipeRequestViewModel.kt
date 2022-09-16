@@ -47,17 +47,6 @@ class RecipeRequestViewModel @Inject constructor(
         viewModelScope.launch {
             recipeRequestRepository.getAllRecipeRequests().catch { }.collect { recipeRequests ->
                 var list = recipeRequests
-                if (_dietTypeFilter.value != DietFilter.ALL.name) {
-                    list = recipeRequests.filter {
-                        it.diet.name == _dietTypeFilter.value
-                    }
-                }
-
-                if (_mealTypeFilter.value != MealFilter.ALL.name) {
-                    list = list.filter {
-                        it.mealType.name == _mealTypeFilter.value
-                    }
-                }
                 _recipeRequests.value = list
             }
         }
