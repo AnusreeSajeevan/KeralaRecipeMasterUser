@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
+import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -179,20 +180,20 @@ class RecipeUtil {
             // the first parameter is our text, second parameter
             // is position from start, third parameter is position from top
             // and then we are passing our variable of paint which is title.
-            canvas.drawText(recipe.recipeName+"\n", 209F, getY(), title)
+            canvas.drawText(recipe.recipeName + "\n", 209F, getY(), title)
             canvas.drawText(recipe.description, 209F, getY(), title)
             canvas.drawText("Self rating - " + recipe.rating.toString(), 209F, getY(), title)
             canvas.drawText(recipe.diet.type, 209F, getY(), title)
-            canvas.drawText(recipe.mealType.type+"\n", 209F, getY(), title)
+            canvas.drawText(recipe.mealType.type + "\n", 209F, getY(), title)
             recipe.ingredients.forEach {
                 canvas.drawText(it.name + " - " + it.quantity, 209F, getY(), title)
             }
 
             canvas.drawText("\nPreparation Method", 209F, getY(), title)
-            canvas.drawText(recipe.preparationMethod+"\n", 209F, getY(), title)
+            canvas.drawText(recipe.preparationMethod + "\n", 209F, getY(), title)
 
             canvas.drawText("\nFamous Restaurant", 209F, getY(), title)
-            canvas.drawText(recipe.restaurantName+"\n", 209F, getY(), title)
+            canvas.drawText(recipe.restaurantName + "\n", 209F, getY(), title)
             canvas.drawText(recipe.restaurantAddress, 209F, getY(), title)
             // similarly we are creating another text and in this
             // we are aligning this text to center of our PDF file.
@@ -254,7 +255,37 @@ class RecipeUtil {
             startY += 10F
             return startY
         }
+
+        fun provideRecipeRequest(
+            id: Int = 0,
+            recipeName: String = "",
+            description: String = "",
+            ingredients: List<Ingredient> = listOf(),
+            image: String? = null,
+            restaurantName: String = "",
+            restaurantLatitude: String = "",
+            restaurantLongitude: String = "",
+            restaurantState: String = "",
+            preparationMethod: String = "",
+            mealType: Meal = Meal.DINNER,
+            diet: Diet = Diet.VEG,
+            rating: Int = 0
+        ): RecipeRequestEntity {
+            return RecipeRequestEntity(
+                requestId = id,
+                recipeName = recipeName,
+                description = description,
+                ingredients = ingredients,
+                image = image,
+                restaurantName = restaurantName,
+                restaurantLatitude = restaurantLatitude,
+                restaurantLongitude = restaurantLongitude,
+                restaurantAddress = restaurantState,
+                preparationMethod = preparationMethod,
+                mealType = Meal.valueOf(mealType.name),
+                diet = Diet.valueOf(diet.name),
+                rating = rating
+            )
+        }
     }
-
-
 }

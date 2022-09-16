@@ -3,6 +3,7 @@ package com.keralarecipemaster.user.di
 import android.content.Context
 import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.domain.db.RecipeMemoriesDatabase
+import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +20,11 @@ class DatabaseModule {
     @Provides
     fun provideRecipeDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): RecipeDao {
         return recipeMemoriesDatabase.getRecipeDao()
+    }
+
+    @Provides
+    fun provideRecipeRequestDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): RecipeRequestsDao {
+        return recipeMemoriesDatabase.getRecipeRequestDao()
     }
 
     @Provides

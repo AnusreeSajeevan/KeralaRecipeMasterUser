@@ -22,11 +22,13 @@ import com.keralarecipemaster.user.presentation.ui.home.RecipeNavHost
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 
 @Composable
 fun RecipeApp(
     recipeListViewModel: RecipeListViewModel,
-    authenticationViewModel: AuthenticationViewModel
+    authenticationViewModel: AuthenticationViewModel,
+    recipeRequestViewModel: RecipeRequestViewModel
 ) {
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
@@ -54,7 +56,11 @@ fun RecipeApp(
                 val items = arrayListOf<HomeItems>()
                 HomeItems.values().forEach {
                     if (it == HomeItems.MyRecipes) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+                            items.add(it)
+                        }
+                    } else if (it == HomeItems.MyRequests) {
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
                             items.add(it)
                         }
                     } else {
@@ -75,7 +81,13 @@ fun RecipeApp(
             },
             scaffoldState = scaffoldState
         ) {
-            RecipeNavHost(recipeListViewModel, authenticationViewModel, navController)
+            RecipeNavHost(
+                recipeListViewModel = recipeListViewModel,
+                authenticationViewModel = authenticationViewModel,
+                recipeRequestViewModel = recipeRequestViewModel,
+                navController = navController,
+                authenticationState = authenticationState
+            )
         }
     }
 //    }

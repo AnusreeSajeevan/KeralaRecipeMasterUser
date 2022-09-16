@@ -71,10 +71,6 @@ fun LoginScreen(
                 } else {
                     Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
                 }
-
-//                if (authenticationState != AuthenticationState.INITIAL_STATE) {
-//                activity?.finish()
-//                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {

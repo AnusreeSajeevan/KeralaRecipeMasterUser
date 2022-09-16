@@ -17,6 +17,7 @@ import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipeApp
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,6 +25,7 @@ class HomeActivity : ComponentActivity() {
 
     private val recipeViewModel: RecipeListViewModel by viewModels()
     private val authenticationViewModel: AuthenticationViewModel by viewModels()
+    private val recipeRequestViewModel: RecipeRequestViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,11 @@ class HomeActivity : ComponentActivity() {
                 }
             val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
             if (authenticationState != AuthenticationState.INITIAL_STATE) {
-                RecipeApp(recipeViewModel, authenticationViewModel)
+                RecipeApp(
+                    recipeListViewModel = recipeViewModel,
+                    authenticationViewModel = authenticationViewModel,
+                    recipeRequestViewModel = recipeRequestViewModel
+                )
             } /*else {
                 ShowLoginScreen(
 
@@ -57,7 +63,6 @@ class HomeActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-
     }
 
     override fun onPause() {

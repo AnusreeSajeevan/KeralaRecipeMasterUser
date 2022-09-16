@@ -17,6 +17,10 @@ enum class HomeItems(
         icon = Icons.Outlined.Menu,
         selectedIcon = Icons.Filled.Menu
     ),
+    MyRequests(
+        icon = Icons.Outlined.Menu,
+        selectedIcon = Icons.Filled.Menu
+    ),
     Account(
         icon = Icons.Outlined.Person,
         selectedIcon = Icons.Filled.Person
@@ -28,6 +32,7 @@ enum class HomeItems(
                 Famous.name -> Famous
                 MyRecipes.name -> MyRecipes
                 Account.name -> Account
+                MyRequests.name -> MyRequests
                 null -> Famous
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }
