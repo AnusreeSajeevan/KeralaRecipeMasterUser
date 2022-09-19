@@ -13,7 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -125,18 +124,19 @@ fun AddOrEditRecipeScreen(
     }
     val location by locationValueFlowLifeCycleAware.collectAsState(addRecipeViewModel.getInitialLocation())
 
-    // has restaurant details
-    val hasRestaurantDetailsValue = addRecipeViewModel.hasRestaurantDetails
-    val hasRestaurantDetailsFlowLifeCycleAware =
-        remember(hasRestaurantDetailsValue, lifeCycleOwner) {
-            hasRestaurantDetailsValue.flowWithLifecycle(
-                lifeCycleOwner.lifecycle,
-                Lifecycle.State.STARTED
-            )
-        }
+    /*  // has restaurant details
+      val hasRestaurantDetailsValue = addRecipeViewModel.hasRestaurantDetails
+      val hasRestaurantDetailsFlowLifeCycleAware =
+          remember(hasRestaurantDetailsValue, lifeCycleOwner) {
+              hasRestaurantDetailsValue.flowWithLifecycle(
+                  lifeCycleOwner.lifecycle,
+                  Lifecycle.State.STARTED
+              )
+          }
 
+
+      val hasRestaurantDetails by hasRestaurantDetailsFlowLifeCycleAware.collectAsState(false)*/
     val lifecycleOwner = LocalLifecycleOwner.current
-    val hasRestaurantDetails by hasRestaurantDetailsFlowLifeCycleAware.collectAsState(false)
 
     val authenticationStateValue = authenticationViewModel.authenticationState
     val authenticationStateLifeCycleAware = remember(authenticationStateValue, lifeCycleOwner) {
@@ -339,119 +339,113 @@ fun AddOrEditRecipeScreen(
                 Spacer(modifier = Modifier.size(16.dp))
 
                 if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Checkbox(
-                            checked = hasRestaurantDetails,
-                            onCheckedChange = {
-                                addRecipeViewModel.onRestaurantCheckChange(it)
-//                            shouldShowAddRecipeButton = !hasRestaurantDetails
-                            }
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .align(Alignment.CenterVertically)
-                        )
+                    /*                   Row(modifier = Modifier.fillMaxWidth()) {
+                                           Checkbox(
+                                               checked = hasRestaurantDetails,
+                                               onCheckedChange = {
+                                                   addRecipeViewModel.onRestaurantCheckChange(it)
+                   //                            shouldShowAddRecipeButton = !hasRestaurantDetails
+                                               }
+                                           )
+                                           Spacer(
+                                               modifier = Modifier
+                                                   .size(10.dp)
+                                                   .align(Alignment.CenterVertically)
+                                           )
 
-                        Text(text = "Check this box to add famous restaurant details")
-                    }
+                                           Text(text = "Check this box to add famous restaurant details")
+                                       }*/
 
-                    if (hasRestaurantDetails) {
-                        Spacer(modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.size(16.dp))
 
-                        OutlinedTextField(
-                            value = restaurantName,
-                            label = {
-                                Text(text = "Restaurant Name")
-                            },
-                            onValueChange = {
-                                addRecipeViewModel.onRestaurantNameChange(it)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    OutlinedTextField(
+                        value = restaurantName,
+                        label = {
+                            Text(text = "Restaurant Name")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onRestaurantNameChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                        OutlinedTextField(
-                            value = location.latitude.toString(),
-                            label = {
-                                Text(text = "latitude")
-                            },
-                            onValueChange = {
-                                addRecipeViewModel.onLatitudeChange(it)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = false
-                        )
+                    OutlinedTextField(
+                        value = location.latitude.toString(),
+                        label = {
+                            Text(text = "latitude")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onLatitudeChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
+                    )
 
-                        OutlinedTextField(
-                            value = location.longitude.toString(),
-                            label = {
-                                Text(text = "longitude")
-                            },
-                            onValueChange = {
-                                addRecipeViewModel.onLongitudeChange(it)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = false
-                        )
+                    OutlinedTextField(
+                        value = location.longitude.toString(),
+                        label = {
+                            Text(text = "longitude")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onLongitudeChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
+                    )
 
-                        OutlinedTextField(
-                            value = address,
-                            label = {
-                                Text(text = "Address")
-                            },
-                            onValueChange = {
-                                addRecipeViewModel.onStateChange(it)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = false
-                        )
+                    OutlinedTextField(
+                        value = address,
+                        label = {
+                            Text(text = "Address")
+                        },
+                        onValueChange = {
+                            addRecipeViewModel.onStateChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false
+                    )
 
-                        // Show map to select location
-                        MapAddressPickerView(addRecipeViewModel)
-                    }
+                    // Show map to select location
+                    MapAddressPickerView(addRecipeViewModel)
                 }
 
-//                if (shouldShowAddRecipeButton) {
                 Button(
                     onClick = {
-                        if (addRecipeViewModel.validateRecipeDetails()) {
-                            if (hasRestaurantDetails) {
-                                if (addRecipeViewModel.validateRestaurantDetails()) {
-                                    if (actionType == "edit") {
-                                        addRecipeViewModel.updateRecipe(recipeId)
-                                    } else {
-                                        addRecipeViewModel.addRecipe()
-                                        activity?.finish()
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Add restaurant details",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                            if (addRecipeViewModel.validateRecipeDetails() && addRecipeViewModel.validateRestaurantDetails()) {
+                                // add recipe request
+                                addRecipeViewModel.addRecipeRequest()
+                                activity?.finish()
                             } else {
+                                Toast.makeText(
+                                    context,
+                                    "Add all mandatory details",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            navController.popBackStack()
+                        } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+                            if (addRecipeViewModel.validateRecipeDetails()) {
                                 if (actionType == "edit") {
                                     addRecipeViewModel.updateRecipe(recipeId)
                                 } else {
                                     addRecipeViewModel.addRecipe()
                                     activity?.finish()
                                 }
+                                navController.popBackStack()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Add all mandatory details",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                            navController.popBackStack()
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Add all mandatory details",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Add Recipe")
                 }
-//                }
             }
         }
     }

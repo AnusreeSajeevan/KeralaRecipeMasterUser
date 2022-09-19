@@ -27,7 +27,11 @@ class AddRecipeActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             Scaffold(modifier = Modifier.fillMaxWidth()) {
-                AddOrEditRecipeNavHost(addRecipeViewModel = viewModel, navController = navController, authenticationViewModel = authenticationViewModel)
+                AddOrEditRecipeNavHost(
+                    addRecipeViewModel = viewModel,
+                    navController = navController,
+                    authenticationViewModel = authenticationViewModel
+                )
             }
         }
     }

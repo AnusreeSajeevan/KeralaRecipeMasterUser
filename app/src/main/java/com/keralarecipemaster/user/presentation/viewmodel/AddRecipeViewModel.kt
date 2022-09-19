@@ -6,13 +6,14 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.CountDownTimer
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
+import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
+import com.keralarecipemaster.user.repository.RecipeRequestRepository
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
@@ -26,7 +27,10 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
+class AddRecipeViewModel @Inject constructor(
+    val repository: RecipeRepository,
+    val recipeRequestRepository: RecipeRequestRepository
+) :
     ViewModel(),
     OnRatingBarCheck {
 
@@ -134,11 +138,34 @@ class AddRecipeViewModel @Inject constructor(val repository: RecipeRepository) :
 
     fun addRecipe() {
         if (validateRecipeDetails()) {
-            if (_hasRestaurantDetails.value) {
-                if (validateRestaurantDetails()) addRecipeToDb()
-            } else {
-                addRecipeToDb()
-            }
+            addRecipeToDb()
+        }
+    }
+
+    fun addRecipeRequest() {
+        if (validateRecipeDetails() && validateRestaurantDetails()) {
+            addRecipeRequestToDb()
+        }
+    }
+
+    private fun addRecipeRequestToDb() {
+        viewModelScope.launch {
+            recipeRequestRepository.addRecipeRequest(
+                RecipeRequestEntity(
+                    requestId = repository.count() + 1,
+                    recipeName = _recipeName.value,
+                    description = _description.value,
+                    preparationMethod = _preparationMethod.value,
+                    ingredients = _ingredients.value,
+                    diet = Diet.valueOf(_dietType.value),
+                    mealType = Meal.valueOf(mealType.value),
+                    restaurantAddress = address.value,
+                    restaurantLatitude = location.value.latitude.toString(),
+                    restaurantLongitude = location.value.longitude.toString(),
+                    restaurantName = restaurantName.value,
+                    rating = _rating.value
+                )
+            )
         }
     }
 

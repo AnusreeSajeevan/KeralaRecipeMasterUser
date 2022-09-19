@@ -52,4 +52,8 @@ class RecipeRequestRepositoryImpl @Inject constructor(
     override suspend fun getAllRecipeRequests(): Flow<List<RecipeRequestEntity>> {
         return recipeRequestsDao.getAllRecipeRequests()
     }
+
+    override suspend fun addRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {
+        recipeRequestsDao.insertRecipe(recipeRequest = recipeRequestEntity)
+    }
 }

@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.domain.db
 
 import androidx.room.*
+import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,7 @@ interface RecipeRequestsDao {
 
     @Query("SELECT * from recipe_requests WHERE requestId = :requestId")
     fun getRecipeRequestDetails(requestId: Int): Flow<RecipeRequestEntity>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertRecipe(recipeRequest: RecipeRequestEntity)
 }
