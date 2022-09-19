@@ -2,11 +2,13 @@ package com.keralarecipemaster.user.repository
 
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
+import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestResponseWrapper
 import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestDtoMapper
 import com.keralarecipemaster.user.network.service.RecipeApi
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,5 +57,11 @@ class RecipeRequestRepositoryImpl @Inject constructor(
 
     override suspend fun addRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {
         recipeRequestsDao.insertRecipe(recipeRequest = recipeRequestEntity)
+    }
+
+    override suspend fun deleteRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {
+        withContext(Dispatchers.IO) {
+            recipeRequestsDao.deleteRecipe(recipeRequestEntity = recipeRequestEntity)
+        }
     }
 }

@@ -51,4 +51,10 @@ class RecipeRequestViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteRecipeRequest(recipeRequest: RecipeRequestEntity) {
+        viewModelScope.launch {
+            recipeRequestRepository.deleteRecipeRequest(recipeRequest)
+        }
+    }
 }

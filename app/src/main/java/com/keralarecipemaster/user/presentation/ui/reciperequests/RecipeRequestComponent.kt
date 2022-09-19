@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -19,7 +20,6 @@ import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
-import com.keralarecipemaster.user.presentation.ui.recipe.details.RecipeDetailsActivity
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
@@ -42,7 +42,7 @@ fun RecipeRequestComponent(
 //        navController.navigate(RecipeDetailsDestinations.RecipeDetails.name)
     }) {
 //        Box {
-        Row(modifier = Modifier.height(100.dp).fillMaxWidth()) {
+        Row(modifier = Modifier.height(120.dp).fillMaxWidth()) {
             Image(
                 painter = painterResource(
                     id = R.drawable.chicken_biriyani
@@ -81,6 +81,17 @@ fun RecipeRequestComponent(
                         .width(15.dp)
 
                 )
+
+                IconButton(onClick = {
+                    recipeRequestViewModel.deleteRecipeRequest(recipeRequest)
+                }) {
+                    Icon(
+                        painter = painterResource(
+                            id = R.drawable.ic_delete
+                        ),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }

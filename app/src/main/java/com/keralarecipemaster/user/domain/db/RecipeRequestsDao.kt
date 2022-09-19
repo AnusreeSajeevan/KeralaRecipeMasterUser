@@ -24,4 +24,7 @@ interface RecipeRequestsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipeRequest: RecipeRequestEntity)
+
+    @Delete
+    suspend fun deleteRecipe(recipeRequestEntity: RecipeRequestEntity)
 }
