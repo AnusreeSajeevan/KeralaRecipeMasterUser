@@ -21,6 +21,7 @@ import com.keralarecipemaster.user.presentation.ui.home.HomeItems
 import com.keralarecipemaster.user.presentation.ui.home.RecipeNavHost
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 
@@ -28,7 +29,8 @@ import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 fun RecipeApp(
     recipeListViewModel: RecipeListViewModel,
     authenticationViewModel: AuthenticationViewModel,
-    recipeRequestViewModel: RecipeRequestViewModel
+    recipeRequestViewModel: RecipeRequestViewModel,
+    locationNotificationViewModel: LocationNotificationViewModel
 ) {
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
@@ -86,7 +88,8 @@ fun RecipeApp(
                 authenticationViewModel = authenticationViewModel,
                 recipeRequestViewModel = recipeRequestViewModel,
                 navController = navController,
-                authenticationState = authenticationState
+                authenticationState = authenticationState,
+                locationNotificationViewModel = locationNotificationViewModel
             )
         }
     }

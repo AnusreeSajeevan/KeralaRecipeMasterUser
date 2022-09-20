@@ -12,6 +12,7 @@ import com.keralarecipemaster.user.presentation.ui.recipe.RecipesScreen
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity
 import com.keralarecipemaster.user.presentation.ui.reciperequests.RecipeRequestsScreen
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 import com.keralarecipemaster.user.utils.UserType
@@ -21,6 +22,7 @@ fun RecipeNavHost(
     recipeListViewModel: RecipeListViewModel,
     authenticationViewModel: AuthenticationViewModel,
     recipeRequestViewModel: RecipeRequestViewModel,
+    locationNotificationViewModel: LocationNotificationViewModel,
     navController: NavHostController,
     authenticationState: AuthenticationState
 ) {
@@ -55,7 +57,10 @@ fun RecipeNavHost(
             )
         }
         composable(HomeItems.Account.name) {
-            UserProfileScreen(authenticationViewModel)
+            UserProfileScreen(
+                authenticationViewModel = authenticationViewModel,
+                locationNotificationViewModel = locationNotificationViewModel
+            )
         }
     }
 }

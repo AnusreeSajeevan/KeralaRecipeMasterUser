@@ -12,14 +12,15 @@ import javax.inject.Inject
 class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Context) : PrefsStore {
 
     private companion object {
-        const val RECIPE_DATA_STORE = "recipe_data_store"
+        const val KRM_DATA_STORE = "krm_data_store"
     }
 
     private object PreferencesKeys {
         val AUTHENTICATION_STATE = preferencesKey<String>("authentication_state")
+        val NOTIFICATION_STATUS = preferencesKey<Boolean>("notification_status")
     }
 
-    private val dataStore = context.createDataStore(name = RECIPE_DATA_STORE)
+    private val dataStore = context.createDataStore(name = KRM_DATA_STORE)
 
     override suspend fun getAuthenticationState(): Flow<String> {
 //        return dataStore.data.
@@ -31,7 +32,10 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
                     throw exception
                 }
             }.collect {
-               emit(it[PreferencesKeys.AUTHENTICATION_STATE] ?: AuthenticationState.INITIAL_STATE.name)
+                emit(
+                    it[PreferencesKeys.AUTHENTICATION_STATE]
+                        ?: AuthenticationState.INITIAL_STATE.name
+                )
             }
         }
     }
@@ -39,6 +43,24 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
     override suspend fun updateAuthenticationState(authenticationState: String) {
         dataStore.edit {
             it[PreferencesKeys.AUTHENTICATION_STATE] = authenticationState
+        }
+    }
+
+    override suspend fun getNotificationStatus(): Flow<Boolean> {
+        return flow {
+            dataStore.data.catch { exception ->
+                if (exception is Exception) {
+                    emit(emptyPreferences())
+                } else throw exception
+            }.collect {
+                emit(it[PreferencesKeys.NOTIFICATION_STATUS] ?: false)
+            }
+        }
+    }
+
+    override suspend fun setNotificationStatus(status: Boolean) {
+        dataStore.edit {
+            it[PreferencesKeys.NOTIFICATION_STATUS] = status
         }
     }
 }

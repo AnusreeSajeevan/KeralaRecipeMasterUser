@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipeApp
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class HomeActivity : ComponentActivity() {
     private val recipeViewModel: RecipeListViewModel by viewModels()
     private val authenticationViewModel: AuthenticationViewModel by viewModels()
     private val recipeRequestViewModel: RecipeRequestViewModel by viewModels()
+    private val locationNotificationViewModel: LocationNotificationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +52,8 @@ class HomeActivity : ComponentActivity() {
                 RecipeApp(
                     recipeListViewModel = recipeViewModel,
                     authenticationViewModel = authenticationViewModel,
-                    recipeRequestViewModel = recipeRequestViewModel
+                    recipeRequestViewModel = recipeRequestViewModel,
+                    locationNotificationViewModel = locationNotificationViewModel
                 )
             } /*else {
                 ShowLoginScreen(
