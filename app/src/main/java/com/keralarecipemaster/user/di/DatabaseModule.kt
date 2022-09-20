@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.di
 
 import android.content.Context
+import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.domain.db.RecipeMemoriesDatabase
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
@@ -25,6 +26,11 @@ class DatabaseModule {
     @Provides
     fun provideRecipeRequestDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): RecipeRequestsDao {
         return recipeMemoriesDatabase.getRecipeRequestDao()
+    }
+
+    @Provides
+    fun provideFamousLocationDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): FamousLocationDao {
+        return recipeMemoriesDatabase.getFamousLocationDao()
     }
 
     @Provides

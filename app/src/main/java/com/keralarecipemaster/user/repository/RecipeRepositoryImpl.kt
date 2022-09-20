@@ -1,23 +1,27 @@
 package com.keralarecipemaster.user.repository
 
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
+import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
+import com.keralarecipemaster.user.domain.model.FamousLocation
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeResponseWrapper
-import com.keralarecipemaster.user.network.service.RecipeApi
 import com.keralarecipemaster.user.network.model.recipe.RecipeDtoMapper
+import com.keralarecipemaster.user.network.service.RecipeApi
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDao: RecipeDao,
+    private val famousLocationDao: FamousLocationDao,
     private val recipeDtoMapper: RecipeDtoMapper,
     @CoroutinesDispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val recipeApi: RecipeApi
@@ -29,6 +33,17 @@ class RecipeRepositoryImpl @Inject constructor(
                 val recipes: RecipeResponseWrapper = recipeApi.fetchRecipes()
                 recipeDtoMapper.toRecipeEntityList(recipes.recipes).forEach {
                     recipeDao.insertRecipe(recipe = it)
+                    if (it.addedBy == UserType.RESTAURANT) {
+                        famousLocationDao.insertFamousLocation(
+                            FamousLocation(
+                                id = famousLocationDao.numberOfLocations() + 1,
+                                name = it.restaurantName,
+                                latitude = it.restaurantLatitude,
+                                longitude = it.restaurantLongitude,
+                                address = it.restaurantAddress
+                            )
+                        )
+                    }
                 }
             } catch (exception: Exception) {
             }
