@@ -56,7 +56,8 @@ class AuthenticationViewModel @Inject constructor(
                     username = username,
                     password = password
                 ).catch { }.collect {
-                    if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                    if (it) _authenticationState.value =
+                        AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
                 }
             }
         }
@@ -68,10 +69,29 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun registerUser() {
-        viewModelScope.launch {
-            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+    fun registerUser(username: String, password: String, email: String) {
+        if (username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
+            .isNotEmpty()
+        ) {
+            Log.d("CheckRegisterResponse", "catch")
+            viewModelScope.launch {
+                authenticationRepository.registerUser(
+                    username = username,
+                    password = password,
+                    email = email
+                )
+                    .catch {
+                        Log.d("CheckRegisterResponse", "catch")
+                    }.collect {
+                        Log.d("CheckRegisterResponse", it.toString())
+                        if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
+                    }
+            }
         }
+
+//        viewModelScope.launch {
+//            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+//        }
     }
 
     fun logout() {

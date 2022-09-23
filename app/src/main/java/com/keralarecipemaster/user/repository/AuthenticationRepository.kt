@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface AuthenticationRepository {
     suspend fun loginAsUser(username: String, password: String): Flow<Boolean>
     suspend fun loginAsRestaurantOwner(username: String, password: String): Flow<Boolean>
-    suspend fun registerUser()
+    suspend fun registerUser(username: String, password: String, email: String): Flow<Boolean>
     suspend fun registerRestaurantOwner()
     suspend fun logout()
 }

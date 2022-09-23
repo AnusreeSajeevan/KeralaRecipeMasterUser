@@ -1,8 +1,10 @@
 package com.keralarecipemaster.user.presentation.ui.authentication
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -17,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
@@ -72,7 +76,19 @@ fun UserProfileScreen(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     checked = notificationStatus,
                     onCheckedChange = {
-                        locationNotificationViewModel.updateNotificationStatus(it)
+                        if (it) {
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!, ))
+                                // ask permission
+                            } else {
+                                // permission granted
+                            }
+                        }
+//                        locationNotificationViewModel.updateNotificationStatus(it)
                     }
                 )
             }

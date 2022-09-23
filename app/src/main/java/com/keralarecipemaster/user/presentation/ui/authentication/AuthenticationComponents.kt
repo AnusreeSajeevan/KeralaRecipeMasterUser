@@ -87,7 +87,6 @@ fun LoginScreen(
                 } else {
                     Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
                 }
-
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -133,10 +132,10 @@ fun isAllFieldsValid(username: String, password: String): Boolean {
 }
 
 @Composable
-fun ShowUserRegistrationScreen() {
+fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel) {
     val context = LocalContext.current
     val activity = (context as? Activity)
-    val name = remember {
+    val email = remember {
         mutableStateOf("")
     }
 
@@ -149,9 +148,9 @@ fun ShowUserRegistrationScreen() {
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        OutlinedTextField(value = name.value, onValueChange = {
-            name.value = it
-        }, label = { Text(text = "Name") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = email.value, onValueChange = {
+            email.value = it
+        }, label = { Text(text = "Email") }, modifier = Modifier.fillMaxWidth())
 
         OutlinedTextField(value = userName.value, onValueChange = {
             userName.value = it
@@ -161,7 +160,15 @@ fun ShowUserRegistrationScreen() {
             password.value = it
         }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
 
-        Button(onClick = { activity?.finish() }) {
+        Button(
+            onClick = {
+                authenticationViewModel.registerUser(
+                    username = userName.value,
+                    password = password.value,
+                    email = email.value
+                )
+            }
+        ) {
             Text(text = "Register")
         }
     }

@@ -1,6 +1,8 @@
 package com.keralarecipemaster.user.repository
 
+import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
+import com.keralarecipemaster.user.network.model.authentication.UserRegisterRequest
 import com.keralarecipemaster.user.network.service.AuthenticationApi
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.prefsstore.PrefsStore
@@ -24,8 +26,9 @@ class AuthenticationRepositoryImpl @Inject constructor(
         return flow { emit(result.isSuccessful) }
     }
 
-    override suspend fun loginAsRestaurantOwner(username: String, password: String) : Flow<Boolean>{
-        val result = authenticationApi.loginRestaurantOwner(username = username, password = password)
+    override suspend fun loginAsRestaurantOwner(username: String, password: String): Flow<Boolean> {
+        val result =
+            authenticationApi.loginRestaurantOwner(username = username, password = password)
         withContext(ioDispatcher) {
             launch {
                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
@@ -34,8 +37,24 @@ class AuthenticationRepositoryImpl @Inject constructor(
         return flow { emit(result.isSuccessful) }
     }
 
-    override suspend fun registerUser() {
-        TODO("Not yet implemented")
+    override suspend fun registerUser(
+        username: String,
+        password: String,
+        email: String
+    ): Flow<Boolean> {
+        val result =
+            authenticationApi.registerUser(UserRegisterRequest(username = username, password = password, email = email))
+        if (result.isSuccessful) {
+            Log.d("CheckRegisterResponse", "succesful")
+            withContext(ioDispatcher) {
+                launch {
+                    prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                }
+            }
+        }
+        return flow {
+            emit(result.isSuccessful)
+        }
     }
 
     override suspend fun registerRestaurantOwner() {

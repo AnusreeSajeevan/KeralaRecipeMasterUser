@@ -25,7 +25,7 @@ fun AuthenticationNavHost(
         }
 
         composable(AuthenticationDestinations.RegisterUser.name) {
-            ShowUserRegistrationScreen()
+            ShowUserRegistrationScreen(authenticationViewModel)
         }
 
         composable(AuthenticationDestinations.RegisterRestaurantOwner.name) {
