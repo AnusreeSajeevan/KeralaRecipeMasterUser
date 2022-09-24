@@ -6,13 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.repository.AuthenticationRepository
+import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
@@ -26,6 +28,12 @@ class AuthenticationViewModel @Inject constructor(
     private val _authenticationState =
         MutableStateFlow(AuthenticationState.INITIAL_STATE)
 
+    val errorMessage: StateFlow<String>
+        get() = _errorMessage
+
+    private val _errorMessage =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
     init {
         viewModelScope.launch {
             prefsStore.getAuthenticationState().catch { }.collect {
@@ -37,11 +45,22 @@ class AuthenticationViewModel @Inject constructor(
     fun loginAsUser(username: String, password: String) {
         if (username.trim().isNotEmpty() && password.trim().isNotEmpty()) {
             viewModelScope.launch {
-                authenticationRepository.loginAsUser(username = username, password = password)
+                authenticationRepository.login(
+                    username = username,
+                    password = password,
+                    userType = UserType.USER
+                )
                     .catch {
                         Log.d("CheckResponse", "catch")
                     }.collect {
-                        if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
+                        it?.let { code ->
+                            if (code == Constants.ERROR_CODE_SUCCESS) {
+                                _authenticationState.value =
+                                    AuthenticationState.AUTHENTICATED_USER
+                            } else if (code == Constants.ERROR_CODE_INVALID_CREDENTIALS) {
+                                _errorMessage.value = "Enter valid credentials"
+                            }
+                        }
                     }
 
                 // prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
@@ -52,12 +71,20 @@ class AuthenticationViewModel @Inject constructor(
     fun loginAsRestaurantOwner(username: String, password: String) {
         if (username.trim().isNotEmpty() && password.trim().isNotEmpty()) {
             viewModelScope.launch {
-                authenticationRepository.loginAsRestaurantOwner(
+                authenticationRepository.login(
                     username = username,
-                    password = password
+                    password = password,
+                    userType = UserType.RESTAURANT
                 ).catch { }.collect {
-                    if (it) _authenticationState.value =
-                        AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                    it?.let {  code ->
+                        if (code == Constants.ERROR_CODE_SUCCESS) {
+                            _authenticationState.value =
+                                AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                        } else if (code == Constants.ERROR_CODE_INVALID_CREDENTIALS) {
+                            _errorMessage.value = "Enter valid credentials"
+                        }
+                    }
+
                 }
             }
         }

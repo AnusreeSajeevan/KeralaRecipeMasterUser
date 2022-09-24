@@ -8,5 +8,8 @@ class Constants {
         const val INVALID_RECIPE_ID = -1
         const val INVALID_RECIPE_REQUEST_ID = -1
         const val EMPTY_STRING = ""
+
+        const val ERROR_CODE_SUCCESS = 200;
+        const val ERROR_CODE_INVALID_CREDENTIALS = 400;
     }
 }

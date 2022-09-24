@@ -1,5 +1,6 @@
 package com.keralarecipemaster.user.network.service
 
+import com.keralarecipemaster.user.network.model.authentication.LoginRequest
 import com.keralarecipemaster.user.network.model.authentication.LoginResponse
 import com.keralarecipemaster.user.network.model.authentication.RegisterResponse
 import com.keralarecipemaster.user.network.model.authentication.UserRegisterRequest
@@ -10,9 +11,8 @@ import retrofit2.http.Query
 
 interface AuthenticationApi {
     @POST("/login")
-    suspend fun loginUser(
-        @Query("username") username: String,
-        @Query("password") password: String
+    suspend fun login(
+        @Body loginRequest: LoginRequest
     ): Response<LoginResponse>
 
     @POST("/login-restaurant-owner")

@@ -51,6 +51,21 @@ fun LoginScreen(
          context.startActivity(Intent(context, HomeActivity::class.java))
          activity?.finish()
      }*/
+
+    val errorMessageValue = authenticationViewModel.errorMessage
+    val errorMessageValueLifeCycleAware =
+        remember(errorMessageValue, lifeCycleOwner) {
+            errorMessageValue.flowWithLifecycle(
+                lifeCycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val errorMessage by errorMessageValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
+    if (errorMessage.isNotEmpty()) {
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
     Column(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = CenterHorizontally
