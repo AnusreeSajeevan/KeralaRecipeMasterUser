@@ -31,6 +31,7 @@ import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AddRecipeViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 
@@ -146,6 +147,28 @@ fun AddOrEditRecipeScreen(
         )
     }
     val authenticationState by authenticationStateLifeCycleAware.collectAsState(AuthenticationState.INITIAL_STATE)
+
+    val errorMessageValue = addRecipeViewModel.errorMessage
+    val errorMessageValueLifeCycleAware =
+        remember(errorMessageValue, lifeCycleOwner) {
+            errorMessageValue.flowWithLifecycle(
+                lifeCycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val errorMessage by errorMessageValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+
+    if (errorMessage.isNotEmpty()) {
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        if (errorMessage.equals(R.string.add_recipe_success)) {
+            activity?.finish()
+        }
+        addRecipeViewModel.resetErrorMessage()
+    }
+
 /*
     var hasRestaurantChecked by remember {
         mutableStateOf(false)
@@ -154,9 +177,6 @@ fun AddOrEditRecipeScreen(
     /* var shouldShowAddRecipeButton by remember {
          mutableStateOf(true)
      }*/
-
-    val context = LocalContext.current
-    val activity = (context as? Activity)
 
     var ingredientName by remember {
         mutableStateOf("")
@@ -425,21 +445,21 @@ fun AddOrEditRecipeScreen(
                             }
                             navController.popBackStack()
                         } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
-                            if (addRecipeViewModel.validateRecipeDetails()) {
-                                if (actionType == "edit") {
-                                    addRecipeViewModel.updateRecipe(recipeId)
-                                } else {
-                                    addRecipeViewModel.addRecipe()
-                                    activity?.finish()
-                                }
-                                navController.popBackStack()
+//                            if (addRecipeViewModel.validateRecipeDetails()) {
+                            if (actionType == "edit") {
+                                addRecipeViewModel.updateRecipe(recipeId)
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Add all mandatory details",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                addRecipeViewModel.addRecipe()
+//                                activity?.finish()
                             }
+//                            navController.popBackStack()
+                            /* } else {
+                                 Toast.makeText(
+                                     context,
+                                     "Add all mandatory details",
+                                     Toast.LENGTH_SHORT
+                                 ).show()
+                             }*/
                         }
                     },
                     modifier = Modifier.fillMaxWidth()

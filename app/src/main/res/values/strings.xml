@@ -7,4 +7,5 @@
     <string name="password">Password</string>
     <string name="register_user">Register as User</string>
     <string name="register_restaurant_owner">Register as Restaurant Owner</string>
+    <string name="add_recipe_success">Recipe Added Successfully</string>
 </resources>

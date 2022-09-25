@@ -126,4 +126,8 @@ class AuthenticationViewModel @Inject constructor(
             authenticationRepository.logout()
         }
     }
+
+    fun resetErrorMessage() {
+        _errorMessage.value = Constants.EMPTY_STRING
+    }
 }

@@ -64,6 +64,7 @@ fun LoginScreen(
 
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        authenticationViewModel.resetErrorMessage()
     }
 
     Column(

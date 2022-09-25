@@ -14,6 +14,7 @@ import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
 import com.keralarecipemaster.user.repository.RecipeRequestRepository
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
@@ -67,6 +68,12 @@ class AddRecipeViewModel @Inject constructor(
 
     val rating: StateFlow<Int>
         get() = _rating
+
+    val errorMessage: StateFlow<String>
+        get() = _errorMessage
+
+    private val _errorMessage =
+        MutableStateFlow(Constants.EMPTY_STRING)
 
 //    val numberOfIngredients: StateFlow<Int>
 //        get() = _numberOfIngredients
@@ -138,7 +145,31 @@ class AddRecipeViewModel @Inject constructor(
 
     fun addRecipe() {
         if (validateRecipeDetails()) {
-            addRecipeToDb()
+            viewModelScope.launch {
+                repository.addRecipe(
+                    RecipeEntity(
+                        id = repository.count() + 1,
+                        recipeName = _recipeName.value,
+                        description = _description.value,
+                        preparationMethod = _preparationMethod.value,
+                        ingredients = _ingredients.value,
+                        diet = Diet.valueOf(_dietType.value),
+                        mealType = Meal.valueOf(mealType.value),
+                        restaurantAddress = address.value,
+                        restaurantLatitude = location.value.latitude.toString(),
+                        restaurantLongitude = location.value.longitude.toString(),
+                        restaurantName = restaurantName.value,
+                        addedBy = UserType.valueOf(UserType.USER.name),
+                        rating = _rating.value
+                    )
+                ).catch { }.collect {
+                    if (it == Constants.ERROR_CODE_SUCCESS) {
+                        _errorMessage.value = "Recipe added successfully"
+                    }
+                }
+            }
+        } else {
+            _errorMessage.value = "Add mandatory fields"
         }
     }
 
@@ -181,7 +212,7 @@ class AddRecipeViewModel @Inject constructor(
         }
     }
 
-    private fun addRecipeToDb() {
+/*    private fun addRecipeToDb() {
         viewModelScope.launch {
             repository.addRecipe(
                 RecipeEntity(
@@ -201,7 +232,7 @@ class AddRecipeViewModel @Inject constructor(
                 )
             )
         }
-    }
+    }*/
 
     private fun updateRecipeInDb(recipeId: Int) {
         viewModelScope.launch {
@@ -346,5 +377,9 @@ class AddRecipeViewModel @Inject constructor(
 
     fun onGetAddressFromLocation(text: String) {
         _address.value = text
+    }
+
+    fun resetErrorMessage() {
+        _errorMessage.value = Constants.EMPTY_STRING
     }
 }

@@ -15,7 +15,7 @@ import com.keralarecipemaster.user.utils.UserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -80,8 +80,12 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRecipe(recipe: RecipeEntity) {
-        recipeDao.insertRecipe(recipe = recipe)
+    override suspend fun addRecipe(recipe: RecipeEntity): Flow<Int> {
+        val result = recipeApi.addRecipe(recipeEntity = recipe)
+        if (result.isSuccessful) {
+            recipeDao.insertRecipe(recipe = recipe)
+        }
+        return flow { result.code() }
     }
 
     override suspend fun updateRecipe(

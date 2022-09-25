@@ -12,7 +12,7 @@ interface RecipeRepository {
     suspend fun getFamousRecipes(): Flow<List<RecipeEntity>>
     suspend fun getUserAddedRecipes(): Flow<List<RecipeEntity>>
     fun searchResults(querString: String, addedBy: UserType): Flow<List<RecipeEntity>>
-    suspend fun addRecipe(recipe: RecipeEntity)
+    suspend fun addRecipe(recipe: RecipeEntity): Flow<Int>
     suspend fun updateRecipe(recipeId: Int, recipeName: String, description: String, diet: Diet, meal: Meal, ingredients: List<Ingredient>, preparationMethod: String)
     suspend fun count(): Int
     suspend fun deleteRecipe(recipe: RecipeEntity)
