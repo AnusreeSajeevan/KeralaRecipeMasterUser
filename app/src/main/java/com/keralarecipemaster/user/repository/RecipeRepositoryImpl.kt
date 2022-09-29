@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.repository
 
 import android.util.Log
+import com.keralarecipemaster.admin.network.model.DeleteRecipeRequest
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
@@ -81,12 +82,6 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteRecipe(recipe: RecipeEntity) {
-        withContext(Dispatchers.IO) {
-            recipeDao.deleteRecipe(recipe = recipe)
-        }
-    }
-
     override suspend fun getRecipeDetails(recipeId: Int): Flow<RecipeEntity> {
         return withContext(Dispatchers.IO) {
             recipeDao.getRecipeDetails(recipeId = recipeId)
@@ -147,5 +142,15 @@ class RecipeRepositoryImpl @Inject constructor(
                 preparationMethod = preparationMethod
             )
         }
+    }
+
+    override suspend fun deleteRecipe(recipeId: Int): Flow<Int> {
+        val result = recipeApi.deleteRecipe(recipeId = recipeId)
+        if (result.isSuccessful) {
+            withContext(Dispatchers.IO) {
+                recipeDao.deleteRecipe(recipeId = recipeId)
+            }
+        }
+        return flow { result.code() }
     }
 }

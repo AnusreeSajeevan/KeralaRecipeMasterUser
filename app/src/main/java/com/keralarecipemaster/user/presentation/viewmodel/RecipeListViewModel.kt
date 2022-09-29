@@ -47,6 +47,12 @@ class RecipeListViewModel @Inject constructor(
     private val _shouldFetchMyRecipes =
         MutableStateFlow(false)
 
+    val errorMessage: StateFlow<String>
+        get() = _errorMessage
+
+    private val _errorMessage =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
     init {
         viewModelScope.launch {
             prefsStore.getUserId().catch { }.collect {
@@ -111,9 +117,13 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecipe(recipe: RecipeEntity) {
+    fun deleteRecipe(recipeId: Int) {
         viewModelScope.launch {
-            recipeRepository.deleteRecipe(recipe)
+            recipeRepository.deleteRecipe(recipeId).catch {  }.collect {
+                if (it == Constants.ERROR_CODE_SUCCESS) {
+                    _errorMessage.value = "Recipe deleted successfully!"
+                }
+            }
         }
     }
 
@@ -143,6 +153,10 @@ class RecipeListViewModel @Inject constructor(
     }
 
     fun resetShouldFetch() {
+        _shouldFetchMyRecipes.value = false
+    }
 
+    fun resetErrorMessage() {
+        _errorMessage.value = Constants.EMPTY_STRING
     }
 }

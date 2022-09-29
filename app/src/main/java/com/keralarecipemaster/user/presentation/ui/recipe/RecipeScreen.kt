@@ -1,5 +1,7 @@
 package com.keralarecipemaster.user.presentation.ui.recipe
 
+import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -86,6 +89,24 @@ fun RecipesScreen(
     if (shouldFetchMyRecipes) {
         recipeViewModel.fetchMyRecipes()
         recipeViewModel.resetShouldFetch()
+    }
+
+    val errorMessageValue = recipeViewModel.errorMessage
+    val errorMessageValueLifeCycleAware =
+        remember(errorMessageValue, lifeCycleOwner) {
+            errorMessageValue.flowWithLifecycle(
+                lifeCycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val errorMessage by errorMessageValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+
+    if (errorMessage.isNotEmpty()) {
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        recipeViewModel.resetErrorMessage()
     }
 
     BackdropScaffold(

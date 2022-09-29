@@ -45,8 +45,8 @@ interface RecipeDao {
     @Query("SELECT COUNT(recipeName) from recipe")
     fun numberOfRecipes(): Int
 
-    @Delete
-    suspend fun deleteRecipe(recipe: RecipeEntity)
+    @Query("DELETE from recipe WHERE id = :recipeId")
+    suspend fun deleteRecipe(recipeId: Int)
 
     @Query("SELECT * from recipe WHERE recipeName LIKE '%' || :queryString || '%' AND addedBy =:addedBy")
     fun search(queryString: String, addedBy: String): Flow<List<RecipeEntity>>

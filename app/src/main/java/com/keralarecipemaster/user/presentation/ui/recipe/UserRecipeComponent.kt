@@ -56,7 +56,7 @@ fun UserRecipeComponent(
 
                 if (recipe.addedBy == UserType.USER) {
                     IconButton(onClick = {
-                        recipeListViewModel.deleteRecipe(recipe)
+                        recipeListViewModel.deleteRecipe(recipe.id)
                     }, modifier = Modifier.align(Alignment.BottomEnd)) {
                         Icon(
                             painter = painterResource(
