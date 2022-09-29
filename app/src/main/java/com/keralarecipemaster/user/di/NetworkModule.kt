@@ -2,6 +2,7 @@ package com.keralarecipemaster.user.di
 
 import com.keralarecipemaster.user.network.service.AuthenticationApi
 import com.keralarecipemaster.user.network.service.RecipeApi
+import com.keralarecipemaster.user.network.service.RecipeRequestApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,6 +47,11 @@ object NetworkModule {
     @Provides
     fun provideRecipeService(retrofit: Retrofit): RecipeApi =
         retrofit.create(RecipeApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRecipeRequestService(retrofit: Retrofit): RecipeRequestApi =
+        retrofit.create(RecipeRequestApi::class.java)
 
     @Singleton
     @Provides

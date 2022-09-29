@@ -19,7 +19,7 @@ interface RecipeRequestsDao {
     @Delete
     suspend fun deleteRecipeRequest(recipe: RecipeRequestEntity)
 
-    @Query("SELECT * from recipe_requests WHERE requestId = :requestId")
+    @Query("SELECT * from recipe_requests WHERE recipeId = :requestId")
     fun getRecipeRequestDetails(requestId: Int): Flow<RecipeRequestEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

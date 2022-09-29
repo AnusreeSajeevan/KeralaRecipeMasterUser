@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -57,6 +56,27 @@ fun UserProfileScreen(
         }
     val notificationStatus by notificationStatusValueLifeCycleAware.collectAsState(initial = false)
 
+    val usernameValue = authenticationViewModel.username
+    val usernameValueLifeCycleAware =
+        remember(usernameValue, lifecycleOwner) {
+            usernameValue.flowWithLifecycle(
+                lifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val username by usernameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
+    val emailValue = authenticationViewModel.email
+    val emailValueLifeCycleAware =
+        remember(emailValue, lifecycleOwner) {
+            emailValue.flowWithLifecycle(
+                lifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val email by emailValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
+
     if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
         Button(onClick = {
             val intent = Intent(activity, AuthenticationActivity::class.java)
@@ -69,7 +89,11 @@ fun UserProfileScreen(
         }
     } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
         Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Username : $username")
+            Text(text = "Email : $email")
+            Text(text = email)
             Row {
+
                 Text(text = "Turn ${if (notificationStatus) "OFF" else "ON"} Location Notification")
                 Spacer(modifier = Modifier.size(10.dp))
                 Switch(

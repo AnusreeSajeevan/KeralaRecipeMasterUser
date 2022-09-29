@@ -83,7 +83,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (isAllFieldsValid(username = username, password = password)) {
-                    authenticationViewModel.loginAsUser(username = username, password = password)
+                    authenticationViewModel.login(username = username, password = password)
                 } else {
                     Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
                 }
@@ -96,7 +96,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (isAllFieldsValid(username = username, password = password)) {
-                    authenticationViewModel.loginAsRestaurantOwner(
+                    authenticationViewModel.login(
                         username = username,
                         password = password
                     )

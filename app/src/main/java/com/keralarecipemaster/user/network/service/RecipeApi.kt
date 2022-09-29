@@ -3,19 +3,22 @@ package com.keralarecipemaster.user.network.service
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestResponseWrapper
 import com.keralarecipemaster.user.domain.model.RecipeResponseWrapper
+import com.keralarecipemaster.user.network.model.authentication.AddRecipeResponse
 import com.keralarecipemaster.user.network.model.authentication.CommonResponse
-import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import com.keralarecipemaster.user.network.model.recipe.AddRecipeRequest
+import com.keralarecipemaster.user.network.model.reciperequest.CommonRequest
+import retrofit2.Response
+import retrofit2.http.*
 
 interface RecipeApi {
-    @GET("/recipes")
-    suspend fun fetchRecipes(): RecipeResponseWrapper
 
-    @GET("/recipe-requests")
-    suspend fun fetchRecipeRequests(): RecipeRequestResponseWrapper
+    @GET("/famous-recipe-list")
+    suspend fun fetchFamousRecipes(): Response<RecipeResponseWrapper>
 
+    @GET("/get-recipe-list/")
+    suspend fun fetchMyRecipes(@Query("user_id") userId: Int): Response<RecipeResponseWrapper>
+
+    // owner and user
     @POST("/add-recipe")
-    suspend fun addRecipe(@Body recipeEntity: RecipeEntity): retrofit2.Response<CommonResponse>
+    suspend fun addRecipe(@Body addRecipeRequest: AddRecipeRequest): Response<AddRecipeResponse>
 }

@@ -3,11 +3,12 @@ package com.keralarecipemaster.user.network.model.recipe
 import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.Restaurant
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.UserType
 
 data class RecipeResponse(
     @SerializedName("recipe_id")
-    val id: Int,
+    val id: Int = Constants.INVALID_RECIPE_ID,
 
     @SerializedName("recipe_name")
     val recipeName: String,
@@ -16,7 +17,7 @@ data class RecipeResponse(
 
     val ingredients: List<Ingredient>,
 
-    val image: String? = null,
+    val image: String = Constants.EMPTY_STRING,
 
     val restaurant: Restaurant?,
 
@@ -32,5 +33,7 @@ data class RecipeResponse(
     val rating: Int,
 
     @SerializedName("added_by")
-    val addedBy: String
+    val addedBy: String,
+
+    val status: String
 )

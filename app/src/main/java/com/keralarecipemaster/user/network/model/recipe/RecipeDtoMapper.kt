@@ -26,7 +26,8 @@ class RecipeDtoMapper @Inject constructor() :
             mealType = Meal.valueOf(entity.mealType.toUpperCase()),
             diet = Diet.valueOf(entity.diet.toUpperCase()),
             addedBy = UserType.valueOf(entity.addedBy.toUpperCase()),
-            rating = entity.rating
+            rating = entity.rating,
+            status = entity.status
         )
     }
 
@@ -47,7 +48,8 @@ class RecipeDtoMapper @Inject constructor() :
             mealType = domainModel.mealType.name,
             diet = domainModel.diet.name,
             rating = domainModel.rating,
-            addedBy = domainModel.addedBy.name
+            addedBy = domainModel.addedBy.name,
+            status = domainModel.status
         )
     }
 

@@ -4,7 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.repository.RecipeRequestRepository
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.DietFilter
 import com.keralarecipemaster.user.utils.MealFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeRequestViewModel @Inject constructor(
     private val recipeRequestRepository: RecipeRequestRepository,
+    prefsStore: PrefsStore,
     application: Application
 ) : AndroidViewModel(application) {
     private var _recipeRequests = MutableStateFlow<List<RecipeRequestEntity>>(emptyList())
@@ -32,6 +36,12 @@ class RecipeRequestViewModel @Inject constructor(
     val mealTypeFilter: StateFlow<String>
         get() = _mealTypeFilter
 
+    val userId: StateFlow<Int>
+        get() = _userId
+
+    private val _userId =
+        MutableStateFlow(Constants.INVALID_USER_ID)
+
     init {
         fetchRecipeRequests()
         getRecipeRequests()
@@ -39,7 +49,7 @@ class RecipeRequestViewModel @Inject constructor(
 
     private fun fetchRecipeRequests() {
         viewModelScope.launch {
-            recipeRequestRepository.fetchAllRecipeRequests()
+            recipeRequestRepository.fetchAllMyRecipeRequests(userId.value)
         }
     }
 

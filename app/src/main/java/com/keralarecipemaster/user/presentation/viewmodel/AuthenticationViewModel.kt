@@ -12,9 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
@@ -34,58 +34,60 @@ class AuthenticationViewModel @Inject constructor(
     private val _errorMessage =
         MutableStateFlow(Constants.EMPTY_STRING)
 
+    val username: StateFlow<String>
+        get() = _username
+
+    private val _username =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
+    val email: StateFlow<String>
+        get() = _email
+
+    private val _email =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
     init {
         viewModelScope.launch {
             prefsStore.getAuthenticationState().catch { }.collect {
                 _authenticationState.value = AuthenticationState.valueOf(it)
             }
-        }
-    }
 
-    fun loginAsUser(username: String, password: String) {
-        if (username.trim().isNotEmpty() && password.trim().isNotEmpty()) {
-            viewModelScope.launch {
-                authenticationRepository.login(
-                    username = username,
-                    password = password,
-                    userType = UserType.USER
-                )
-                    .catch {
-                        Log.d("CheckResponse", "catch")
-                    }.collect {
-                        it?.let { code ->
-                            if (code == Constants.ERROR_CODE_SUCCESS) {
-                                _authenticationState.value =
-                                    AuthenticationState.AUTHENTICATED_USER
-                            } else if (code == Constants.ERROR_CODE_INVALID_CREDENTIALS) {
-                                _errorMessage.value = "Enter valid credentials"
-                            }
-                        }
-                    }
+            prefsStore.getUsername().catch { }.collect {
+                _username.value = it
+            }
 
-                // prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
+            prefsStore.getEmail().catch { }.collect {
+                _email.value = it
             }
         }
     }
 
-    fun loginAsRestaurantOwner(username: String, password: String) {
+    fun login(username: String, password: String) {
         if (username.trim().isNotEmpty() && password.trim().isNotEmpty()) {
             viewModelScope.launch {
                 authenticationRepository.login(
                     username = username,
-                    password = password,
-                    userType = UserType.RESTAURANT
-                ).catch { }.collect {
-                    it?.let {  code ->
-                        if (code == Constants.ERROR_CODE_SUCCESS) {
-                            _authenticationState.value =
-                                AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
-                        } else if (code == Constants.ERROR_CODE_INVALID_CREDENTIALS) {
+                    password = password
+                )
+                    .catch {
+                        Log.d("CheckResponse", "catch")
+                    }.collect {
+                        if (it.second == Constants.ERROR_CODE_SUCCESS) {
+                            it.first?.let { userInfo ->
+                                if (userInfo.usertype == UserType.USER.value) {
+                                    _authenticationState.value =
+                                        AuthenticationState.AUTHENTICATED_USER
+                                } else {
+                                    _authenticationState.value =
+                                        AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                                }
+                            }
+                        } else if (it.second == Constants.ERROR_CODE_INVALID_CREDENTIALS) {
                             _errorMessage.value = "Enter valid credentials"
                         }
                     }
 
-                }
+                // prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
             }
         }
     }
@@ -111,14 +113,11 @@ class AuthenticationViewModel @Inject constructor(
                         Log.d("CheckRegisterResponse", "catch")
                     }.collect {
                         Log.d("CheckRegisterResponse", it.toString())
+                        _errorMessage.value = "Registration successful!"
                         if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
                     }
             }
         }
-
-//        viewModelScope.launch {
-//            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
-//        }
     }
 
     fun logout() {

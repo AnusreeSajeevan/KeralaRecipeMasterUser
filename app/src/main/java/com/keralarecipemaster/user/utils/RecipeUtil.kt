@@ -20,18 +20,19 @@ class RecipeUtil {
     companion object {
         fun provideRecipe(
             id: Int = 0,
-            recipeName: String = "",
-            description: String = "",
+            recipeName: String = Constants.EMPTY_STRING,
+            description: String = Constants.EMPTY_STRING,
             ingredients: List<Ingredient> = listOf(),
-            image: String? = null,
-            restaurantName: String = "",
-            restaurantLatitude: String = "",
-            restaurantLongitude: String = "",
-            restaurantState: String = "",
-            preparationMethod: String = "",
+            image: String = Constants.EMPTY_STRING,
+            restaurantName: String = Constants.EMPTY_STRING,
+            restaurantLatitude: String = Constants.EMPTY_STRING,
+            restaurantLongitude: String = Constants.EMPTY_STRING,
+            restaurantState: String = Constants.EMPTY_STRING,
+            preparationMethod: String = Constants.EMPTY_STRING,
             mealType: Meal = Meal.DINNER,
             diet: Diet = Diet.VEG,
-            rating: Int = 0
+            rating: Int = 0,
+            status: String = Constants.EMPTY_STRING
         ): RecipeEntity {
             return RecipeEntity(
                 id = id,
@@ -47,7 +48,8 @@ class RecipeUtil {
                 mealType = Meal.valueOf(mealType.name),
                 diet = Diet.valueOf(diet.name),
                 addedBy = UserType.USER,
-                rating = rating
+                rating = rating,
+                status = status
             )
         }
 
@@ -258,21 +260,22 @@ class RecipeUtil {
 
         fun provideRecipeRequest(
             id: Int = 0,
-            recipeName: String = "",
-            description: String = "",
+            recipeName: String = Constants.EMPTY_STRING,
+            description: String = Constants.EMPTY_STRING,
             ingredients: List<Ingredient> = listOf(),
             image: String? = null,
-            restaurantName: String = "",
-            restaurantLatitude: String = "",
-            restaurantLongitude: String = "",
-            restaurantState: String = "",
-            preparationMethod: String = "",
+            restaurantName: String = Constants.EMPTY_STRING,
+            restaurantLatitude: String = Constants.EMPTY_STRING,
+            restaurantLongitude: String = Constants.EMPTY_STRING,
+            restaurantState: String = Constants.EMPTY_STRING,
+            preparationMethod: String = Constants.EMPTY_STRING,
             mealType: Meal = Meal.DINNER,
             diet: Diet = Diet.VEG,
-            rating: Int = 0
+            rating: Int = 0,
+            status: String = Constants.EMPTY_STRING
         ): RecipeRequestEntity {
             return RecipeRequestEntity(
-                requestId = id,
+                recipeId = id,
                 recipeName = recipeName,
                 description = description,
                 ingredients = ingredients,
@@ -284,7 +287,8 @@ class RecipeUtil {
                 preparationMethod = preparationMethod,
                 mealType = Meal.valueOf(mealType.name),
                 diet = Diet.valueOf(diet.name),
-                rating = rating
+                rating = rating,
+                status = status
             )
         }
     }

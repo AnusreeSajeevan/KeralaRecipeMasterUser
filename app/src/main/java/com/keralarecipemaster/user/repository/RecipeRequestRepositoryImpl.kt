@@ -4,12 +4,13 @@ import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
-import com.keralarecipemaster.user.domain.model.RecipeRequestResponseWrapper
+import com.keralarecipemaster.user.network.model.reciperequest.CommonRequest
 import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestDtoMapper
-import com.keralarecipemaster.user.network.service.RecipeApi
+import com.keralarecipemaster.user.network.service.RecipeRequestApi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,34 +18,22 @@ class RecipeRequestRepositoryImpl @Inject constructor(
     private val recipeRequestsDao: RecipeRequestsDao,
     private val recipeRequestDtoMapper: RecipeRequestDtoMapper,
     @CoroutinesDispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val recipeApi: RecipeApi
+    private val recipeRequestApi: RecipeRequestApi
 ) :
     RecipeRequestRepository {
-    override suspend fun fetchAllRecipeRequests() {
+    override suspend fun fetchAllMyRecipeRequests(userId: Int) {
         withContext(ioDispatcher) {
-            try {
-                val recipeRequests: RecipeRequestResponseWrapper = recipeApi.fetchRecipeRequests()
-                recipeRequestDtoMapper.toRecipeRequestEntityList(recipeRequests.recipeRequests).forEach {
-                    recipeRequestsDao.insertRecipeRequest(recipeRequest = it)
+            val result = recipeRequestApi.fetchAllMyRequests(userId)
+            if (result.isSuccessful) {
+                val requests = result.body()?.recipeRequests ?: emptyList()
+                recipeRequestsDao.deleteAll()
+                if (requests.isNotEmpty()) {
+                    recipeRequestDtoMapper.toRecipeRequestEntityList(requests).forEach {
+                        recipeRequestsDao.insertRecipeRequest(recipeRequest = it)
+                    }
                 }
-            } catch (exception: Exception) {
             }
         }
-       /* withContext(ioDispatcher) {
-            val results = try {
-                recipeApi
-                    .fetchRecipeRequests().recipeRequests
-            } catch (ex: Throwable) {
-                println(ex)
-                emptyList()
-            }
-            try {
-                recipeRequestDtoMapper.toRecipeRequestEntityList(results).forEach {
-                    recipeRequestsDao.insertRecipeRequest(recipeRequest = it)
-                }
-            } catch (e: Throwable) {
-            }
-        }*/
     }
 
     override suspend fun getRecipeRequestDetails(requestId: Int): Flow<RecipeRequestEntity> {
@@ -55,8 +44,12 @@ class RecipeRequestRepositoryImpl @Inject constructor(
         return recipeRequestsDao.getAllRecipeRequests()
     }
 
-    override suspend fun addRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {
-        recipeRequestsDao.insertRecipe(recipeRequest = recipeRequestEntity)
+    override suspend fun addRecipeRequest(recipeRequestEntity: RecipeRequestEntity):Flow<Int> {
+        val result = recipeRequestApi.addRecipeRequest(recipeRequestEntity = recipeRequestEntity)
+        if (result.isSuccessful) {
+            recipeRequestsDao.insertRecipe(recipeRequest = recipeRequestEntity)
+        }
+        return flow { result.code() }
     }
 
     override suspend fun deleteRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {

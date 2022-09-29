@@ -61,7 +61,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 meal = Meal.LUNCH,
                 diet = Diet.VEG,
                 rating = 2,
-                userType = UserType.USER
+                userType = UserType.USER,
+                status = "Approved"
             )
 
             insertRecipe(
@@ -83,7 +84,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 latitude = "latitude",
                 longitude = "longitude",
                 address = "Kerala",
-                userType = UserType.RESTAURANT
+                userType = UserType.OWNER,
+                status = "Approved"
             )
         }
 
@@ -102,7 +104,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
             latitude: String = Constants.EMPTY_STRING,
             longitude: String = Constants.EMPTY_STRING,
             address: String = Constants.EMPTY_STRING,
-            userType: UserType
+            userType: UserType,
+            status: String
         ) {
             recipeDao.insertRecipe(
                 RecipeEntity(
@@ -119,7 +122,8 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                     restaurantAddress = address,
                     mealType = meal,
                     diet = diet,
-                    addedBy = userType
+                    addedBy = userType,
+                    status = status
                 )
             )
         }

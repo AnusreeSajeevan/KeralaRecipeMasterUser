@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.DietFilter
 import com.keralarecipemaster.user.utils.MealFilter
 import com.keralarecipemaster.user.utils.UserType
@@ -32,7 +33,7 @@ fun RecipesScreen(
     navController: NavController
 ) {
     val recipes =
-        if (userType == UserType.RESTAURANT) recipeViewModel.famousRecipes else recipeViewModel.userAddedRecipes
+        if (userType == UserType.OWNER) recipeViewModel.famousRecipes else recipeViewModel.userAddedRecipes
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val recipesRecipesFlowLifecycleAware = remember(recipes, lifecycleOwner) {
@@ -72,6 +73,20 @@ fun RecipesScreen(
         )
     }
     val authenticationState by authenticationStateLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
+
+    val shouldFetchMyRecipesValue = recipeViewModel.shouldFetchMyRecipes
+    val shouldFetchMyRecipesLifeCycleAware = remember(shouldFetchMyRecipesValue, lifeCycleOwner) {
+        shouldFetchMyRecipesValue.flowWithLifecycle(
+            lifecycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        )
+    }
+    val shouldFetchMyRecipes by shouldFetchMyRecipesLifeCycleAware.collectAsState(initial = false)
+
+    if (shouldFetchMyRecipes) {
+        recipeViewModel.fetchMyRecipes()
+        recipeViewModel.resetShouldFetch()
+    }
 
     BackdropScaffold(
         scaffoldState = scaffoldState,
@@ -156,7 +171,7 @@ fun RecipesScreen(
                     Spacer(modifier = Modifier.size(10.dp))
                     LazyColumn {
                         items(recipesList) { recipe ->
-                            if (userType == UserType.RESTAURANT) {
+                            if (userType == UserType.OWNER) {
                                 RestaurantRecipeComponent(
                                     recipe,
                                     recipeViewModel,

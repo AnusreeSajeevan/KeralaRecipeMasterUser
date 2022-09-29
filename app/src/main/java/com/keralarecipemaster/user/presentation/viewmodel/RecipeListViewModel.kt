@@ -3,7 +3,10 @@ package com.keralarecipemaster.user.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.keralarecipemaster.user.domain.model.RecipeEntity
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.repository.RecipeRepository
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.DietFilter
 import com.keralarecipemaster.user.utils.MealFilter
 import com.keralarecipemaster.user.utils.UserType
@@ -15,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
     val recipeRepository: RecipeRepository,
+    val prefsStore: PrefsStore,
     application: Application
 ) : AndroidViewModel(application) {
     private var _famousRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
@@ -34,19 +38,40 @@ class RecipeListViewModel @Inject constructor(
     val mealTypeFilter: StateFlow<String>
         get() = _mealTypeFilter
 
+    private val _userId =
+        MutableStateFlow(Constants.INVALID_USER_ID)
+
+    val shouldFetchMyRecipes: StateFlow<Boolean>
+        get() = _shouldFetchMyRecipes
+
+    private val _shouldFetchMyRecipes =
+        MutableStateFlow(false)
+
     init {
-        fetchAllRecipes()
-        getRestaurantAddedRecipes()
+        viewModelScope.launch {
+            prefsStore.getUserId().catch { }.collect {
+                _userId.value = it
+                _shouldFetchMyRecipes.value = true
+            }
+        }
+        fetchFamousRecipes()
+        getFamousRecipesFromDb()
         getUserAddedeRecipes()
     }
 
-    private fun fetchAllRecipes() {
+    fun fetchMyRecipes() {
         viewModelScope.launch {
-            recipeRepository.fetchAllRecipes()
+            recipeRepository.fetchMyRecipes(userId = _userId.value)
         }
     }
 
-    fun getRestaurantAddedRecipes() {
+    private fun fetchFamousRecipes() {
+        viewModelScope.launch {
+            recipeRepository.fetchFamousRecipes()
+        }
+    }
+
+    fun getFamousRecipesFromDb() {
         viewModelScope.launch {
             recipeRepository.getFamousRecipes().catch { }.collect { recipes ->
                 var list = recipes
@@ -94,11 +119,11 @@ class RecipeListViewModel @Inject constructor(
 
     fun onQueryChanged(query: String, addedBy: UserType) {
         if (query.isEmpty()) {
-            if (addedBy == UserType.RESTAURANT) getRestaurantAddedRecipes() else getUserAddedeRecipes()
+            if (addedBy == UserType.OWNER) getFamousRecipesFromDb() else getUserAddedeRecipes()
         } else {
             viewModelScope.launch {
                 recipeRepository.searchResults(query, addedBy).catch { }.collect {
-                    if (addedBy == UserType.RESTAURANT) _famousRecipes.value = it
+                    if (addedBy == UserType.OWNER) _famousRecipes.value = it
                     else _userAddedRecipes.value = it
                 }
             }
@@ -107,13 +132,17 @@ class RecipeListViewModel @Inject constructor(
 
     fun onDietFilterChange(diet: String) {
         _dietTypeFilter.value = diet
-        getRestaurantAddedRecipes()
+        getFamousRecipesFromDb()
         getUserAddedeRecipes()
     }
 
     fun onMealFilterChange(meal: String) {
         _mealTypeFilter.value = meal
-        getRestaurantAddedRecipes()
+        getFamousRecipesFromDb()
         getUserAddedeRecipes()
+    }
+
+    fun resetShouldFetch() {
+
     }
 }

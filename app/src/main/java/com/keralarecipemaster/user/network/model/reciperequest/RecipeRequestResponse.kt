@@ -5,8 +5,8 @@ import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.Restaurant
 
 data class RecipeRequestResponse(
-    @SerializedName("request_id")
-    val requestId: Int,
+    @SerializedName("recipe_id")
+    val id: Int,
 
     @SerializedName("recipe_name")
     val recipeName: String,
@@ -28,5 +28,10 @@ data class RecipeRequestResponse(
     @SerializedName("diet_category")
     val diet: String,
 
-    val rating: Int
+    val rating: Int,
+
+    @SerializedName("added_by")
+    val addedBy: String,
+
+    val status: String
 )

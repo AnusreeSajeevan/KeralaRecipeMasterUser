@@ -3,11 +3,12 @@ package com.keralarecipemaster.user.repository
 import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.network.model.authentication.LoginRequest
-import com.keralarecipemaster.user.network.model.authentication.LoginResponse
-import com.keralarecipemaster.user.network.model.authentication.UserRegisterRequest
+import com.keralarecipemaster.user.network.model.authentication.RegisterUserRequest
+import com.keralarecipemaster.user.network.model.authentication.UserInfo
 import com.keralarecipemaster.user.network.service.AuthenticationApi
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.prefsstore.PrefsStore
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.UserType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -21,22 +22,28 @@ class AuthenticationRepositoryImpl @Inject constructor(
 ) : AuthenticationRepository {
     override suspend fun login(
         username: String,
-        password: String,
-        userType: UserType
-    ): Flow<Int> {
+        password: String
+    ): Flow<Pair<UserInfo?, Int>> {
         val result = authenticationApi.login(LoginRequest(username = username, password = password))
+        var userInfo: UserInfo? = null
         if (result.isSuccessful) {
-            withContext(ioDispatcher) {
-                launch {
-                    if (userType == UserType.USER) {
-                        prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
-                    } else {
-                        prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+            result.body()?.let { loginResponse ->
+                userInfo = loginResponse.userInfo
+                withContext(ioDispatcher) {
+                    launch {
+                        if (userInfo?.usertype == UserType.USER.value) {
+                            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
+                        } else {
+                            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                        }
+                        prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
+                        prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
+                        prefsStore.setUserId(userInfo?.userId ?: Constants.INVALID_USER_ID)
                     }
                 }
             }
         }
-        return flow { emit(result.code()) }
+        return flow { emit(Pair(userInfo, result.code())) }
     }
 
     override suspend fun loginAsRestaurantOwner(username: String, password: String): Flow<Boolean> {
@@ -57,7 +64,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
     ): Flow<Boolean> {
         val result =
             authenticationApi.registerUser(
-                UserRegisterRequest(
+                RegisterUserRequest(
                     username = username,
                     password = password,
                     email = email
@@ -65,9 +72,12 @@ class AuthenticationRepositoryImpl @Inject constructor(
             )
         if (result.isSuccessful) {
             Log.d("CheckRegisterResponse", "succesful")
+            val userInfo = result.body()?.userInfo
             withContext(ioDispatcher) {
                 launch {
-                    prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                    prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
+                    prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
+                    prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
                 }
             }
         }

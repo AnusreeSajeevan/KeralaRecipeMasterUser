@@ -163,10 +163,10 @@ fun AddOrEditRecipeScreen(
 
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        addRecipeViewModel.resetErrorMessage()
         if (errorMessage.equals(R.string.add_recipe_success)) {
             activity?.finish()
         }
-        addRecipeViewModel.resetErrorMessage()
     }
 
 /*

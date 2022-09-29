@@ -33,7 +33,7 @@ fun RecipeNavHost(
                 authenticationViewModel = authenticationViewModel,
                 onFabClick = null,
                 recipeViewModel = recipeListViewModel,
-                userType = UserType.RESTAURANT,
+                userType = UserType.OWNER,
                 navController = navController
             )
         }

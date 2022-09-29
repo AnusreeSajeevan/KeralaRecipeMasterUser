@@ -11,13 +11,19 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RecipeDao {
     @Query("SELECT * from recipe WHERE addedBy = :addedBy")
-    fun getAllFamousRecipes(addedBy: String = UserType.RESTAURANT.name): Flow<List<RecipeEntity>>
+    fun getAllFamousRecipes(addedBy: String = UserType.OWNER.name): Flow<List<RecipeEntity>>
 
     @Query("SELECT * from recipe WHERE addedBy = :addedBy")
     fun getAllUserAddedRecipes(addedBy: String = UserType.USER.name): Flow<List<RecipeEntity>>
 
     @Query("DELETE from recipe")
     fun deleteAll()
+
+    @Query("DELETE from recipe WHERE addedBy = :addedBy")
+    fun deleteAllFamousRecipes(addedBy: String = UserType.OWNER.name)
+
+    @Query("DELETE from recipe WHERE addedBy = :addedBy")
+    fun deleteAllMyRecipes(addedBy: String = UserType.USER.name)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
@@ -51,7 +57,7 @@ interface RecipeDao {
     @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")
     fun filterRestaurantAddedRecipesByDietType(
         diet: String,
-        userType: UserType = UserType.RESTAURANT
+        userType: UserType = UserType.OWNER
     ): Flow<List<RecipeEntity>>
 
     @Query("SELECT * from recipe WHERE diet = :diet AND addedBy = :userType")

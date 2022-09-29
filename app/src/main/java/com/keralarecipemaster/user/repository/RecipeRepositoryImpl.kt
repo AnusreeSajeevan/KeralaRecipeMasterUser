@@ -1,14 +1,16 @@
 package com.keralarecipemaster.user.repository
 
+import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
-import com.keralarecipemaster.user.domain.model.FamousLocation
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
-import com.keralarecipemaster.user.domain.model.RecipeResponseWrapper
+import com.keralarecipemaster.user.network.model.recipe.AddRecipeRequest
 import com.keralarecipemaster.user.network.model.recipe.RecipeDtoMapper
+import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
 import com.keralarecipemaster.user.network.service.RecipeApi
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
@@ -27,25 +29,36 @@ class RecipeRepositoryImpl @Inject constructor(
     private val recipeApi: RecipeApi
 ) :
     RecipeRepository {
-    override suspend fun fetchAllRecipes() {
+    override suspend fun fetchFamousRecipes() {
         withContext(ioDispatcher) {
-            try {
-                val recipes: RecipeResponseWrapper = recipeApi.fetchRecipes()
-                recipeDtoMapper.toRecipeEntityList(recipes.recipes).forEach {
-                    recipeDao.insertRecipe(recipe = it)
-                    if (it.addedBy == UserType.RESTAURANT) {
-                        famousLocationDao.insertFamousLocation(
-                            FamousLocation(
-                                id = famousLocationDao.numberOfLocations() + 1,
-                                name = it.restaurantName,
-                                latitude = it.restaurantLatitude,
-                                longitude = it.restaurantLongitude,
-                                address = it.restaurantAddress
-                            )
-                        )
+            val results = recipeApi.fetchFamousRecipes()
+            Log.d("RecipeListResponse", results.message())
+            Log.d("RecipeListResponse", results.body().toString())
+            if (results.isSuccessful) {
+                recipeDao.deleteAllFamousRecipes()
+                val list = results.body()?.recipes ?: emptyList()
+                if (list.isNotEmpty()) {
+                    recipeDtoMapper.toRecipeEntityList(list).forEach {
+                        recipeDao.insertRecipe(recipe = it)
                     }
                 }
-            } catch (exception: Exception) {
+            }
+        }
+    }
+
+    override suspend fun fetchMyRecipes(userId: Int) {
+        withContext(ioDispatcher) {
+            val results = recipeApi.fetchMyRecipes(userId)
+            Log.d("MyRecipeListResponse", results.message())
+            Log.d("MyRecipeListResponse", results.body().toString())
+            if (results.isSuccessful) {
+                recipeDao.deleteAllMyRecipes()
+                val list = results.body()?.recipes ?: emptyList()
+                if (list.isNotEmpty()) {
+                    recipeDtoMapper.toRecipeEntityList(list).forEach {
+                        recipeDao.insertRecipe(recipe = it)
+                    }
+                }
             }
         }
     }
@@ -80,12 +93,38 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRecipe(recipe: RecipeEntity): Flow<Int> {
-        val result = recipeApi.addRecipe(recipeEntity = recipe)
+    override suspend fun insertRecipe(recipe: RecipeEntity) {
+        recipeDao.insertRecipe(recipe)
+    }
+
+    override suspend fun addRecipe(userId: Int, recipe: RecipeResponse): Flow<Pair<Int, Int>> {
+        var recipeID = Constants.INVALID_RECIPE_ID
+        val result = recipeApi.addRecipe(
+            AddRecipeRequest(userId = userId, recipe = recipe)
+        )
         if (result.isSuccessful) {
-            recipeDao.insertRecipe(recipe = recipe)
+            result.body()?.let {
+                recipeID = it.recipe_id
+                recipeDao.insertRecipe(
+                    RecipeEntity(
+                        id = recipeID,
+                        recipeName = recipe.recipeName,
+                        description = recipe.description,
+                        preparationMethod = recipe.preparationMethod,
+                        ingredients = recipe.ingredients,
+                        mealType = Meal.valueOf(recipe.mealType),
+                        diet = Diet.valueOf(recipe.diet),
+                        addedBy = UserType.USER,
+                        rating = recipe.rating, status = "Approved",
+                        restaurantAddress = Constants.EMPTY_STRING,
+                        restaurantName = Constants.EMPTY_STRING,
+                        restaurantLongitude = Constants.EMPTY_STRING,
+                        restaurantLatitude = Constants.EMPTY_STRING
+                    )
+                )
+            }
         }
-        return flow { result.code() }
+        return flow { emit(Pair(result.code(), recipeID)) }
     }
 
     override suspend fun updateRecipe(

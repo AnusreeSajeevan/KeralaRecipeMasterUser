@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -34,7 +33,7 @@ fun RecipeRequestComponent(
     val context = LocalContext.current
     Card(onClick = {
         val bundle = Bundle().apply {
-            putInt(Constants.KEY_RECIPE_REQUEST_ID, recipeRequest.requestId)
+            putInt(Constants.KEY_RECIPE_REQUEST_ID, recipeRequest.recipeId)
         }
         val intent = Intent(context, RecipeRequestDetailsActivity::class.java)
         intent.putExtras(bundle)

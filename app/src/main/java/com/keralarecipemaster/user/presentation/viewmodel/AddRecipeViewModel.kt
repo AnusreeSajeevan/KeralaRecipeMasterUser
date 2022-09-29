@@ -11,6 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
+import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
+import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
 import com.keralarecipemaster.user.repository.RecipeRequestRepository
@@ -30,7 +32,8 @@ import kotlin.collections.ArrayList
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(
     val repository: RecipeRepository,
-    val recipeRequestRepository: RecipeRequestRepository
+    val recipeRequestRepository: RecipeRequestRepository,
+    val prefsStore: PrefsStore
 ) :
     ViewModel(),
     OnRatingBarCheck {
@@ -90,6 +93,14 @@ class AddRecipeViewModel @Inject constructor(
         return initialLocation
     }
 
+    init {
+        viewModelScope.launch {
+            prefsStore.getUserId().catch { }.collect {
+                _userId.value = it
+            }
+        }
+    }
+
     private var _recipeName = MutableStateFlow(EMPTY_STRING)
     private var _dietType = MutableStateFlow(Diet.VEG.name)
     private var _mealType = MutableStateFlow(Meal.BREAKFAST.name)
@@ -102,6 +113,9 @@ class AddRecipeViewModel @Inject constructor(
     private var _address = MutableStateFlow(EMPTY_STRING)
     private var _hasRestaurantDetails = MutableStateFlow(false)
     private var _rating = MutableStateFlow(0)
+
+    private val _userId =
+        MutableStateFlow(Constants.INVALID_USER_ID)
 
     fun onRecipeNameChange(recipeName: String) {
         this._recipeName.value = recipeName
@@ -147,23 +161,23 @@ class AddRecipeViewModel @Inject constructor(
         if (validateRecipeDetails()) {
             viewModelScope.launch {
                 repository.addRecipe(
-                    RecipeEntity(
-                        id = repository.count() + 1,
+                    userId = _userId.value,
+                    recipe =
+                    RecipeResponse(
+                        id = Constants.INVALID_RECIPE_ID,
                         recipeName = _recipeName.value,
                         description = _description.value,
                         preparationMethod = _preparationMethod.value,
                         ingredients = _ingredients.value,
-                        diet = Diet.valueOf(_dietType.value),
-                        mealType = Meal.valueOf(mealType.value),
-                        restaurantAddress = address.value,
-                        restaurantLatitude = location.value.latitude.toString(),
-                        restaurantLongitude = location.value.longitude.toString(),
-                        restaurantName = restaurantName.value,
-                        addedBy = UserType.valueOf(UserType.USER.name),
-                        rating = _rating.value
+                        diet = _dietType.value,
+                        mealType = mealType.value,
+                        addedBy = UserType.USER.name,
+                        rating = _rating.value,
+                        status = "Approved",
+                        restaurant = null
                     )
                 ).catch { }.collect {
-                    if (it == Constants.ERROR_CODE_SUCCESS) {
+                    if (it.first == Constants.ERROR_CODE_SUCCESS) {
                         _errorMessage.value = "Recipe added successfully"
                     }
                 }
@@ -175,28 +189,29 @@ class AddRecipeViewModel @Inject constructor(
 
     fun addRecipeRequest() {
         if (validateRecipeDetails() && validateRestaurantDetails()) {
-            addRecipeRequestToDb()
-        }
-    }
-
-    private fun addRecipeRequestToDb() {
-        viewModelScope.launch {
-            recipeRequestRepository.addRecipeRequest(
-                RecipeRequestEntity(
-                    requestId = repository.count() + 1,
-                    recipeName = _recipeName.value,
-                    description = _description.value,
-                    preparationMethod = _preparationMethod.value,
-                    ingredients = _ingredients.value,
-                    diet = Diet.valueOf(_dietType.value),
-                    mealType = Meal.valueOf(mealType.value),
-                    restaurantAddress = address.value,
-                    restaurantLatitude = location.value.latitude.toString(),
-                    restaurantLongitude = location.value.longitude.toString(),
-                    restaurantName = restaurantName.value,
-                    rating = _rating.value
-                )
-            )
+            viewModelScope.launch {
+                recipeRequestRepository.addRecipeRequest(
+                    RecipeRequestEntity(
+                        recipeName = _recipeName.value,
+                        description = _description.value,
+                        preparationMethod = _preparationMethod.value,
+                        ingredients = _ingredients.value,
+                        diet = Diet.valueOf(_dietType.value),
+                        mealType = Meal.valueOf(mealType.value),
+                        restaurantAddress = address.value,
+                        restaurantLatitude = location.value.latitude.toString(),
+                        restaurantLongitude = location.value.longitude.toString(),
+                        restaurantName = restaurantName.value,
+                        rating = _rating.value,
+                        status = "to do"
+                    )
+                ).catch { }.collect {
+                    if (it == Constants.ERROR_CODE_SUCCESS) {
+                        _errorMessage.value = "Recipe added successfully"
+                    }
+                }
+//            addRecipeRequestToDb()
+            }
         }
     }
 

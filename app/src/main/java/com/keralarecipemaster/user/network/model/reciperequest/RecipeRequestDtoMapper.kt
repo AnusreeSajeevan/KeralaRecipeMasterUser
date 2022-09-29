@@ -6,13 +6,14 @@ import com.keralarecipemaster.user.domain.model.util.DomainMapper
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
+import com.keralarecipemaster.user.utils.UserType
 import javax.inject.Inject
 
 class RecipeRequestDtoMapper @Inject constructor() :
     DomainMapper<RecipeRequestResponse, RecipeRequestEntity> {
     override fun toDomainModel(entity: RecipeRequestResponse): RecipeRequestEntity {
         return RecipeRequestEntity(
-            requestId = entity.requestId,
+            recipeId = entity.id,
             recipeName = entity.recipeName,
             description = entity.description,
             ingredients = entity.ingredients,
@@ -24,13 +25,14 @@ class RecipeRequestDtoMapper @Inject constructor() :
             preparationMethod = entity.preparationMethod,
             mealType = Meal.valueOf(entity.mealType.toUpperCase()),
             diet = Diet.valueOf(entity.diet.toUpperCase()),
-            rating = entity.rating
+            rating = entity.rating,
+            status = entity.status
         )
     }
 
     override fun fromDomainModel(domainModel: RecipeRequestEntity): RecipeRequestResponse {
         return RecipeRequestResponse(
-            requestId = domainModel.requestId,
+            id = domainModel.recipeId,
             recipeName = domainModel.recipeName,
             description = domainModel.description,
             ingredients = domainModel.ingredients,
@@ -44,7 +46,9 @@ class RecipeRequestDtoMapper @Inject constructor() :
             preparationMethod = domainModel.preparationMethod,
             mealType = domainModel.mealType.name,
             diet = domainModel.diet.name,
-            rating = domainModel.rating
+            rating = domainModel.rating,
+            addedBy = UserType.OWNER.value,
+            status = domainModel.status
         )
     }
 

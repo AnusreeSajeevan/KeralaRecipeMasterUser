@@ -3,7 +3,7 @@ package com.keralarecipemaster.user.network.service
 import com.keralarecipemaster.user.network.model.authentication.LoginRequest
 import com.keralarecipemaster.user.network.model.authentication.LoginResponse
 import com.keralarecipemaster.user.network.model.authentication.RegisterResponse
-import com.keralarecipemaster.user.network.model.authentication.UserRegisterRequest
+import com.keralarecipemaster.user.network.model.authentication.RegisterUserRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -23,6 +23,6 @@ interface AuthenticationApi {
 
     @POST("/signup")
     suspend fun registerUser(
-        @Body registerRequest: UserRegisterRequest
+        @Body registerRequest: RegisterUserRequest
     ): Response<RegisterResponse>
 }
