@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -102,7 +103,6 @@ fun RecipesScreen(
     val errorMessage by errorMessageValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
     val context = LocalContext.current
-    val activity = (context as? Activity)
 
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
@@ -190,21 +190,31 @@ fun RecipesScreen(
                     Spacer(modifier = Modifier.size(10.dp))
 
                     Spacer(modifier = Modifier.size(10.dp))
-                    LazyColumn {
-                        items(recipesList) { recipe ->
-                            if (userType == UserType.OWNER) {
-                                RestaurantRecipeComponent(
-                                    recipe,
-                                    recipeViewModel,
-                                    navController
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
-                            } else {
-                                UserRecipeComponent(
-                                    recipe,
-                                    recipeViewModel
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
+                    if (recipesList.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        ) {
+                            Text(text = "No Recipes", modifier = Modifier.align(Alignment.Center))
+                        }
+                    } else {
+                        LazyColumn {
+                            items(recipesList) { recipe ->
+                                if (userType == UserType.OWNER) {
+                                    RestaurantRecipeComponent(
+                                        recipe,
+                                        recipeViewModel,
+                                        navController
+                                    )
+                                    Spacer(modifier = Modifier.size(10.dp))
+                                } else {
+                                    UserRecipeComponent(
+                                        recipe,
+                                        recipeViewModel
+                                    )
+                                    Spacer(modifier = Modifier.size(10.dp))
+                                }
                             }
                         }
                     }

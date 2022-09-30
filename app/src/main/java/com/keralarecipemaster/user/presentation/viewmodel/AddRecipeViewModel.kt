@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
+import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
+import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestResponse
 import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
@@ -189,7 +191,7 @@ class AddRecipeViewModel @Inject constructor(
         }
     }
 
-    fun addRecipeRequest() {
+/*    fun addRecipeRequest() {
         if (validateRecipeDetails() && validateRestaurantDetails()) {
             viewModelScope.launch {
                 recipeRequestRepository.addRecipeRequest(
@@ -214,6 +216,41 @@ class AddRecipeViewModel @Inject constructor(
                 }
 //            addRecipeRequestToDb()
             }
+        }
+    }*/
+
+    fun addRecipeRequest() {
+        if (validateRecipeDetails() && validateRestaurantDetails()) {
+            viewModelScope.launch {
+                recipeRequestRepository.addRecipeRequest(
+                    userId = _userId.value,
+                    recipe =
+                    RecipeResponse(
+                        id = Constants.INVALID_RECIPE_ID,
+                        recipeName = _recipeName.value,
+                        description = _description.value,
+                        preparationMethod = _preparationMethod.value,
+                        ingredients = _ingredients.value,
+                        diet = _dietType.value,
+                        mealType = mealType.value,
+                        addedBy = UserType.USER.name,
+                        rating = _rating.value,
+                        status = "ApprovalPending",
+                        restaurant = Restaurant(
+                            name = _restaurantName.value,
+                            latitude = _latitude.value,
+                            longitude = _longitude.value,
+                            address = _address.value
+                        )
+                    )
+                ).catch { }.collect {
+                    if (it.first == Constants.ERROR_CODE_SUCCESS) {
+                        _errorMessage.value = "Recipe Request submitted for approval!"
+                    }
+                }
+            }
+        } else {
+            _errorMessage.value = "Add mandatory fields"
         }
     }
 

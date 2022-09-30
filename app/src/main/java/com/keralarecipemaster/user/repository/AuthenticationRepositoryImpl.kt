@@ -2,6 +2,7 @@ package com.keralarecipemaster.user.repository
 
 import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
+import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.network.model.authentication.LoginRequest
 import com.keralarecipemaster.user.network.model.authentication.RegisterUserRequest
 import com.keralarecipemaster.user.network.model.authentication.UserInfo
@@ -18,7 +19,9 @@ import javax.inject.Inject
 class AuthenticationRepositoryImpl @Inject constructor(
     private val prefsStore: PrefsStore,
     private val authenticationApi: AuthenticationApi,
-    @CoroutinesDispatchersModule.IoDispatcher val ioDispatcher: CoroutineDispatcher
+    @CoroutinesDispatchersModule.IoDispatcher val ioDispatcher: CoroutineDispatcher,
+    private val recipeDao: RecipeDao,
+    private val recipeRecipeDao: RecipeDao
 ) : AuthenticationRepository {
     override suspend fun login(
         username: String,
@@ -31,30 +34,21 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 userInfo = loginResponse.userInfo
                 withContext(ioDispatcher) {
                     launch {
-                        if (userInfo?.usertype == UserType.USER.value) {
-                            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
-                        } else {
-                            prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                        userInfo?.let {
+                            if (it.usertype == UserType.USER.value) {
+                                prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
+                            } else {
+                                prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                            }
+                            prefsStore.setUsername(it.username)
+                            prefsStore.setEmail(it.email)
+                            prefsStore.setUserId(it.userId)
                         }
-                        prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
-                        prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
-                        prefsStore.setUserId(userInfo?.userId ?: Constants.INVALID_USER_ID)
                     }
                 }
             }
         }
         return flow { emit(Pair(userInfo, result.code())) }
-    }
-
-    override suspend fun loginAsRestaurantOwner(username: String, password: String): Flow<Boolean> {
-        val result =
-            authenticationApi.loginRestaurantOwner(username = username, password = password)
-        withContext(ioDispatcher) {
-            launch {
-                prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
-            }
-        }
-        return flow { emit(result.isSuccessful) }
     }
 
     override suspend fun registerUser(
@@ -91,6 +85,10 @@ class AuthenticationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
-        prefsStore.updateAuthenticationState(AuthenticationState.INITIAL_STATE.name)
+        withContext(Dispatchers.IO) {
+            prefsStore.updateAuthenticationState(AuthenticationState.INITIAL_STATE.name)
+            recipeDao.deleteAll()
+            recipeRecipeDao.deleteAll()
+        }
     }
 }

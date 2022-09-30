@@ -4,9 +4,16 @@ import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
+import com.keralarecipemaster.user.network.model.recipe.AddOrUpdateRecipeRequest
+import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
 import com.keralarecipemaster.user.network.model.reciperequest.CommonRequest
 import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestDtoMapper
+import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestResponse
 import com.keralarecipemaster.user.network.service.RecipeRequestApi
+import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.Diet
+import com.keralarecipemaster.user.utils.Meal
+import com.keralarecipemaster.user.utils.UserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -44,12 +51,34 @@ class RecipeRequestRepositoryImpl @Inject constructor(
         return recipeRequestsDao.getAllRecipeRequests()
     }
 
-    override suspend fun addRecipeRequest(recipeRequestEntity: RecipeRequestEntity):Flow<Int> {
-        val result = recipeRequestApi.addRecipeRequest(recipeRequestEntity = recipeRequestEntity)
+    override suspend fun addRecipeRequest(userId: Int, recipe: RecipeResponse): Flow<Pair<Int, Int>> {
+        var recipeID = Constants.INVALID_RECIPE_ID
+        val result = recipeRequestApi.addRecipeRequest(
+            AddOrUpdateRecipeRequest(userId = userId, recipe = recipe)
+        )
         if (result.isSuccessful) {
-            recipeRequestsDao.insertRecipe(recipeRequest = recipeRequestEntity)
+            result.body()?.let {
+                recipeID = it.recipe_id
+                recipeRequestsDao.insertRecipe(
+                    RecipeRequestEntity(
+                        recipeId = recipeID,
+                        recipeName = recipe.recipeName,
+                        description = recipe.description,
+                        preparationMethod = recipe.preparationMethod,
+                        ingredients = recipe.ingredients,
+                        mealType = Meal.valueOf(recipe.mealType),
+                        diet = Diet.valueOf(recipe.diet),
+                        addedBy = UserType.OWNER.value,
+                        rating = recipe.rating, status = "ApprovalPending",
+                        restaurantAddress = recipe.restaurant?.address ?: Constants.EMPTY_STRING,
+                        restaurantName = recipe.restaurant?.name ?: Constants.EMPTY_STRING,
+                        restaurantLongitude = recipe.restaurant?.longitude ?: Constants.EMPTY_STRING,
+                        restaurantLatitude = recipe.restaurant?.latitude ?: Constants.EMPTY_STRING
+                    )
+                )
+            }
         }
-        return flow { result.code() }
+        return flow { emit(Pair(result.code(), recipeID)) }
     }
 
     override suspend fun deleteRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {

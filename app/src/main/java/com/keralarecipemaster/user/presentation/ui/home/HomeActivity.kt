@@ -53,7 +53,8 @@ class HomeActivity : ComponentActivity() {
                     recipeListViewModel = recipeViewModel,
                     authenticationViewModel = authenticationViewModel,
                     recipeRequestViewModel = recipeRequestViewModel,
-                    locationNotificationViewModel = locationNotificationViewModel
+                    locationNotificationViewModel = locationNotificationViewModel,
+                    authenticationState = authenticationState
                 )
             } /*else {
                 ShowLoginScreen(

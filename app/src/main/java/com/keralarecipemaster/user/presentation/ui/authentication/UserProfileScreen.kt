@@ -76,7 +76,6 @@ fun UserProfileScreen(
         }
     val email by emailValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
-
     if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
         Button(onClick = {
             val intent = Intent(activity, AuthenticationActivity::class.java)
@@ -89,11 +88,10 @@ fun UserProfileScreen(
         }
     } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Username : $username")
-            Text(text = "Email : $email")
-            Text(text = email)
+            Text(text = "$username")
+            Text(text = "$email")
+            Spacer(modifier = Modifier.size(16.dp))
             Row {
-
                 Text(text = "Turn ${if (notificationStatus) "OFF" else "ON"} Location Notification")
                 Spacer(modifier = Modifier.size(10.dp))
                 Switch(

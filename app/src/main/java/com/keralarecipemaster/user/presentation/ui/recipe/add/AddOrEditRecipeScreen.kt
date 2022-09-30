@@ -362,20 +362,22 @@ fun AddOrEditRecipeScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 ShowDietCategory(addRecipeViewModel, dietType)
 
-                RatingBarView(
-                    rating = remember {
-                        mutableStateOf(rating)
-                    },
-                    isRatingEditable = true,
-                    ratedStarsColor = Color(255, 220, 0),
-                    starIcon = painterResource(id = R.drawable.ic_star_filled),
-                    unRatedStarsColor = Color.LightGray,
-                    viewModel = addRecipeViewModel
-                )
 
-                Spacer(modifier = Modifier.size(16.dp))
 
                 if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                    RatingBarView(
+                        rating = remember {
+                            mutableStateOf(rating)
+                        },
+                        isRatingEditable = true,
+                        ratedStarsColor = Color(255, 220, 0),
+                        starIcon = painterResource(id = R.drawable.ic_star_filled),
+                        unRatedStarsColor = Color.LightGray,
+                        viewModel = addRecipeViewModel
+                    )
+
+                    Spacer(modifier = Modifier.size(16.dp))
+
                     /*                   Row(modifier = Modifier.fillMaxWidth()) {
                                            Checkbox(
                                                checked = hasRestaurantDetails,

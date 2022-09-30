@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
-import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.repository.RecipeRequestRepository
 import com.keralarecipemaster.user.utils.Constants
@@ -44,7 +43,7 @@ class RecipeRequestViewModel @Inject constructor(
 
     init {
         fetchRecipeRequests()
-        getRecipeRequests()
+        getApprovedRecipeRequests()
     }
 
     private fun fetchRecipeRequests() {
@@ -53,7 +52,7 @@ class RecipeRequestViewModel @Inject constructor(
         }
     }
 
-    fun getRecipeRequests() {
+    fun getApprovedRecipeRequests() {
         viewModelScope.launch {
             recipeRequestRepository.getAllRecipeRequests().catch { }.collect { recipeRequests ->
                 var list = recipeRequests

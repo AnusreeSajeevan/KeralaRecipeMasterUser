@@ -90,23 +90,7 @@ fun LoginScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.login_as_user))
-        }
-
-        Button(
-            onClick = {
-                if (isAllFieldsValid(username = username, password = password)) {
-                    authenticationViewModel.login(
-                        username = username,
-                        password = password
-                    )
-                } else {
-                    Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.login_as_restaurant_owner))
+            Text(text = stringResource(id = R.string.login))
         }
 
         if (!isFromProfileScreen) {

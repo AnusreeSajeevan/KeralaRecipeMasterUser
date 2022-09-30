@@ -47,17 +47,31 @@ class AuthenticationViewModel @Inject constructor(
         MutableStateFlow(Constants.EMPTY_STRING)
 
     init {
-        viewModelScope.launch {
-            prefsStore.getAuthenticationState().catch { }.collect {
-                _authenticationState.value = AuthenticationState.valueOf(it)
-            }
+        getAuthenticationState()
+        getUsername()
+        getPassword()
+    }
 
+    private fun getPassword() {
+        viewModelScope.launch {
+            prefsStore.getEmail().catch { }.collect {
+                _email.value = it
+            }
+        }
+    }
+
+    private fun getUsername() {
+        viewModelScope.launch {
             prefsStore.getUsername().catch { }.collect {
                 _username.value = it
             }
+        }
+    }
 
-            prefsStore.getEmail().catch { }.collect {
-                _email.value = it
+    private fun getAuthenticationState() {
+        viewModelScope.launch {
+            prefsStore.getAuthenticationState().catch { }.collect {
+                _authenticationState.value = AuthenticationState.valueOf(it)
             }
         }
     }

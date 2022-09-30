@@ -30,7 +30,8 @@ fun RecipeApp(
     recipeListViewModel: RecipeListViewModel,
     authenticationViewModel: AuthenticationViewModel,
     recipeRequestViewModel: RecipeRequestViewModel,
-    locationNotificationViewModel: LocationNotificationViewModel
+    locationNotificationViewModel: LocationNotificationViewModel,
+    authenticationState: AuthenticationState
 ) {
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
@@ -39,7 +40,7 @@ fun RecipeApp(
         val scaffoldState = rememberScaffoldState()
         val lifeCycleOwner = LocalLifecycleOwner.current
 
-        val authenticationStateValue = authenticationViewModel.authenticationState
+       /* val authenticationStateValue = authenticationViewModel.authenticationState
         val authenticationStateValueLifeCycleAware =
             remember(authenticationStateValue, lifeCycleOwner) {
                 authenticationStateValue.flowWithLifecycle(
@@ -47,7 +48,7 @@ fun RecipeApp(
                     Lifecycle.State.STARTED
                 )
             }
-        val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
+        val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)*/
 
 //        if (authenticationState == AuthenticationState.INITIAL_STATE) {
 //            ShowLoginScreen(authenticationViewModel)
@@ -57,7 +58,11 @@ fun RecipeApp(
             bottomBar = {
                 val items = arrayListOf<HomeItems>()
                 HomeItems.values().forEach {
-                    if (it == HomeItems.MyRecipes) {
+                    if (it == HomeItems.Famous) {
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
+                            items.add(it)
+                        }
+                    } else if (it == HomeItems.MyRecipes) {
                         if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
                             items.add(it)
                         }
