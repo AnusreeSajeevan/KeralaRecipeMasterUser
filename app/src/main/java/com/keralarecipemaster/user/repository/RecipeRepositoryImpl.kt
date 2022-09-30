@@ -1,13 +1,12 @@
 package com.keralarecipemaster.user.repository
 
 import android.util.Log
-import com.keralarecipemaster.admin.network.model.DeleteRecipeRequest
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
-import com.keralarecipemaster.user.network.model.recipe.AddRecipeRequest
+import com.keralarecipemaster.user.network.model.recipe.AddOrUpdateRecipeRequest
 import com.keralarecipemaster.user.network.model.recipe.RecipeDtoMapper
 import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
 import com.keralarecipemaster.user.network.service.RecipeApi
@@ -95,7 +94,7 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun addRecipe(userId: Int, recipe: RecipeResponse): Flow<Pair<Int, Int>> {
         var recipeID = Constants.INVALID_RECIPE_ID
         val result = recipeApi.addRecipe(
-            AddRecipeRequest(userId = userId, recipe = recipe)
+            AddOrUpdateRecipeRequest(userId = userId, recipe = recipe)
         )
         if (result.isSuccessful) {
             result.body()?.let {
@@ -110,7 +109,7 @@ class RecipeRepositoryImpl @Inject constructor(
                         mealType = Meal.valueOf(recipe.mealType),
                         diet = Diet.valueOf(recipe.diet),
                         addedBy = UserType.USER,
-                        rating = recipe.rating, status = "Approved",
+                        rating = recipe.rating, status = "",
                         restaurantAddress = Constants.EMPTY_STRING,
                         restaurantName = Constants.EMPTY_STRING,
                         restaurantLongitude = Constants.EMPTY_STRING,
@@ -122,7 +121,28 @@ class RecipeRepositoryImpl @Inject constructor(
         return flow { emit(Pair(result.code(), recipeID)) }
     }
 
-    override suspend fun updateRecipe(
+    override suspend fun updateRecipe(userId: Int, recipe: RecipeResponse): Flow<Int> {
+        val result = recipeApi.updateRecipe(AddOrUpdateRecipeRequest(userId = userId, recipe = recipe))
+        if (result.isSuccessful) {
+            result.body()?.let {
+                withContext(Dispatchers.IO) {
+                    recipeDao.updateRecipe(
+                        id = recipe.id,
+                        recipeName = recipe.recipeName,
+                        description = recipe.description,
+                        preparationMethod = recipe.preparationMethod,
+                        ingredients = recipe.ingredients,
+                        meal = Meal.valueOf(recipe.mealType),
+                        diet = Diet.valueOf(recipe.diet),
+                        rating = recipe.rating
+                    )
+                }
+            }
+        }
+        return flow { emit(result.code()) }
+    }
+
+/*    override suspend fun updateRecipe(
         recipeId: Int,
         recipeName: String,
         description: String,
@@ -139,10 +159,11 @@ class RecipeRepositoryImpl @Inject constructor(
                 diet = diet,
                 meal = meal,
                 ingredients = ingredients,
-                preparationMethod = preparationMethod
+                preparationMethod = preparationMethod,
+                rating =
             )
         }
-    }
+    }*/
 
     override suspend fun deleteRecipe(recipeId: Int): Flow<Int> {
         val result = recipeApi.deleteRecipe(recipeId = recipeId)

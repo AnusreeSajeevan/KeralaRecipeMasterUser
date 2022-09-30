@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
-import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
 import com.keralarecipemaster.user.prefsstore.PrefsStore
@@ -24,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(
     val repository: RecipeRepository,
-    val recipeRequestRepository: RecipeRequestRepository,
+    private val recipeRequestRepository: RecipeRequestRepository,
     val prefsStore: PrefsStore
 ) :
     ViewModel(),
@@ -173,7 +173,7 @@ class AddRecipeViewModel @Inject constructor(
                         mealType = mealType.value,
                         addedBy = UserType.USER.name,
                         rating = _rating.value,
-                        status = "Approved",
+                        status = "",
                         restaurant = null
                     )
                 ).catch { }.collect {
@@ -218,11 +218,32 @@ class AddRecipeViewModel @Inject constructor(
     fun updateRecipe(recipeId: Int?) {
         recipeId?.let {
             if (validateRecipeDetails()) {
-                if (_hasRestaurantDetails.value) {
-                    if (validateRestaurantDetails()) updateRecipeInDb(recipeId = recipeId)
-                } else {
-                    updateRecipeInDb(recipeId = recipeId)
+                viewModelScope.launch {
+                    repository.updateRecipe(
+                        userId = _userId.value,
+                        recipe =
+                        RecipeResponse(
+                            id = recipeId,
+                            recipeName = _recipeName.value,
+                            description = _description.value,
+                            preparationMethod = _preparationMethod.value,
+                            ingredients = _ingredients.value,
+                            diet = _dietType.value,
+                            mealType = mealType.value,
+                            addedBy = UserType.USER.name,
+                            rating = _rating.value,
+                            status = "",
+                            restaurant = null
+                        )
+                    ).catch { }.collect {
+                        if (it == Constants.ERROR_CODE_SUCCESS) {
+                            _errorMessage.value = "Recipe added successfully"
+                        }
+                    }
                 }
+//                    updateRecipeInDb(recipeId = recipeId)
+            } else {
+                _errorMessage.value = "Add mandatory fields"
             }
         }
     }
@@ -249,7 +270,7 @@ class AddRecipeViewModel @Inject constructor(
         }
     }*/
 
-    private fun updateRecipeInDb(recipeId: Int) {
+/*    private fun updateRecipeInDb(recipeId: Int) {
         viewModelScope.launch {
             repository.updateRecipe(
                 recipeName = recipeName.value,
@@ -261,7 +282,7 @@ class AddRecipeViewModel @Inject constructor(
                 preparationMethod = _preparationMethod.value
             )
         }
-    }
+    }*/
 
     fun validateRestaurantDetails(): Boolean {
         return !(

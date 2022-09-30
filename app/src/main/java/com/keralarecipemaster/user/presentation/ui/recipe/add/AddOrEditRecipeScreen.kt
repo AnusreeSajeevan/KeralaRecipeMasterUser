@@ -163,10 +163,11 @@ fun AddOrEditRecipeScreen(
 
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-        addRecipeViewModel.resetErrorMessage()
+
+        activity?.finish()
         if (errorMessage.equals(R.string.add_recipe_success)) {
-            activity?.finish()
         }
+        addRecipeViewModel.resetErrorMessage()
     }
 
 /*
@@ -464,7 +465,7 @@ fun AddOrEditRecipeScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Add Recipe")
+                    Text(text = if (actionType == "edit")  "Update Recipe" else "Add Recipe")
                 }
             }
         }

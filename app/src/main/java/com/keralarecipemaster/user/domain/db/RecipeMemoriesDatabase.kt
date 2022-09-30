@@ -62,7 +62,7 @@ abstract class RecipeMemoriesDatabase : RoomDatabase() {
                 diet = Diet.VEG,
                 rating = 2,
                 userType = UserType.USER,
-                status = "Approved"
+                status = ""
             )
 
             insertRecipe(
