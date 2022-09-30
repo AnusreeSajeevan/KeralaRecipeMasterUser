@@ -1,10 +1,13 @@
 package com.keralarecipemaster.user.presentation.viewmodel
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.CountDownTimer
+import android.util.Base64
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,11 +26,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(
@@ -237,11 +239,10 @@ class AddRecipeViewModel @Inject constructor(
                         )
                     ).catch { }.collect {
                         if (it == Constants.ERROR_CODE_SUCCESS) {
-                            _errorMessage.value = "Recipe added successfully"
+                            _errorMessage.value = "Recipe details updated successfully"
                         }
                     }
                 }
-//                    updateRecipeInDb(recipeId = recipeId)
             } else {
                 _errorMessage.value = "Add mandatory fields"
             }
@@ -286,10 +287,10 @@ class AddRecipeViewModel @Inject constructor(
 
     fun validateRestaurantDetails(): Boolean {
         return !(
-            restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
-                .trim() == EMPTY_STRING || location.value.longitude.toString()
-                .trim() == EMPTY_STRING || address.value.trim() == EMPTY_STRING
-            )
+                restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
+                    .trim() == EMPTY_STRING || location.value.longitude.toString()
+                    .trim() == EMPTY_STRING || address.value.trim() == EMPTY_STRING
+                )
     }
 
     fun validateRecipeDetails(): Boolean {
@@ -417,5 +418,23 @@ class AddRecipeViewModel @Inject constructor(
 
     fun resetErrorMessage() {
         _errorMessage.value = Constants.EMPTY_STRING
+    }
+
+    fun setImageBitmap(bitmap: Bitmap) {
+        try {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+            val image: String =
+                android.util.Base64.encodeToString(
+                    byteArrayOutputStream.toByteArray(),
+                    Base64.DEFAULT
+                )
+            val name = java.lang.String.valueOf(Calendar.getInstance().timeInMillis)
+            Log.d("Base64Img","image : $image")
+            Log.d("Base64Img","name : $name")
+
+        } catch (e: Exception){
+
+        }
     }
 }

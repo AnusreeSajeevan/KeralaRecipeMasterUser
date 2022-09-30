@@ -1,7 +1,10 @@
 package com.keralarecipemaster.user.presentation.ui.recipe.add
 
 import android.app.Activity
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -201,6 +204,19 @@ fun AddOrEditRecipeScreen(
             uri?.let {
                 hasImage = it != null
                 imageUri = it
+                if(Build.VERSION.SDK_INT < 28) {
+                    val bitmap = MediaStore.Images.Media.getBitmap(
+                        context.contentResolver,
+                        imageUri
+                    )
+                    addRecipeViewModel.setImageBitmap(bitmap)
+//                    imageView.setImageBitmap(bitmap)
+                } else {
+                    val source = ImageDecoder.createSource(context.contentResolver, it)
+                    val bitmap = ImageDecoder.decodeBitmap(source)
+//                    imageView.setImageBitmap(bitmap)
+                    addRecipeViewModel.setImageBitmap(bitmap)
+                }
             }
         }
     )
@@ -446,21 +462,11 @@ fun AddOrEditRecipeScreen(
                             }
                             navController.popBackStack()
                         } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
-//                            if (addRecipeViewModel.validateRecipeDetails()) {
                             if (actionType == "edit") {
                                 addRecipeViewModel.updateRecipe(recipeId)
                             } else {
                                 addRecipeViewModel.addRecipe()
-//                                activity?.finish()
                             }
-//                            navController.popBackStack()
-                            /* } else {
-                                 Toast.makeText(
-                                     context,
-                                     "Add all mandatory details",
-                                     Toast.LENGTH_SHORT
-                                 ).show()
-                             }*/
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
