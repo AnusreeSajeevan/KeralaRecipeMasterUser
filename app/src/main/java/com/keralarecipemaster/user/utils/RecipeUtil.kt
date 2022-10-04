@@ -1,11 +1,10 @@
 package com.keralarecipemaster.user.utils
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.os.Environment
+import android.util.Base64
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.keralarecipemaster.user.R
@@ -290,6 +289,10 @@ class RecipeUtil {
                 rating = rating,
                 status = status
             )
+        }
+        fun getBitmapFromBase64Image(base64: String): Bitmap? {
+            val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
+            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
         }
     }
 }

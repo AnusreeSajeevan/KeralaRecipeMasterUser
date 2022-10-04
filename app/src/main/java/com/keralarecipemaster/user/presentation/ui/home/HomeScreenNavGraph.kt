@@ -53,7 +53,7 @@ fun RecipeNavHost(
             RecipeRequestsScreen(
                 recipeRequestViewModel = recipeRequestViewModel,
                 navController = navController,
-                authenticationViewModel = authenticationViewModel
+                authenticationState = authenticationState
             )
         }
         composable(HomeItems.Account.name) {

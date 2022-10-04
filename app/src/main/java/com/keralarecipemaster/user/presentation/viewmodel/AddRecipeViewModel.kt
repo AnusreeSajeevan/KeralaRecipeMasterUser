@@ -12,10 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.Ingredient
-import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
-import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestResponse
 import com.keralarecipemaster.user.prefsstore.PrefsStore
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
@@ -89,6 +87,9 @@ class AddRecipeViewModel @Inject constructor(
     val addressText = mutableStateOf("")
     var isMapEditable = mutableStateOf(true)
     var timer: CountDownTimer? = null
+
+    var image  = Constants.EMPTY_STRING
+    var imageName  = Constants.EMPTY_STRING
 
     fun getInitialLocation(): Location {
         val initialLocation = Location("")
@@ -178,7 +179,9 @@ class AddRecipeViewModel @Inject constructor(
                         addedBy = UserType.USER.name,
                         rating = _rating.value,
                         status = "",
-                        restaurant = null
+                        restaurant = null,
+                        image = image,
+                        imageName = imageName
                     )
                 ).catch { }.collect {
                     if (it.first == Constants.ERROR_CODE_SUCCESS) {
@@ -234,6 +237,8 @@ class AddRecipeViewModel @Inject constructor(
                         diet = _dietType.value,
                         mealType = mealType.value,
                         addedBy = UserType.USER.name,
+                        image = image,
+                        imageName = imageName,
                         rating = _rating.value,
                         status = "ApprovalPending",
                         restaurant = Restaurant(
@@ -324,10 +329,10 @@ class AddRecipeViewModel @Inject constructor(
 
     fun validateRestaurantDetails(): Boolean {
         return !(
-                restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
-                    .trim() == EMPTY_STRING || location.value.longitude.toString()
-                    .trim() == EMPTY_STRING || address.value.trim() == EMPTY_STRING
-                )
+            restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
+                .trim() == EMPTY_STRING || location.value.longitude.toString()
+                .trim() == EMPTY_STRING || address.value.trim() == EMPTY_STRING
+            )
     }
 
     fun validateRecipeDetails(): Boolean {
@@ -462,16 +467,16 @@ class AddRecipeViewModel @Inject constructor(
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
             val image: String =
-                android.util.Base64.encodeToString(
+                Base64.encodeToString(
                     byteArrayOutputStream.toByteArray(),
                     Base64.DEFAULT
                 )
             val name = java.lang.String.valueOf(Calendar.getInstance().timeInMillis)
-            Log.d("Base64Img","image : $image")
-            Log.d("Base64Img","name : $name")
-
-        } catch (e: Exception){
-
+            this.image = image
+            this.imageName = name
+            Log.d("Base64Img", "image : $image")
+            Log.d("Base64Img", "name : $name")
+        } catch (e: Exception) {
         }
     }
 }

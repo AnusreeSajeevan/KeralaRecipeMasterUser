@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -74,16 +75,29 @@ fun RecipeDetailsScreen(
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box {
-            Image(
-                painter = painterResource(
-                    id = drawable.chicken_biriyani
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
+
+            val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
+            if (bitmap == null) {
+                Image(
+                    painter = painterResource(
+                        id = R.drawable.placeholder
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             if (recipeEntity.addedBy == UserType.USER) {
                 IconButton(onClick = {

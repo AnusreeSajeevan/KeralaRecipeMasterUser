@@ -4,7 +4,7 @@ import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
-import com.keralarecipemaster.user.domain.model.Ingredient
+import com.keralarecipemaster.user.domain.model.FamousRestaurant
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.network.model.recipe.AddOrUpdateRecipeRequest
 import com.keralarecipemaster.user.network.model.recipe.RecipeDtoMapper
@@ -40,6 +40,15 @@ class RecipeRepositoryImpl @Inject constructor(
                 if (list.isNotEmpty()) {
                     recipeDtoMapper.toRecipeEntityList(list).forEach {
                         recipeDao.insertRecipe(recipe = it)
+                        famousLocationDao.insertFamousLocation(
+                            FamousRestaurant(
+                                System.currentTimeMillis() / 1000,
+                                it.restaurantName,
+                                it.restaurantAddress,
+                                it.restaurantLatitude,
+                                it.restaurantLongitude
+                            )
+                        )
                     }
                 }
             }
@@ -107,6 +116,8 @@ class RecipeRepositoryImpl @Inject constructor(
                         preparationMethod = recipe.preparationMethod,
                         ingredients = recipe.ingredients,
                         mealType = Meal.valueOf(recipe.mealType),
+                        image = recipe.image,
+                        imageName = recipe.imageName,
                         diet = Diet.valueOf(recipe.diet),
                         addedBy = UserType.USER,
                         rating = recipe.rating, status = "",
@@ -122,7 +133,8 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateRecipe(userId: Int, recipe: RecipeResponse): Flow<Int> {
-        val result = recipeApi.updateRecipe(AddOrUpdateRecipeRequest(userId = userId, recipe = recipe))
+        val result =
+            recipeApi.updateRecipe(AddOrUpdateRecipeRequest(userId = userId, recipe = recipe))
         if (result.isSuccessful) {
             result.body()?.let {
                 withContext(Dispatchers.IO) {

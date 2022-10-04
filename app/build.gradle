@@ -110,4 +110,6 @@ dependencies {
 
 
     implementation("io.coil-kt:coil-compose:2.2.1")
+    implementation("com.google.android.gms:play-services-location:17.0.0")
+    implementation("androidx.core:core-ktx:1.6.0")
 }

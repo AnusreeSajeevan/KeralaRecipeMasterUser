@@ -16,6 +16,7 @@ data class RecipeEntity(
     val description: String,
     val ingredients: List<Ingredient>,
     val image: String = Constants.EMPTY_STRING,
+    val imageName: String = Constants.EMPTY_STRING,
     val restaurantName: String,
     val restaurantLatitude: String,
     val restaurantLongitude: String,

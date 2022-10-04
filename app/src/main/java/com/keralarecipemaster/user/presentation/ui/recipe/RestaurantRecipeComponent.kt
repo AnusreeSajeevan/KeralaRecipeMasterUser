@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -22,6 +23,7 @@ import com.keralarecipemaster.user.presentation.ui.recipe.details.RecipeDetailsA
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
+import com.keralarecipemaster.user.utils.RecipeUtil
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -41,16 +43,28 @@ fun RestaurantRecipeComponent(
     }) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box {
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.chicken_biriyani
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
+                val bitmap = RecipeUtil.getBitmapFromBase64Image(recipe.image)
+                if (bitmap == null) {
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.placeholder
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 /* IconButton(onClick = {
                      recipeViewModel.deleteRecipe(recipe)
                  }, modifier = Modifier.align(Alignment.BottomEnd)) {

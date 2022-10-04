@@ -1,17 +1,17 @@
 package com.keralarecipemaster.user.domain.db
 
 import androidx.room.*
-import com.keralarecipemaster.user.domain.model.FamousLocation
+import com.keralarecipemaster.user.domain.model.FamousRestaurant
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FamousLocationDao {
-    @Query("SELECT * from famous_location")
-    fun getAllFamousLocations(): Flow<List<FamousLocation>>
+    @Query("SELECT * from famous_restaurant")
+    fun getAllFamousLocations(): Flow<List<FamousRestaurant>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertFamousLocation(famousLocation: FamousLocation)
+    suspend fun insertFamousLocation(famousLocation: FamousRestaurant)
 
-    @Query("SELECT COUNT(name) from famous_location")
+    @Query("SELECT COUNT(restaurantName) from famous_restaurant")
     fun numberOfLocations(): Int
 }

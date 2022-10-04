@@ -19,6 +19,9 @@ data class RecipeResponse(
 
     val image: String = Constants.EMPTY_STRING,
 
+    @SerializedName("image_name")
+    val imageName: String = Constants.EMPTY_STRING,
+
     val restaurant: Restaurant?,
 
     @SerializedName("preparation_method")

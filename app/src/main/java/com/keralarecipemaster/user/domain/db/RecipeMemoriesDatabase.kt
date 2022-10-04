@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.keralarecipemaster.user.domain.model.FamousLocation
+import com.keralarecipemaster.user.domain.model.FamousRestaurant
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
@@ -14,7 +14,7 @@ import com.keralarecipemaster.user.utils.*
 import kotlinx.coroutines.CoroutineScope
 
 @Database(
-    entities = [RecipeEntity::class, RecipeRequestEntity::class, FamousLocation::class],
+    entities = [RecipeEntity::class, RecipeRequestEntity::class, FamousRestaurant::class],
     version = 1,
     exportSchema = false
 )

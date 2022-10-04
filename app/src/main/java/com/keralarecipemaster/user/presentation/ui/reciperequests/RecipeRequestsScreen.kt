@@ -25,8 +25,8 @@ import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
 @Composable
 fun RecipeRequestsScreen(
     recipeRequestViewModel: RecipeRequestViewModel,
-    authenticationViewModel: AuthenticationViewModel,
-    navController: NavController
+    navController: NavController,
+    authenticationState: AuthenticationState
 ) {
     val recipeRequests = recipeRequestViewModel.recipeRequests
 
@@ -40,17 +40,7 @@ fun RecipeRequestsScreen(
         rememberDrawerState(DrawerValue.Open)
     )
 
-    val lifeCycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-
-    val authenticationStateValue = authenticationViewModel.authenticationState
-    val authenticationStateLifeCycleAware = remember(authenticationStateValue, lifeCycleOwner) {
-        authenticationStateValue.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
-    }
-    val authenticationState by authenticationStateLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
     Scaffold(
         scaffoldState = scaffoldState,

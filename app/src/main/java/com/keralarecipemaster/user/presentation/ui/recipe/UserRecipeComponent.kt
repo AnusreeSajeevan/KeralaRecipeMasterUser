@@ -1,7 +1,9 @@
 package com.keralarecipemaster.user.presentation.ui.recipe
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -19,11 +22,12 @@ import androidx.compose.ui.unit.sp
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.details.RecipeDetailsActivity
-import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
+import com.keralarecipemaster.user.utils.RecipeUtil
 import com.keralarecipemaster.user.utils.UserType
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -43,16 +47,28 @@ fun UserRecipeComponent(
     }) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box {
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.chicken_biriyani
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
+               val bitmap = RecipeUtil.getBitmapFromBase64Image(recipe.image)
+                if (bitmap == null) {
+                    Image(
+                         painter = painterResource(
+                             id = R.drawable.placeholder
+                         ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                       bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 if (recipe.addedBy == UserType.USER) {
                     IconButton(onClick = {
