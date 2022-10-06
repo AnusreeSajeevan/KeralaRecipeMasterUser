@@ -8,7 +8,7 @@ interface RecipeRequestRepository {
     suspend fun fetchAllMyRecipeRequests(userId: Int)
     suspend fun addRecipeRequest(userId: Int, recipe: RecipeResponse): Flow<Pair<Int, Int>>
     suspend fun getAllRecipeRequests(): Flow<List<RecipeRequestEntity>>
-    suspend fun deleteRecipeRequest(recipeRequestEntity: RecipeRequestEntity)
+    suspend fun deleteRecipeRequest(recipeId: Int): Flow<Int>
 
     suspend fun getRecipeRequestDetails(requestId: Int): Flow<RecipeRequestEntity>
 }

@@ -287,7 +287,8 @@ class RecipeUtil {
                 mealType = Meal.valueOf(mealType.name),
                 diet = Diet.valueOf(diet.name),
                 rating = rating,
-                status = status
+                status = status,
+                addedBy = UserType.OWNER.value
             )
         }
         fun getBitmapFromBase64Image(base64: String): Bitmap? {

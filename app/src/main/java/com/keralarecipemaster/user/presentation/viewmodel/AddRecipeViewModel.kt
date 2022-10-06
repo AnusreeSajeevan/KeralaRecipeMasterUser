@@ -19,10 +19,12 @@ import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
 import com.keralarecipemaster.user.repository.RecipeRequestRepository
 import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.Constants.Companion.EMPTY_STRING
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -39,10 +41,6 @@ class AddRecipeViewModel @Inject constructor(
 ) :
     ViewModel(),
     OnRatingBarCheck {
-
-    companion object {
-        const val EMPTY_STRING = ""
-    }
 
     val recipeName: StateFlow<String>
         get() = _recipeName
@@ -68,9 +66,6 @@ class AddRecipeViewModel @Inject constructor(
     val address: StateFlow<String>
         get() = _address
 
-    val hasRestaurantDetails: StateFlow<Boolean>
-        get() = _hasRestaurantDetails
-
     val rating: StateFlow<Int>
         get() = _rating
 
@@ -80,16 +75,13 @@ class AddRecipeViewModel @Inject constructor(
     private val _errorMessage =
         MutableStateFlow(Constants.EMPTY_STRING)
 
-//    val numberOfIngredients: StateFlow<Int>
-//        get() = _numberOfIngredients
-
     val location = MutableStateFlow(getInitialLocation())
     val addressText = mutableStateOf("")
     var isMapEditable = mutableStateOf(true)
     var timer: CountDownTimer? = null
 
-    var image  = Constants.EMPTY_STRING
-    var imageName  = Constants.EMPTY_STRING
+    var image = Constants.EMPTY_STRING
+    var imageName = Constants.EMPTY_STRING
 
     fun getInitialLocation(): Location {
         val initialLocation = Location("")
@@ -142,14 +134,6 @@ class AddRecipeViewModel @Inject constructor(
         this._restaurantName.value = restaurantName
     }
 
-    fun onLatitudeChange(latitude: String) {
-        this._latitude.value = latitude
-    }
-
-    fun onLongitudeChange(longitude: String) {
-        this._longitude.value = longitude
-    }
-
     fun onStateChange(state: String) {
         this._address.value = state
     }
@@ -179,7 +163,7 @@ class AddRecipeViewModel @Inject constructor(
                         addedBy = UserType.USER.name,
                         rating = _rating.value,
                         status = "",
-                        restaurant = null,
+                        resturant = null,
                         image = image,
                         imageName = imageName
                     )
@@ -236,15 +220,15 @@ class AddRecipeViewModel @Inject constructor(
                         ingredients = _ingredients.value,
                         diet = _dietType.value,
                         mealType = mealType.value,
-                        addedBy = UserType.USER.name,
+                        addedBy = UserType.OWNER.name,
                         image = image,
                         imageName = imageName,
                         rating = _rating.value,
                         status = "ApprovalPending",
-                        restaurant = Restaurant(
+                        resturant = Restaurant(
                             name = _restaurantName.value,
-                            latitude = _latitude.value,
-                            longitude = _longitude.value,
+                            latitude = location.value.latitude.toString(),
+                            longitude = location.value.longitude.toString(),
                             address = _address.value
                         )
                     )
@@ -277,7 +261,7 @@ class AddRecipeViewModel @Inject constructor(
                             addedBy = UserType.USER.name,
                             rating = _rating.value,
                             status = "",
-                            restaurant = null
+                            resturant = null
                         )
                     ).catch { }.collect {
                         if (it == Constants.ERROR_CODE_SUCCESS) {
@@ -327,7 +311,7 @@ class AddRecipeViewModel @Inject constructor(
         }
     }*/
 
-    fun validateRestaurantDetails(): Boolean {
+    private fun validateRestaurantDetails(): Boolean {
         return !(
             restaurantName.value.trim() == EMPTY_STRING || location.value.latitude.toString()
                 .trim() == EMPTY_STRING || location.value.longitude.toString()
@@ -336,11 +320,7 @@ class AddRecipeViewModel @Inject constructor(
     }
 
     fun validateRecipeDetails(): Boolean {
-        return !(recipeName.value.trim() == EMPTY_STRING || ingredients.value.isEmpty() || preparationMethod.value.trim() == EMPTY_STRING)
-    }
-
-    fun onRestaurantCheckChange(restaurantChecked: Boolean) {
-        _hasRestaurantDetails.value = restaurantChecked
+        return !(recipeName.value.trim() == Constants.EMPTY_STRING || ingredients.value.isEmpty() || preparationMethod.value.trim() == Constants.EMPTY_STRING)
     }
 
     override fun onChangeRating(rating: Int) {
@@ -363,14 +343,6 @@ class AddRecipeViewModel @Inject constructor(
         }
     }
 
-    private fun List<Ingredient>.getArrayListFromList(): ArrayList<Ingredient> {
-        val arrayList = arrayListOf<Ingredient>()
-        this.forEach {
-            arrayList.add(Ingredient(name = it.name, quantity = it.quantity))
-        }
-        return arrayList
-    }
-
     fun onAddRecipeClick(ingredientName: String, ingredientQuantity: String) {
         val list: ArrayList<Ingredient> = arrayListOf()
         _ingredients.value.forEach {
@@ -384,10 +356,6 @@ class AddRecipeViewModel @Inject constructor(
     fun clearIngredients() {
         _ingredients.value = emptyList()
     }
-
-    /* fun onAddNewIngredient() {
-         _numberOfIngredients.value = _numberOfIngredients.value + 1
-     }*/
 
     fun onTextChanged(context: Context, text: String) {
         if (text == "") {
@@ -423,16 +391,7 @@ class AddRecipeViewModel @Inject constructor(
         return location.value
     }
 
-    fun updateLocation(latitude: Double, longitude: Double) {
-        if (latitude != location.value.latitude) {
-            val location = Location("")
-            location.latitude = latitude
-            location.longitude = longitude
-            setLocation(location)
-        }
-    }
-
-    fun setLocation(loc: Location) {
+    private fun setLocation(loc: Location) {
         location.value = loc
     }
 
@@ -460,6 +419,7 @@ class AddRecipeViewModel @Inject constructor(
 
     fun resetErrorMessage() {
         _errorMessage.value = Constants.EMPTY_STRING
+
     }
 
     fun setImageBitmap(bitmap: Bitmap) {
@@ -477,6 +437,12 @@ class AddRecipeViewModel @Inject constructor(
             Log.d("Base64Img", "image : $image")
             Log.d("Base64Img", "name : $name")
         } catch (e: Exception) {
+        }
+    }
+
+    fun delay() {
+        viewModelScope.launch {
+            delay(10000)
         }
     }
 }

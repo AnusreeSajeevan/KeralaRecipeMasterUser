@@ -41,12 +41,30 @@ class RecipeRequestViewModel @Inject constructor(
     private val _userId =
         MutableStateFlow(Constants.INVALID_USER_ID)
 
+    val shouldFetchMyRecipes: StateFlow<Boolean>
+        get() = _shouldFetchMyRecipes
+
+    private val _shouldFetchMyRecipes =
+        MutableStateFlow(false)
+
+    val errorMessage: StateFlow<String>
+        get() = _errorMessage
+
+    private val _errorMessage =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
     init {
-        fetchRecipeRequests()
+        viewModelScope.launch {
+            prefsStore.getUserId().catch { }.collect {
+                _userId.value = it
+                _shouldFetchMyRecipes.value = true
+            }
+        }
+//        fetchRecipeRequests()
         getApprovedRecipeRequests()
     }
 
-    private fun fetchRecipeRequests() {
+    fun fetchRecipeRequests() {
         viewModelScope.launch {
             recipeRequestRepository.fetchAllMyRecipeRequests(userId.value)
         }
@@ -61,9 +79,21 @@ class RecipeRequestViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecipeRequest(recipeRequest: RecipeRequestEntity) {
+    fun deleteRecipeRequest(recipeId: Int) {
         viewModelScope.launch {
-            recipeRequestRepository.deleteRecipeRequest(recipeRequest)
+            recipeRequestRepository.deleteRecipeRequest(recipeId).catch { }.collect {
+                if (it == Constants.ERROR_CODE_SUCCESS) {
+                    _errorMessage.value = "Recipe deleted successfully!"
+                }
+            }
         }
+    }
+
+    fun resetShouldFetch() {
+        _shouldFetchMyRecipes.value = false
+    }
+
+    fun resetErrorMessage() {
+        _errorMessage.value = Constants.EMPTY_STRING
     }
 }

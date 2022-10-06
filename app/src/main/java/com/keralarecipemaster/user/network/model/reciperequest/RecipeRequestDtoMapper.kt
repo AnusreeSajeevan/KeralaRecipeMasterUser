@@ -26,7 +26,8 @@ class RecipeRequestDtoMapper @Inject constructor() :
             mealType = Meal.valueOf(entity.mealType.toUpperCase()),
             diet = Diet.valueOf(entity.diet.toUpperCase()),
             rating = entity.rating,
-            status = entity.status
+            status = entity.status,
+            addedBy = UserType.OWNER.value
         )
     }
 

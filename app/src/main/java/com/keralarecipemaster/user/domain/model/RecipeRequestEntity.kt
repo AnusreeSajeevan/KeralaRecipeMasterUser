@@ -24,5 +24,5 @@ data class RecipeRequestEntity(
     val diet: Diet,
     val rating: Int,
     val status: String,
-    val addedBy: String = UserType.OWNER.value
+    val addedBy: String
 )

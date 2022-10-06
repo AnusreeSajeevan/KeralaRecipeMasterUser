@@ -70,10 +70,10 @@ class RecipeRequestRepositoryImpl @Inject constructor(
                         diet = Diet.valueOf(recipe.diet),
                         addedBy = UserType.OWNER.value,
                         rating = recipe.rating, status = "ApprovalPending",
-                        restaurantAddress = recipe.restaurant?.address ?: Constants.EMPTY_STRING,
-                        restaurantName = recipe.restaurant?.name ?: Constants.EMPTY_STRING,
-                        restaurantLongitude = recipe.restaurant?.longitude ?: Constants.EMPTY_STRING,
-                        restaurantLatitude = recipe.restaurant?.latitude ?: Constants.EMPTY_STRING
+                        restaurantAddress = recipe.resturant?.address ?: Constants.EMPTY_STRING,
+                        restaurantName = recipe.resturant?.name ?: Constants.EMPTY_STRING,
+                        restaurantLongitude = recipe.resturant?.longitude ?: Constants.EMPTY_STRING,
+                        restaurantLatitude = recipe.resturant?.latitude ?: Constants.EMPTY_STRING
                     )
                 )
             }
@@ -81,9 +81,13 @@ class RecipeRequestRepositoryImpl @Inject constructor(
         return flow { emit(Pair(result.code(), recipeID)) }
     }
 
-    override suspend fun deleteRecipeRequest(recipeRequestEntity: RecipeRequestEntity) {
-        withContext(Dispatchers.IO) {
-            recipeRequestsDao.deleteRecipe(recipeRequestEntity = recipeRequestEntity)
+    override suspend fun deleteRecipeRequest(recipeId: Int): Flow<Int> {
+        val result = recipeRequestApi.deleteRecipe(recipeId = recipeId)
+        if (result.isSuccessful) {
+            withContext(Dispatchers.IO) {
+                recipeRequestsDao.deleteRecipe(recipeId = recipeId)
+            }
         }
+        return flow { result.code() }
     }
 }

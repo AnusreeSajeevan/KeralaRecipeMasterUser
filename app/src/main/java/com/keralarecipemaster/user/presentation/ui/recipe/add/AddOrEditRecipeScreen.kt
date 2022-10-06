@@ -37,6 +37,7 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -167,20 +168,11 @@ fun AddOrEditRecipeScreen(
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
 
-        activity?.finish()
-        if (errorMessage.equals(R.string.add_recipe_success)) {
+        if (errorMessage == "Recipe added successfully" || errorMessage == "Recipe Request submitted for approval!") {
+            activity?.finish()
         }
         addRecipeViewModel.resetErrorMessage()
     }
-
-/*
-    var hasRestaurantChecked by remember {
-        mutableStateOf(false)
-    }*/
-
-    /* var shouldShowAddRecipeButton by remember {
-         mutableStateOf(true)
-     }*/
 
     var ingredientName by remember {
         mutableStateOf("")
@@ -204,7 +196,7 @@ fun AddOrEditRecipeScreen(
             uri?.let {
                 hasImage = it != null
                 imageUri = it
-                if(Build.VERSION.SDK_INT < 28) {
+                if (Build.VERSION.SDK_INT < 28) {
                     val bitmap = MediaStore.Images.Media.getBitmap(
                         context.contentResolver,
                         imageUri
@@ -362,8 +354,6 @@ fun AddOrEditRecipeScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 ShowDietCategory(addRecipeViewModel, dietType)
 
-
-
                 if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
                     RatingBarView(
                         rating = remember {
@@ -414,7 +404,6 @@ fun AddOrEditRecipeScreen(
                             Text(text = "latitude")
                         },
                         onValueChange = {
-                            addRecipeViewModel.onLatitudeChange(it)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = false
@@ -426,7 +415,6 @@ fun AddOrEditRecipeScreen(
                             Text(text = "longitude")
                         },
                         onValueChange = {
-                            addRecipeViewModel.onLongitudeChange(it)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = false
@@ -451,18 +439,7 @@ fun AddOrEditRecipeScreen(
                 Button(
                     onClick = {
                         if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                            if (addRecipeViewModel.validateRecipeDetails() && addRecipeViewModel.validateRestaurantDetails()) {
-                                // add recipe request
-                                addRecipeViewModel.addRecipeRequest()
-                                activity?.finish()
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Add all mandatory details",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            navController.popBackStack()
+                            addRecipeViewModel.addRecipeRequest()
                         } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
                             if (actionType == "edit") {
                                 addRecipeViewModel.updateRecipe(recipeId)
@@ -473,7 +450,7 @@ fun AddOrEditRecipeScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = if (actionType == "edit")  "Update Recipe" else "Add Recipe")
+                    Text(text = if (actionType == "edit") "Update Recipe" else "Add Recipe")
                 }
             }
         }
