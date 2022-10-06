@@ -24,7 +24,6 @@ import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
 import com.keralarecipemaster.user.utils.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -148,33 +147,37 @@ class AddRecipeViewModel @Inject constructor(
 
     fun addRecipe() {
         if (validateRecipeDetails()) {
-            viewModelScope.launch {
-                repository.addRecipe(
-                    userId = _userId.value,
-                    recipe =
-                    RecipeResponse(
-                        id = Constants.INVALID_RECIPE_ID,
-                        recipeName = _recipeName.value,
-                        description = _description.value,
-                        preparationMethod = _preparationMethod.value,
-                        ingredients = _ingredients.value,
-                        diet = _dietType.value,
-                        mealType = mealType.value,
-                        addedBy = UserType.USER.name,
-                        rating = _rating.value,
-                        status = "",
-                        resturant = null,
-                        image = image,
-                        imageName = imageName
-                    )
-                ).catch { }.collect {
-                    if (it.first == Constants.ERROR_CODE_SUCCESS) {
-                        _errorMessage.value = "Recipe added successfully"
+            if (validateImage()) {
+                viewModelScope.launch {
+                    repository.addRecipe(
+                        userId = _userId.value,
+                        recipe =
+                        RecipeResponse(
+                            id = Constants.INVALID_RECIPE_ID,
+                            recipeName = _recipeName.value,
+                            description = _description.value,
+                            preparationMethod = _preparationMethod.value,
+                            ingredients = _ingredients.value,
+                            diet = _dietType.value,
+                            mealType = mealType.value,
+                            addedBy = UserType.USER.name,
+                            rating = _rating.value,
+                            status = "",
+                            resturant = null,
+                            image = image,
+                            imageName = imageName
+                        )
+                    ).catch { }.collect {
+                        if (it.first == Constants.ERROR_CODE_SUCCESS) {
+                            _errorMessage.value = "Recipe added successfully"
+                        }
                     }
                 }
+            } else {
+                _errorMessage.value = "Add image!"
             }
         } else {
-            _errorMessage.value = "Add mandatory fields"
+            _errorMessage.value = "Add mandatory fields!"
         }
     }
 
@@ -207,39 +210,47 @@ class AddRecipeViewModel @Inject constructor(
     }*/
 
     fun addRecipeRequest() {
-        if (validateRecipeDetails() && validateRestaurantDetails()) {
-            viewModelScope.launch {
-                recipeRequestRepository.addRecipeRequest(
-                    userId = _userId.value,
-                    recipe =
-                    RecipeResponse(
-                        id = Constants.INVALID_RECIPE_ID,
-                        recipeName = _recipeName.value,
-                        description = _description.value,
-                        preparationMethod = _preparationMethod.value,
-                        ingredients = _ingredients.value,
-                        diet = _dietType.value,
-                        mealType = mealType.value,
-                        addedBy = UserType.OWNER.name,
-                        image = image,
-                        imageName = imageName,
-                        rating = _rating.value,
-                        status = "ApprovalPending",
-                        resturant = Restaurant(
-                            name = _restaurantName.value,
-                            latitude = location.value.latitude.toString(),
-                            longitude = location.value.longitude.toString(),
-                            address = _address.value
-                        )
-                    )
-                ).catch { }.collect {
-                    if (it.first == Constants.ERROR_CODE_SUCCESS) {
-                        _errorMessage.value = "Recipe Request submitted for approval!"
+        if (validateRecipeDetails()) {
+            if (validateImage()) {
+                if (validateRestaurantDetails()) {
+                    viewModelScope.launch {
+                        recipeRequestRepository.addRecipeRequest(
+                            userId = _userId.value,
+                            recipe =
+                            RecipeResponse(
+                                id = Constants.INVALID_RECIPE_ID,
+                                recipeName = _recipeName.value,
+                                description = _description.value,
+                                preparationMethod = _preparationMethod.value,
+                                ingredients = _ingredients.value,
+                                diet = _dietType.value,
+                                mealType = mealType.value,
+                                addedBy = UserType.OWNER.name,
+                                image = image,
+                                imageName = imageName,
+                                rating = _rating.value,
+                                status = "ApprovalPending",
+                                resturant = Restaurant(
+                                    name = _restaurantName.value,
+                                    latitude = location.value.latitude.toString(),
+                                    longitude = location.value.longitude.toString(),
+                                    address = _address.value
+                                )
+                            )
+                        ).catch { }.collect {
+                            if (it.first == Constants.ERROR_CODE_SUCCESS) {
+                                _errorMessage.value = "Recipe Request submitted for approval!"
+                            }
+                        }
                     }
+                } else {
+                    _errorMessage.value = "Add restaurant details!"
                 }
+            } else {
+                _errorMessage.value = "Add image!"
             }
         } else {
-            _errorMessage.value = "Add mandatory fields"
+            _errorMessage.value = "Add mandatory fields!"
         }
     }
 
@@ -319,8 +330,12 @@ class AddRecipeViewModel @Inject constructor(
             )
     }
 
-    fun validateRecipeDetails(): Boolean {
+    private fun validateRecipeDetails(): Boolean {
         return !(recipeName.value.trim() == Constants.EMPTY_STRING || ingredients.value.isEmpty() || preparationMethod.value.trim() == Constants.EMPTY_STRING)
+    }
+
+    private fun validateImage(): Boolean {
+        return !(image.trim() == Constants.EMPTY_STRING)
     }
 
     override fun onChangeRating(rating: Int) {
@@ -419,7 +434,6 @@ class AddRecipeViewModel @Inject constructor(
 
     fun resetErrorMessage() {
         _errorMessage.value = Constants.EMPTY_STRING
-
     }
 
     fun setImageBitmap(bitmap: Bitmap) {
@@ -437,12 +451,6 @@ class AddRecipeViewModel @Inject constructor(
             Log.d("Base64Img", "image : $image")
             Log.d("Base64Img", "name : $name")
         } catch (e: Exception) {
-        }
-    }
-
-    fun delay() {
-        viewModelScope.launch {
-            delay(10000)
         }
     }
 }

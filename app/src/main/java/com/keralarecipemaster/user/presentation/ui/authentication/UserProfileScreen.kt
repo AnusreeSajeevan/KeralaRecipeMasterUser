@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -76,6 +77,16 @@ fun UserProfileScreen(
         }
     val email by emailValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
+    val restaurantNameValue = authenticationViewModel.restaurantName
+    val restaurantNameValueLifeCycleAware =
+        remember(restaurantNameValue, lifecycleOwner) {
+            restaurantNameValue.flowWithLifecycle(
+                lifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val restaurantName by restaurantNameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+
     if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
         Button(onClick = {
             val intent = Intent(activity, AuthenticationActivity::class.java)
@@ -86,10 +97,31 @@ fun UserProfileScreen(
         }) {
             Text(text = "Login")
         }
-    } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    } else if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxHeight()) {
+            Text(text = "$restaurantName", fontWeight = FontWeight.Bold)
             Text(text = "$username")
             Text(text = "$email")
+
+            Spacer(modifier = Modifier.size(10.dp))
+            Button(onClick = {
+                logout(
+                    authenticationViewModel = authenticationViewModel,
+                    activity = activity,
+                    context = context
+                )
+            }) {
+                Text(text = "Logout", modifier = Modifier.align(Alignment.Bottom))
+            }
+        }
+    } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                Text(text = "$restaurantName", fontWeight = FontWeight.Bold)
+            }
+            Text(text = "$username")
+            Text(text = "$email")
+
             Spacer(modifier = Modifier.size(16.dp))
             Row {
                 Text(text = "Turn ${if (notificationStatus) "OFF" else "ON"} Location Notification")

@@ -39,6 +39,8 @@ class AuthenticationRepositoryImpl @Inject constructor(
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
                             } else {
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                                //TODO : get restaurant name from repsonse
+                                prefsStore.setRestaurantName("Restaurant Name")
                             }
                             prefsStore.setUsername(it.username)
                             prefsStore.setEmail(it.email)

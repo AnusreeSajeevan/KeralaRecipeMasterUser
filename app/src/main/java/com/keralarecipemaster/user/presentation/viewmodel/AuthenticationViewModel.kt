@@ -46,10 +46,25 @@ class AuthenticationViewModel @Inject constructor(
     private val _email =
         MutableStateFlow(Constants.EMPTY_STRING)
 
+    private val _restaurantName =
+        MutableStateFlow(Constants.EMPTY_STRING)
+
+    val restaurantName: StateFlow<String>
+        get() = _restaurantName
+
     init {
         getAuthenticationState()
         getUsername()
         getPassword()
+        getRestaurantName()
+    }
+
+    private fun getRestaurantName() {
+        viewModelScope.launch {
+            prefsStore.getRestaurantName().catch { }.collect {
+                _restaurantName.value = it
+            }
+        }
     }
 
     private fun getPassword() {
