@@ -113,7 +113,7 @@ fun RecipesScreen(
         scaffoldState = scaffoldState,
         appBar = {
             TopAppBar(
-                title = { Text("Filters") },
+                title = { Text("Filter recipes") },
                 navigationIcon = {
                     if (scaffoldState.isConcealed) {
                         IconButton(
@@ -122,7 +122,7 @@ fun RecipesScreen(
                             }
                         ) {
                             Icon(
-                                Icons.Default.List,
+                                Icons.Default.ArrowDropDown,
                                 contentDescription = "filter"
                             )
                         }

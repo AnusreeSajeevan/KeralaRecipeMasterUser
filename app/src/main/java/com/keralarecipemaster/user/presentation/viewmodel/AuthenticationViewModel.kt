@@ -109,6 +109,7 @@ class AuthenticationViewModel @Inject constructor(
                                 } else {
                                     _authenticationState.value =
                                         AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                                    _errorMessage.value = "Logged in successfully!"
                                 }
                             }
                         } else if (it.second == Constants.ERROR_CODE_INVALID_CREDENTIALS) {

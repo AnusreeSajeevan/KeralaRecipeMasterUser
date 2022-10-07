@@ -9,7 +9,7 @@ enum class HomeItems(
     val icon: ImageVector,
     val selectedIcon: ImageVector
 ) {
-    Famous(
+    FamousRecipes(
         icon = Icons.Outlined.Home,
         selectedIcon = Icons.Filled.Home
     ),
@@ -29,11 +29,11 @@ enum class HomeItems(
     companion object {
         fun fromRoute(route: String?): HomeItems =
             when (route?.substringBefore("/")) {
-                Famous.name -> Famous
+                FamousRecipes.name -> FamousRecipes
                 MyRecipes.name -> MyRecipes
                 Account.name -> Account
                 MyRequests.name -> MyRequests
-                null -> Famous
+                null -> FamousRecipes
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }
     }

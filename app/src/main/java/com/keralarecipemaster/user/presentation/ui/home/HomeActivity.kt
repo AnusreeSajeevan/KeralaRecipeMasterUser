@@ -53,6 +53,7 @@ class HomeActivity : ComponentActivity() {
     private val recipeRequestViewModel: RecipeRequestViewModel by viewModels()
     private val locationNotificationViewModel: LocationNotificationViewModel by viewModels()
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var authState = AuthenticationState.INITIAL_STATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +78,9 @@ class HomeActivity : ComponentActivity() {
                     )
                 }
             val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
-            if (authenticationState != AuthenticationState.INITIAL_STATE) {
+            authState = authenticationState
+
+            if (authState != AuthenticationState.INITIAL_STATE) {
                 RecipeApp(
                     recipeListViewModel = recipeViewModel,
                     authenticationViewModel = authenticationViewModel,
@@ -272,5 +275,11 @@ class HomeActivity : ComponentActivity() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        Log.d("CheckGuestLogin","onPostResume")
+        Log.d("CheckGuestLogin","val : ${authenticationViewModel.authenticationState.value}")
     }
 }

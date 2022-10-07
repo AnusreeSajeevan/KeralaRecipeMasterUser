@@ -27,8 +27,8 @@ fun RecipeNavHost(
     authenticationState: AuthenticationState
 ) {
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) HomeItems.MyRequests.name else HomeItems.Famous.name) {
-        composable(HomeItems.Famous.name) {
+    NavHost(navController = navController, startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) HomeItems.MyRequests.name else HomeItems.FamousRecipes.name) {
+        composable(HomeItems.FamousRecipes.name) {
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 onFabClick = null,
