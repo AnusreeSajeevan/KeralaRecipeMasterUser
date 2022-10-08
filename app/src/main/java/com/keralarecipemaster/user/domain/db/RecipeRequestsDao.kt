@@ -26,4 +26,10 @@ interface RecipeRequestsDao {
 
     @Query("DELETE from recipe_requests WHERE recipeId = :recipeId")
     suspend fun deleteRecipe(recipeId: Int)
+
+    @Query("SELECT * from recipe_requests WHERE status = :status")
+    fun getApprovedRecipeRequests(status: String = "Approved"): Flow<List<RecipeRequestEntity>>
+
+    @Query("SELECT * from recipe_requests WHERE status = :status")
+    fun getPendingRecipeRequests(status: String = "ApprovalPending"): Flow<List<RecipeRequestEntity>>
 }

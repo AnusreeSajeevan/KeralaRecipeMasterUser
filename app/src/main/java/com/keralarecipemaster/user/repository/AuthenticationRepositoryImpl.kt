@@ -4,6 +4,7 @@ import android.util.Log
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.RecipeDao
 import com.keralarecipemaster.user.network.model.authentication.LoginRequest
+import com.keralarecipemaster.user.network.model.authentication.RegisterRestaurantRequest
 import com.keralarecipemaster.user.network.model.authentication.RegisterUserRequest
 import com.keralarecipemaster.user.network.model.authentication.UserInfo
 import com.keralarecipemaster.user.network.service.AuthenticationApi
@@ -39,7 +40,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
                             } else {
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
-                                //TODO : get restaurant name from repsonse
+                                // TODO : get restaurant name from repsonse
                                 prefsStore.setRestaurantName("Restaurant Name")
                             }
                             prefsStore.setUsername(it.username)
@@ -67,7 +68,6 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 )
             )
         if (result.isSuccessful) {
-            Log.d("CheckRegisterResponse", "succesful")
             val userInfo = result.body()?.userInfo
             withContext(ioDispatcher) {
                 launch {
@@ -82,8 +82,36 @@ class AuthenticationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun registerRestaurantOwner() {
-        TODO("Not yet implemented")
+    override suspend fun registerRestaurantOwner(
+        username: String,
+        password: String,
+        email: String,
+        restaurantName: String
+    ): Flow<Boolean> {
+        val result =
+            authenticationApi.registerRestaurant(
+                RegisterRestaurantRequest(
+                    username = username,
+                    password = password,
+                    email = email,
+                    restaurantName = restaurantName
+                )
+            )
+        if (result.isSuccessful) {
+            val userInfo = result.body()?.userInfo
+            withContext(ioDispatcher) {
+                launch {
+                    prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
+                    prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
+                    // TODO : get restaurant name from repsonse
+                    prefsStore.setRestaurantName(userInfo?.restaurantName ?: Constants.EMPTY_STRING)
+                    prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
+                }
+            }
+        }
+        return flow {
+            emit(result.isSuccessful)
+        }
     }
 
     override suspend fun logout() {

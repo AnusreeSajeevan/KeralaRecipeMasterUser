@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
@@ -24,7 +23,6 @@ import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.presentation.ui.home.HomeActivity
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.utils.Constants
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -88,10 +86,7 @@ fun LoginScreen(
                 onValueChange = {
                     username = it
                 },
-                label = { Text(text = "Username *") },
-                placeholder = {
-                    Text(text = "Username")
-                },
+                label = { Text(text = "Username") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(usernameTxt) {
@@ -106,10 +101,7 @@ fun LoginScreen(
                 onValueChange = {
                     password = it
                 },
-                label = { Text(text = "Password *") },
-                placeholder = {
-                    Text(text = "Password")
-                },
+                label = { Text(text = "Password") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(passwordTxt) {
@@ -125,7 +117,7 @@ fun LoginScreen(
                     if (isAllFieldsValid(username = username, password = password)) {
                         authenticationViewModel.login(username = username, password = password)
                     } else {
-                        Toast.makeText(context, "Add all mandatory fields", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "Enter all fields", Toast.LENGTH_SHORT)
                             .show()
                     }
                 },
@@ -191,10 +183,6 @@ fun LoginScreen(
     }
 }
 
-fun isAllFieldsValid(username: String, password: String): Boolean {
-    return username.trim().isNotEmpty() && password.trim().isNotEmpty()
-}
-
 @Composable
 fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel) {
     val context = LocalContext.current
@@ -212,6 +200,8 @@ fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel)
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "REGISTER AS USER", modifier = Modifier.align(CenterHorizontally))
+        Spacer(Modifier.size(16.dp))
         OutlinedTextField(value = email.value, onValueChange = {
             email.value = it
         }, label = { Text(text = "Email") }, modifier = Modifier.fillMaxWidth())
@@ -226,20 +216,31 @@ fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel)
 
         Button(
             onClick = {
-                authenticationViewModel.registerUser(
-                    username = userName.value,
-                    password = password.value,
-                    email = email.value
-                )
-            }
+                if (isUserDetailsValid(
+                        username = userName.value,
+                        password = password.value,
+                        email = email.value
+                    )
+                ) {
+                    authenticationViewModel.registerUser(
+                        username = userName.value,
+                        password = password.value,
+                        email = email.value
+                    )
+                } else {
+                    Toast.makeText(context, "Enter all fields", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Register")
+            Text(text = "Continue")
         }
     }
 }
 
 @Composable
-fun ShowRestaurantOwnerRegistrationScreen() {
+fun ShowRestaurantOwnerRegistrationScreen(authenticationViewModel: AuthenticationViewModel) {
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -247,7 +248,7 @@ fun ShowRestaurantOwnerRegistrationScreen() {
         mutableStateOf("")
     }
 
-    val restaurantAddress = remember {
+    val email = remember {
         mutableStateOf("")
     }
 
@@ -259,14 +260,12 @@ fun ShowRestaurantOwnerRegistrationScreen() {
         mutableStateOf("")
     }
 
-    Column {
-        OutlinedTextField(value = restaurantName.value, onValueChange = {
-            restaurantName.value = it
-        }, label = { Text(text = "Name") }, modifier = Modifier.fillMaxWidth())
-
-        OutlinedTextField(value = restaurantAddress.value, onValueChange = {
-            restaurantAddress.value = it
-        }, label = { Text(text = "Restaurant Address") }, modifier = Modifier.fillMaxWidth())
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "REGISTER AS RESTAURANT OWNER", modifier = Modifier.align(CenterHorizontally))
+        Spacer(modifier = Modifier.size(16.dp))
+        OutlinedTextField(value = email.value, onValueChange = {
+            email.value = it
+        }, label = { Text(text = "Email") }, modifier = Modifier.fillMaxWidth())
 
         OutlinedTextField(value = userName.value, onValueChange = {
             userName.value = it
@@ -276,8 +275,48 @@ fun ShowRestaurantOwnerRegistrationScreen() {
             password.value = it
         }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
 
-        Button(onClick = { activity?.finish() }) {
-            Text(text = "Register")
+        OutlinedTextField(value = restaurantName.value, onValueChange = {
+            restaurantName.value = it
+        }, label = { Text(text = "Restaurant Name") }, modifier = Modifier.fillMaxWidth())
+
+        Button(modifier = Modifier.fillMaxWidth(), onClick = {
+            if (isRestaurantOwnerDetailsValid(
+                    username = userName.value,
+                    password = password.value,
+                    email = email.value,
+                    restaurantName = restaurantName.value
+                )
+            ) {
+                authenticationViewModel.registerRestaurantOwner(
+                    username = userName.value,
+                    password = password.value,
+                    email = email.value,
+                    restaurantName = restaurantName.value
+                )
+            } else {
+                Toast.makeText(context, "Enter all fields", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }) {
+            Text(text = "Continue")
         }
     }
+}
+
+private fun isAllFieldsValid(username: String, password: String): Boolean {
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty()
+}
+
+fun isUserDetailsValid(username: String, password: String, email: String): Boolean {
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim().isNotEmpty()
+}
+
+fun isRestaurantOwnerDetailsValid(
+    username: String,
+    password: String,
+    email: String,
+    restaurantName: String
+): Boolean {
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
+        .isNotEmpty() && restaurantName.trim().isNotEmpty()
 }

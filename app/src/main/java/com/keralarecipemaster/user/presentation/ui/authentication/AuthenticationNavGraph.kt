@@ -29,7 +29,7 @@ fun AuthenticationNavHost(
         }
 
         composable(AuthenticationDestinations.RegisterRestaurantOwner.name) {
-            ShowRestaurantOwnerRegistrationScreen()
+            ShowRestaurantOwnerRegistrationScreen(authenticationViewModel)
         }
     }
 }

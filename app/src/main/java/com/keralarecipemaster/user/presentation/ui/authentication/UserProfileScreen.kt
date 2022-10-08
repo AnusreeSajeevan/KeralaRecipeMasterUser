@@ -116,9 +116,6 @@ fun UserProfileScreen(
         }
     } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
         Column(modifier = Modifier.padding(16.dp)) {
-            if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                Text(text = "$restaurantName", fontWeight = FontWeight.Bold)
-            }
             Text(text = "$username")
             Text(text = "$email")
 

@@ -160,7 +160,7 @@ class AddRecipeViewModel @Inject constructor(
                             ingredients = _ingredients.value,
                             diet = _dietType.value,
                             mealType = mealType.value,
-                            addedBy = UserType.USER.name,
+                            addedBy = UserType.OWNER.name,
                             rating = _rating.value,
                             status = "",
                             resturant = null,

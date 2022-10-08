@@ -1,29 +1,22 @@
 package com.keralarecipemaster.user.presentation.ui.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.ui.graphics.vector.ImageVector
-
 enum class HomeItems(
-    val icon: ImageVector,
-    val selectedIcon: ImageVector
+    val value: String
 ) {
     FamousRecipes(
-        icon = Icons.Outlined.Home,
-        selectedIcon = Icons.Filled.Home
+        value = "Famous Recipes"
     ),
     MyRecipes(
-        icon = Icons.Outlined.Menu,
-        selectedIcon = Icons.Filled.Menu
+        value = "My Recipes"
     ),
-    MyRequests(
-        icon = Icons.Outlined.Menu,
-        selectedIcon = Icons.Filled.Menu
+    ApprovedRecipes(
+        value = "Approved Recipes"
     ),
-    Account(
-        icon = Icons.Outlined.Person,
-        selectedIcon = Icons.Filled.Person
+    PendingRequests(
+        value = "Pending Requests"
+    ),
+    Profile(
+        value = "Profile"
     );
 
     companion object {
@@ -31,8 +24,9 @@ enum class HomeItems(
             when (route?.substringBefore("/")) {
                 FamousRecipes.name -> FamousRecipes
                 MyRecipes.name -> MyRecipes
-                Account.name -> Account
-                MyRequests.name -> MyRequests
+                Profile.name -> Profile
+                ApprovedRecipes.name -> ApprovedRecipes
+                PendingRequests.name -> PendingRequests
                 null -> FamousRecipes
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }

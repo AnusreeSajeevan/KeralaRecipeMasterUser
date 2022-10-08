@@ -150,6 +150,31 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
+    fun registerRestaurantOwner(
+        username: String,
+        password: String,
+        email: String,
+        restaurantName: String
+    ) {
+        if (username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
+            .isNotEmpty() && restaurantName.trim().isNotEmpty()
+        ) {
+            viewModelScope.launch {
+                authenticationRepository.registerRestaurantOwner(
+                    username = username,
+                    password = password,
+                    email = email,
+                    restaurantName = restaurantName
+                )
+                    .catch {
+                    }.collect {
+                        _errorMessage.value = "Registration successful!"
+                        if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER
+                    }
+            }
+        }
+    }
+
     fun logout() {
         viewModelScope.launch {
             authenticationRepository.logout()

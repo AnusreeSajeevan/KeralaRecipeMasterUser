@@ -10,7 +10,8 @@ import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.authentication.UserProfileScreen
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipesScreen
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeActivity
-import com.keralarecipemaster.user.presentation.ui.reciperequests.RecipeRequestsScreen
+import com.keralarecipemaster.user.presentation.ui.reciperequests.ApprovedRecipesScreen
+import com.keralarecipemaster.user.presentation.ui.reciperequests.PendingRequestsScreen
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
@@ -27,7 +28,10 @@ fun RecipeNavHost(
     authenticationState: AuthenticationState
 ) {
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) HomeItems.MyRequests.name else HomeItems.FamousRecipes.name) {
+    NavHost(
+        navController = navController,
+        startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) HomeItems.ApprovedRecipes.name else HomeItems.FamousRecipes.name
+    ) {
         composable(HomeItems.FamousRecipes.name) {
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
@@ -49,14 +53,19 @@ fun RecipeNavHost(
                 navController = navController
             )
         }
-        composable(HomeItems.MyRequests.name) {
-            RecipeRequestsScreen(
+        composable(HomeItems.ApprovedRecipes.name) {
+            ApprovedRecipesScreen(
                 recipeRequestViewModel = recipeRequestViewModel,
-                navController = navController,
-                authenticationState = authenticationState
+                navController = navController
             )
         }
-        composable(HomeItems.Account.name) {
+        composable(HomeItems.PendingRequests.name) {
+            PendingRequestsScreen(
+                recipeRequestViewModel = recipeRequestViewModel,
+                navController = navController
+            )
+        }
+        composable(HomeItems.Profile.name) {
             UserProfileScreen(
                 authenticationViewModel = authenticationViewModel,
                 locationNotificationViewModel = locationNotificationViewModel

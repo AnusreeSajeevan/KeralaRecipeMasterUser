@@ -1,6 +1,5 @@
 package com.keralarecipemaster.user.presentation.ui.recipe
 
-import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -151,7 +151,8 @@ fun RecipesScreen(
             Scaffold(
                 floatingActionButton = {
                     if ((authenticationState == AuthenticationState.AUTHENTICATED_USER && userType == UserType.USER) ||
-                        authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER && userType == UserType.USER) {
+                        authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER && userType == UserType.USER
+                    ) {
                         onFabClick?.let {
                             FloatingActionButton(
                                 onClick = onFabClick!!,
@@ -196,7 +197,11 @@ fun RecipesScreen(
                                 .fillMaxWidth()
                                 .fillMaxHeight()
                         ) {
-                            Text(text = "No Recipes", modifier = Modifier.align(Alignment.Center))
+                            Text(
+                                text = "No Famous Recipes available at this moment..\nPlease try again later!",
+                                modifier = Modifier.align(Alignment.Center),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     } else {
                         LazyColumn {

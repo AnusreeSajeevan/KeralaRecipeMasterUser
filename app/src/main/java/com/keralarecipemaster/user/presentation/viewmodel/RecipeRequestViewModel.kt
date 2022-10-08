@@ -22,12 +22,15 @@ class RecipeRequestViewModel @Inject constructor(
     prefsStore: PrefsStore,
     application: Application
 ) : AndroidViewModel(application) {
-    private var _recipeRequests = MutableStateFlow<List<RecipeRequestEntity>>(emptyList())
+    private var _pendingRecipeRequests = MutableStateFlow<List<RecipeRequestEntity>>(emptyList())
+    private var _approvedRecipeRequests = MutableStateFlow<List<RecipeRequestEntity>>(emptyList())
     private val _dietTypeFilter = MutableStateFlow(DietFilter.ALL.name)
     private val _mealTypeFilter = MutableStateFlow(MealFilter.ALL.name)
 
-    val recipeRequests: StateFlow<List<RecipeRequestEntity>>
-        get() = _recipeRequests
+    val pendingRecipeRequests: StateFlow<List<RecipeRequestEntity>>
+        get() = _pendingRecipeRequests
+    val approvedRecipeRequests: StateFlow<List<RecipeRequestEntity>>
+        get() = _approvedRecipeRequests
 
     val dietTypeFilter: StateFlow<String>
         get() = _dietTypeFilter
@@ -62,6 +65,7 @@ class RecipeRequestViewModel @Inject constructor(
         }
 //        fetchRecipeRequests()
         getApprovedRecipeRequests()
+        getPendingRecipeRequests()
     }
 
     fun fetchRecipeRequests() {
@@ -70,11 +74,20 @@ class RecipeRequestViewModel @Inject constructor(
         }
     }
 
-    fun getApprovedRecipeRequests() {
+    private fun getApprovedRecipeRequests() {
         viewModelScope.launch {
-            recipeRequestRepository.getAllRecipeRequests().catch { }.collect { recipeRequests ->
+            recipeRequestRepository.getApprovedRecipeRequests().catch { }.collect { recipeRequests ->
                 var list = recipeRequests
-                _recipeRequests.value = list
+                _approvedRecipeRequests.value = list
+            }
+        }
+    }
+
+    private fun getPendingRecipeRequests() {
+        viewModelScope.launch {
+            recipeRequestRepository.getPendingRecipeRequests().catch { }.collect { recipeRequests ->
+                var list = recipeRequests
+                _pendingRecipeRequests.value = list
             }
         }
     }

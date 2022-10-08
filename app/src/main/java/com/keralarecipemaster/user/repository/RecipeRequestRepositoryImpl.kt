@@ -51,6 +51,14 @@ class RecipeRequestRepositoryImpl @Inject constructor(
         return recipeRequestsDao.getAllRecipeRequests()
     }
 
+    override suspend fun getApprovedRecipeRequests(): Flow<List<RecipeRequestEntity>> {
+        return recipeRequestsDao.getApprovedRecipeRequests()
+    }
+
+    override suspend fun getPendingRecipeRequests(): Flow<List<RecipeRequestEntity>> {
+        return recipeRequestsDao.getPendingRecipeRequests()
+    }
+
     override suspend fun addRecipeRequest(userId: Int, recipe: RecipeResponse): Flow<Pair<Int, Int>> {
         var recipeID = Constants.INVALID_RECIPE_ID
         val result = recipeRequestApi.addRecipeRequest(

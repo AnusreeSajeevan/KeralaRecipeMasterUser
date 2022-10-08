@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.network.model.authentication
 
 import com.google.gson.annotations.SerializedName
+import com.keralarecipemaster.user.utils.Constants
 
 data class LoginResponse(
     val message: String,
@@ -10,6 +11,7 @@ data class LoginResponse(
 data class UserInfo(
     val email: String,
     val username: String,
+    @SerializedName("restaurant_name") val restaurantName: String = Constants.EMPTY_STRING,
     @SerializedName("user_id") val userId: Int,
     @SerializedName("usertype") val usertype: String
 )
