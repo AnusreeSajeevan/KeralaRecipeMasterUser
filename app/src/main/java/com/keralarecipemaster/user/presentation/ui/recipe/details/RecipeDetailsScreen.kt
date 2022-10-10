@@ -1,12 +1,8 @@
 package com.keralarecipemaster.user.presentation.ui.recipe.details
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.*
-import android.graphics.pdf.PdfDocument
-import android.graphics.pdf.PdfDocument.PageInfo
 import android.os.Environment
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -28,31 +24,25 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.R.*
-import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
-import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.RecipeUtil
 import com.keralarecipemaster.user.utils.RecipeUtil.Companion.createPdf
 import com.keralarecipemaster.user.utils.UserType
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 @Composable
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipeDetailsViewModel: RecipeDetailsViewModel,
-    authenticationViewModel: AuthenticationViewModel,
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -74,43 +64,27 @@ fun RecipeDetailsScreen(
     val rating by ratingFlowLifecycleAware.collectAsState(0)
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Box {
-
-            val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
-            if (bitmap == null) {
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.placeholder
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            if (recipeEntity.addedBy == UserType.USER) {
-                IconButton(onClick = {
-                    navController.navigate(AddRecipeDestinations.AddRecipeDetails.name)
-                }, modifier = Modifier.align(Alignment.BottomEnd)) {
-                    Icon(
-                        painter = painterResource(
-                            id = drawable.ic_edit
-                        ),
-                        contentDescription = null
-                    )
-                }
-            }
+        val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
+        if (bitmap == null) {
+            Image(
+                painter = painterResource(
+                    id = R.drawable.placeholder
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(250.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(250.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
         }
 
         Column(modifier = Modifier.padding(8.dp)) {
@@ -132,18 +106,17 @@ fun RecipeDetailsScreen(
             } else {
                 drawable.ic_veg
             }
-
+            RatingBarView(
+                rating = remember {
+                    mutableStateOf(rating)
+                },
+                isRatingEditable = false,
+                ratedStarsColor = Color(255, 220, 0),
+                starIcon = painterResource(id = drawable.ic_star_filled),
+                unRatedStarsColor = Color.LightGray,
+                viewModel = recipeDetailsViewModel
+            )
             Row {
-                RatingBarView(
-                    rating = remember {
-                        mutableStateOf(rating)
-                    },
-                    isRatingEditable = false,
-                    ratedStarsColor = Color(255, 220, 0),
-                    starIcon = painterResource(id = drawable.ic_star_filled),
-                    unRatedStarsColor = Color.LightGray,
-                    viewModel = recipeDetailsViewModel
-                )
                 Spacer(modifier = Modifier.size(10.dp))
                 Image(
                     painter = painterResource(id = dietLogo),
@@ -194,6 +167,17 @@ fun RecipeDetailsScreen(
                         Icon(
                             painter = painterResource(
                                 id = drawable.ic_share
+                            ),
+                            contentDescription = null
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        navController.navigate(AddRecipeDestinations.AddRecipeDetails.name)
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = drawable.ic_edit
                             ),
                             contentDescription = null
                         )

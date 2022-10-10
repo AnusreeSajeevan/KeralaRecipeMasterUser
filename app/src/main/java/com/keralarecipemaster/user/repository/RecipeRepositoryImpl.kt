@@ -146,7 +146,9 @@ class RecipeRepositoryImpl @Inject constructor(
                         ingredients = recipe.ingredients,
                         meal = Meal.valueOf(recipe.mealType),
                         diet = Diet.valueOf(recipe.diet),
-                        rating = recipe.rating
+                        rating = recipe.rating,
+                        image = recipe.image,
+                        imageName = recipe.imageName
                     )
                 }
             }

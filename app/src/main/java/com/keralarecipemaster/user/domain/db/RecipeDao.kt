@@ -28,7 +28,7 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 
-    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal,ingredients=:ingredients, rating=:rating, preparationMethod=:preparationMethod  WHERE id = :id")
+    @Query("UPDATE recipe SET recipeName=:recipeName, description=:description, diet=:diet, mealType=:meal,ingredients=:ingredients, rating=:rating, preparationMethod=:preparationMethod, image=:image, imageName=:imageName  WHERE id = :id")
     fun updateRecipe(
         id: Int,
         recipeName: String,
@@ -37,7 +37,9 @@ interface RecipeDao {
         meal: Meal,
         ingredients: List<Ingredient>,
         preparationMethod: String,
-        rating: Int
+        rating: Int,
+        image: String,
+        imageName: String
     )
 
     @Query("SELECT * from recipe WHERE id = :recipeId")

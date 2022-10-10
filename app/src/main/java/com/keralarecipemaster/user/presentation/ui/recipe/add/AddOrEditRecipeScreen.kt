@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -37,7 +38,7 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.Meal
-import kotlinx.coroutines.delay
+import com.keralarecipemaster.user.utils.RecipeUtil
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -168,7 +169,9 @@ fun AddOrEditRecipeScreen(
     if (errorMessage.isNotEmpty()) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
 
-        if (errorMessage == "Recipe added successfully" || errorMessage == "Recipe Request submitted for approval!") {
+        if (errorMessage == "Recipe added successfully" || errorMessage == "Recipe Request submitted for approval!" ||
+            errorMessage == "Recipe details updated successfully"
+        ) {
             activity?.finish()
         }
         addRecipeViewModel.resetErrorMessage()
@@ -222,6 +225,7 @@ fun AddOrEditRecipeScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Box {
+//                    if (hasImage && imageUri != null) {
                     if (hasImage && imageUri != null) {
                         AsyncImage(
                             model = imageUri,
@@ -231,17 +235,25 @@ fun AddOrEditRecipeScreen(
                                 .fillMaxWidth(),
                             contentScale = ContentScale.Crop
                         )
+                    } else if (actionType == "edit") {
+                        if (addRecipeViewModel.image.isNotEmpty()) {
+                            val bitmap =
+                                RecipeUtil.getBitmapFromBase64Image(addRecipeViewModel.image)
+                            bitmap?.let {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .height(150.dp)
+                                        .fillMaxWidth(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        } else {
+                            ShowPlaceholderImage()
+                        }
                     } else {
-                        Image(
-                            painter = painterResource(
-                                id = R.drawable.recipe_place_holder
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .height(150.dp)
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.Crop
-                        )
+                        ShowPlaceholderImage()
                     }
                     IconButton(onClick = {
                         imagePicker.launch("image/*")
@@ -455,6 +467,20 @@ fun AddOrEditRecipeScreen(
             }
         }
     }
+}
+
+@Composable
+fun ShowPlaceholderImage() {
+    Image(
+        painter = painterResource(
+            id = R.drawable.recipe_place_holder
+        ),
+        contentDescription = null,
+        modifier = Modifier
+            .height(150.dp)
+            .fillMaxWidth(),
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Composable

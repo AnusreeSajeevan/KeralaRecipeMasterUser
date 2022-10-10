@@ -117,10 +117,6 @@ class AddRecipeViewModel @Inject constructor(
         this._recipeName.value = recipeName
     }
 
-    /*   fun onIngredientsChange(ingredients: String) {
-           this._ingredients.value = ingredients
-       }*/
-
     fun onDescriptionChange(description: String) {
         this._description.value = description
     }
@@ -247,7 +243,9 @@ class AddRecipeViewModel @Inject constructor(
                             addedBy = UserType.USER.name,
                             rating = _rating.value,
                             status = "",
-                            restaurant = null
+                            restaurant = null,
+                            image = image,
+                            imageName = imageName
                         )
                     ).catch { }.collect {
                         if (it == Constants.ERROR_CODE_SUCCESS) {
@@ -331,6 +329,8 @@ class AddRecipeViewModel @Inject constructor(
                 _dietType.value = it.diet.name
                 _mealType.value = it.mealType.name
                 _rating.value = it.rating
+                image = it.image
+                imageName = it.imageName
             }
         }
     }
