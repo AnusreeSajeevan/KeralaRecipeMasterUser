@@ -78,7 +78,8 @@ class RecipeUtil {
 
         fun createPdf(
             context: Context,
-            recipe: RecipeEntity
+            recipe: RecipeEntity,
+            chefName: String
         ): String {
 //    val bmp = BitmapFactory.decodeResource(context.resources, drawable.pin)
 //    val scaledbmp: Bitmap = Bitmap.createScaledBitmap(bmp, 140, 140, false)
@@ -109,7 +110,6 @@ class RecipeUtil {
             // for drawing shapes and we will use "title"
             // for adding text in our PDF file.
             val paint = Paint()
-            val title = Paint()
 
             // we are adding page info to our PDF file
             // in which we will be passing our pageWidth,
@@ -156,7 +156,7 @@ class RecipeUtil {
 
             // below line is used for adding typeface for
             // our text which we will be adding in our PDF file.
-            title.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+            paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
 
             // below line is used for setting text size
             // which we will be displaying in our PDF file.
@@ -181,29 +181,61 @@ class RecipeUtil {
             // the first parameter is our text, second parameter
             // is position from start, third parameter is position from top
             // and then we are passing our variable of paint which is title.
-            canvas.drawText(recipe.recipeName + "\n", 209F, getY(), title)
-            canvas.drawText(recipe.description, 209F, getY(), title)
-            canvas.drawText("Self rating - " + recipe.rating.toString(), 209F, getY(), title)
-            canvas.drawText(recipe.diet.type, 209F, getY(), title)
-            canvas.drawText(recipe.mealType.type + "\n", 209F, getY(), title)
-            recipe.ingredients.forEach {
-                canvas.drawText(it.name + " - " + it.quantity, 209F, getY(), title)
+            val contentStart = 100F
+            paint.textSize = 50f
+            canvas.drawText(recipe.recipeName, 350f, getY(), paint)
+            paint.textSize = 30f
+            addSpace()
+
+            canvas.drawText("${recipe.diet.type}", contentStart, getY(), paint)
+            canvas.drawText("${recipe.mealType.type}", contentStart, getY(), paint)
+
+            if (recipe.description.isNotEmpty()) {
+                canvas.drawText(recipe.description, contentStart, getY(), paint)
+                addSpace()
             }
 
-            canvas.drawText("\nPreparation Method", 209F, getY(), title)
-            canvas.drawText(recipe.preparationMethod + "\n", 209F, getY(), title)
+            addSpace()
+            paint.textSize = 40f
+            canvas.drawText("Ingredients", contentStart, getY(), paint)
+            paint.textSize = 30f
+            recipe.ingredients.forEach {
+                canvas.drawText("${it.name} - ${it.quantity}", contentStart, getY(), paint)
+            }
+            addSpace()
 
-            canvas.drawText("\nFamous Restaurant", 209F, getY(), title)
-            canvas.drawText(recipe.restaurantName + "\n", 209F, getY(), title)
-            canvas.drawText(recipe.restaurantAddress, 209F, getY(), title)
+            paint.textSize = 40f
+            canvas.drawText("Preparation Method", contentStart, getY(), paint)
+            paint.textSize = 30f
+            canvas.drawText("${recipe.preparationMethod}", contentStart, getY(), paint)
+            addSpace()
+
+
+            for (i in 1..5) {
+                addSpace()
+            }
+            paint.textSize = 40f
+            canvas.drawText("\n\nChef,", contentStart, getY(), paint)
+            canvas.drawText("\n\n$chefName", contentStart, getY(), paint)
+
+//            recipe.ingredients.forEach {
+//                canvas.drawText(it.name + " - " + it.quantity, 209F, getY(), paint)
+//            }
+
+//
+//            canvas.drawText(recipe.preparationMethod + "\n", 209F, getY(), paint)
+
+//            canvas.drawText("\nFamous Restaurant", contentStart, getY(), paint)
+//            canvas.drawText(recipe.restaurantName + "\n", contentStart, getY(), paint)
+//            canvas.drawText(recipe.restaurantAddress, contentStart, getY(), paint)
             // similarly we are creating another text and in this
             // we are aligning this text to center of our PDF file.
 
             // similarly we are creating another text and in this
             // we are aligning this text to center of our PDF file.
-            title.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-            title.color = ContextCompat.getColor(context, R.color.black)
-            title.textSize = 15F
+            paint.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+            paint.color = ContextCompat.getColor(context, R.color.black)
+            paint.textSize = 15F
 
             // below line is used for setting
             // our text to center of PDF.
@@ -253,8 +285,12 @@ class RecipeUtil {
         }
 
         private fun getY(): Float {
-            startY += 10F
+            startY += 35F
             return startY
+        }
+
+        private fun addSpace() {
+            startY += 40F
         }
 
         fun provideRecipeRequest(
@@ -291,6 +327,7 @@ class RecipeUtil {
                 addedBy = UserType.OWNER.value
             )
         }
+
         fun getBitmapFromBase64Image(base64: String): Bitmap? {
             val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
             return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)

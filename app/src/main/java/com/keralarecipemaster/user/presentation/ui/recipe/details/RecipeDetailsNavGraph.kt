@@ -26,7 +26,8 @@ fun RecipeDetailsNavHost(
             RecipeDetailsScreen(
                 recipeId = recipeId,
                 recipeDetailsViewModel = recipeDetailsViewModel,
-                navController = navController
+                navController = navController,
+                authenticationViewModel = authenticationViewModel
             )
         }
 

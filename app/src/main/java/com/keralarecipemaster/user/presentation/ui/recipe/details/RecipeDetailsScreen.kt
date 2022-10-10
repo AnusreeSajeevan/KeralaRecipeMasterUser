@@ -32,6 +32,7 @@ import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.R.*
 import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
+import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.RecipeUtil
@@ -43,7 +44,8 @@ import java.io.File
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipeDetailsViewModel: RecipeDetailsViewModel,
-    navController: NavController
+    navController: NavController,
+    authenticationViewModel: AuthenticationViewModel
 ) {
     val context = LocalContext.current
 
@@ -62,6 +64,7 @@ fun RecipeDetailsScreen(
     }
 
     val rating by ratingFlowLifecycleAware.collectAsState(0)
+
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
@@ -132,7 +135,8 @@ fun RecipeDetailsScreen(
                     IconButton(onClick = {
                         val name = createPdf(
                             context,
-                            recipe.value
+                            recipe.value,
+                            chefName = authenticationViewModel.name.value
                         )
                         val outputFile = File(
                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
