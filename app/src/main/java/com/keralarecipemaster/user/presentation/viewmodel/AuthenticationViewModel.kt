@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,10 +33,10 @@ class AuthenticationViewModel @Inject constructor(
     private val _errorMessage =
         MutableStateFlow(Constants.EMPTY_STRING)
 
-    val username: StateFlow<String>
-        get() = _username
+    val name: StateFlow<String>
+        get() = _name
 
-    private val _username =
+    private val _name =
         MutableStateFlow(Constants.EMPTY_STRING)
 
     val email: StateFlow<String>
@@ -77,8 +76,8 @@ class AuthenticationViewModel @Inject constructor(
 
     private fun getUsername() {
         viewModelScope.launch {
-            prefsStore.getUsername().catch { }.collect {
-                _username.value = it
+            prefsStore.getName().catch { }.collect {
+                _name.value = it
             }
         }
     }
@@ -128,16 +127,17 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun registerUser(username: String, password: String, email: String) {
+    fun registerUser(username: String, password: String, email: String, name: String) {
         if (username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
-            .isNotEmpty()
+            .isNotEmpty() && name.trim().isNotEmpty()
         ) {
             Log.d("CheckRegisterResponse", "catch")
             viewModelScope.launch {
                 authenticationRepository.registerUser(
                     username = username,
                     password = password,
-                    email = email
+                    email = email,
+                    name = name
                 )
                     .catch {
                         Log.d("CheckRegisterResponse", "catch")

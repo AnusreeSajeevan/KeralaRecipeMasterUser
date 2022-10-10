@@ -15,4 +15,6 @@ interface PrefsStore {
     suspend fun setUserId(userId: Int)
     suspend fun getRestaurantName(): Flow<String>
     suspend fun setRestaurantName(restaurantName: String)
+    suspend fun getName(): Flow<String>
+    suspend fun setName(name: String)
 }

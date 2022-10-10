@@ -18,10 +18,10 @@ class RecipeDtoMapper @Inject constructor() :
             description = entity.description,
             ingredients = entity.ingredients,
             image = entity.image,
-            restaurantName = entity.resturant?.name ?: Constants.EMPTY_STRING,
-            restaurantLatitude = entity.resturant?.latitude ?: Constants.EMPTY_STRING,
-            restaurantLongitude = entity.resturant?.longitude ?: Constants.EMPTY_STRING,
-            restaurantAddress = entity.resturant?.address ?: Constants.EMPTY_STRING,
+            restaurantName = entity.restaurant?.name ?: Constants.EMPTY_STRING,
+            restaurantLatitude = entity.restaurant?.latitude ?: Constants.EMPTY_STRING,
+            restaurantLongitude = entity.restaurant?.longitude ?: Constants.EMPTY_STRING,
+            restaurantAddress = entity.restaurant?.address ?: Constants.EMPTY_STRING,
             preparationMethod = entity.preparationMethod,
             mealType = Meal.valueOf(entity.mealType.toUpperCase()),
             diet = Diet.valueOf(entity.diet.toUpperCase()),
@@ -38,7 +38,7 @@ class RecipeDtoMapper @Inject constructor() :
             description = domainModel.description,
             ingredients = domainModel.ingredients,
             image = domainModel.image,
-            resturant = Restaurant(
+            restaurant = Restaurant(
                 name = domainModel.restaurantName,
                 latitude = domainModel.restaurantLatitude,
                 longitude = domainModel.restaurantLongitude,

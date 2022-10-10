@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.network.model.authentication
 
 import com.google.gson.annotations.SerializedName
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.UserType
 
 data class RegisterRestaurantRequest(
@@ -8,5 +9,6 @@ data class RegisterRestaurantRequest(
     val password: String,
     val email: String,
     @SerializedName("restaurant_name") val restaurantName: String,
-    val usertype: String = UserType.OWNER.value
+    val usertype: String = UserType.OWNER.value,
+    val name: String = Constants.EMPTY_STRING
 )

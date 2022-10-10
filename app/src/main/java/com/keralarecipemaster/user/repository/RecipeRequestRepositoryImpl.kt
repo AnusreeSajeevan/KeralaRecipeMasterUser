@@ -2,13 +2,10 @@ package com.keralarecipemaster.user.repository
 
 import com.keralarecipemaster.user.di.CoroutinesDispatchersModule
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
-import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
 import com.keralarecipemaster.user.network.model.recipe.AddOrUpdateRecipeRequest
 import com.keralarecipemaster.user.network.model.recipe.RecipeResponse
-import com.keralarecipemaster.user.network.model.reciperequest.CommonRequest
 import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestDtoMapper
-import com.keralarecipemaster.user.network.model.reciperequest.RecipeRequestResponse
 import com.keralarecipemaster.user.network.service.RecipeRequestApi
 import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
@@ -78,10 +75,10 @@ class RecipeRequestRepositoryImpl @Inject constructor(
                         diet = Diet.valueOf(recipe.diet),
                         addedBy = UserType.OWNER.value,
                         rating = recipe.rating, status = "ApprovalPending",
-                        restaurantAddress = recipe.resturant?.address ?: Constants.EMPTY_STRING,
-                        restaurantName = recipe.resturant?.name ?: Constants.EMPTY_STRING,
-                        restaurantLongitude = recipe.resturant?.longitude ?: Constants.EMPTY_STRING,
-                        restaurantLatitude = recipe.resturant?.latitude ?: Constants.EMPTY_STRING
+                        restaurantAddress = recipe.restaurant?.address ?: Constants.EMPTY_STRING,
+                        restaurantName = recipe.restaurant?.name ?: Constants.EMPTY_STRING,
+                        restaurantLongitude = recipe.restaurant?.longitude ?: Constants.EMPTY_STRING,
+                        restaurantLatitude = recipe.restaurant?.latitude ?: Constants.EMPTY_STRING
                     )
                 )
             }

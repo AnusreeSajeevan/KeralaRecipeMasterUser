@@ -57,15 +57,15 @@ fun UserProfileScreen(
         }
     val notificationStatus by notificationStatusValueLifeCycleAware.collectAsState(initial = false)
 
-    val usernameValue = authenticationViewModel.username
-    val usernameValueLifeCycleAware =
-        remember(usernameValue, lifecycleOwner) {
-            usernameValue.flowWithLifecycle(
+    val nameValue = authenticationViewModel.name
+    val nameValueLifeCycleAware =
+        remember(nameValue, lifecycleOwner) {
+            nameValue.flowWithLifecycle(
                 lifecycleOwner.lifecycle,
                 Lifecycle.State.STARTED
             )
         }
-    val username by usernameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+    val name by nameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
     val emailValue = authenticationViewModel.email
     val emailValueLifeCycleAware =
@@ -100,7 +100,7 @@ fun UserProfileScreen(
     } else if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
         Column(modifier = Modifier.padding(16.dp).fillMaxHeight()) {
             Text(text = "$restaurantName", fontWeight = FontWeight.Bold)
-            Text(text = "$username")
+//            Text(text = "$name")
             Text(text = "$email")
 
             Spacer(modifier = Modifier.size(10.dp))
@@ -116,7 +116,7 @@ fun UserProfileScreen(
         }
     } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "$username")
+            Text(text = "$name", fontWeight = FontWeight.Bold)
             Text(text = "$email")
 
             Spacer(modifier = Modifier.size(16.dp))

@@ -22,7 +22,7 @@ data class RecipeResponse(
     @SerializedName("image_name")
     val imageName: String = Constants.EMPTY_STRING,
 
-    val resturant: Restaurant?,
+    val restaurant: Restaurant?,
 
     @SerializedName("preparation_method")
     val preparationMethod: String,

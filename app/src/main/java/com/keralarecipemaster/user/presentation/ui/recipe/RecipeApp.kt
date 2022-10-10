@@ -3,21 +3,14 @@ package com.keralarecipemaster.user.presentation.ui.recipe
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -65,40 +58,43 @@ fun RecipeApp(
 //            ShowLoginScreen(authenticationViewModel)
 //        } else {
 
-        val usernameValue = authenticationViewModel.username
-        val usernameValueLifeCycleAware =
-            remember(usernameValue, lifeCycleOwner) {
-                usernameValue.flowWithLifecycle(
+        val nameValue = authenticationViewModel.name
+        val nameValueLifeCycleAware =
+            remember(nameValue, lifeCycleOwner) {
+                nameValue.flowWithLifecycle(
                     lifeCycleOwner.lifecycle,
                     Lifecycle.State.STARTED
                 )
             }
-        val username by usernameValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
+        val name by nameValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
         val context = LocalContext.current
         val activity = (context as? Activity)
 
-        val name =
-            if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                username
-            } else {
-                "Guest user"
-            }
-
         Scaffold(
             topBar = {
-                TopAppBar(title = { Text(text = "Welcome $name!") }, actions = {
-                    if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
-                        IconButton(onClick = {
-                            val intent = Intent(activity, AuthenticationActivity::class.java)
-                            val bundle = Bundle()
-                            bundle.putBoolean(Constants.IS_FROM_PROFILE_SCREEN, true)
-                            intent.putExtras(bundle)
-                            context.startActivity(intent)
-                        }) {
-                            Icon(Icons.Default.AccountCircle, "")
+                TopAppBar(title = {
+                    Text(
+                        text = "Welcome ${
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                            name
+                        } else {
+                            "Guest user"
                         }
-                    }
-                })
+                        }!"
+                    )
+                }, actions = {
+                        if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
+                            IconButton(onClick = {
+                                val intent = Intent(activity, AuthenticationActivity::class.java)
+                                val bundle = Bundle()
+                                bundle.putBoolean(Constants.IS_FROM_PROFILE_SCREEN, true)
+                                intent.putExtras(bundle)
+                                context.startActivity(intent)
+                            }) {
+                                Icon(Icons.Default.AccountCircle, "")
+                            }
+                        }
+                    })
             },
             modifier = Modifier.fillMaxWidth(),
             bottomBar = {

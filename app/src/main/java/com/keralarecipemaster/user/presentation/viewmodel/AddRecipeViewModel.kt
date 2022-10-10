@@ -160,17 +160,19 @@ class AddRecipeViewModel @Inject constructor(
                             ingredients = _ingredients.value,
                             diet = _dietType.value,
                             mealType = mealType.value,
-                            addedBy = UserType.OWNER.name,
+                            addedBy = UserType.USER.name,
                             rating = _rating.value,
                             status = "",
-                            resturant = null,
+                            restaurant = null,
                             image = image,
                             imageName = imageName
                         )
                     ).catch { }.collect {
                         if (it.first == Constants.ERROR_CODE_SUCCESS) {
                             _errorMessage.value = "Recipe added successfully"
-                        }
+                        } else {
+                        _errorMessage.value = "Can't add recipe. Please try again later!"
+                    }
                     }
                 }
             } else {
@@ -181,33 +183,6 @@ class AddRecipeViewModel @Inject constructor(
         }
     }
 
-/*    fun addRecipeRequest() {
-        if (validateRecipeDetails() && validateRestaurantDetails()) {
-            viewModelScope.launch {
-                recipeRequestRepository.addRecipeRequest(
-                    RecipeRequestEntity(
-                        recipeName = _recipeName.value,
-                        description = _description.value,
-                        preparationMethod = _preparationMethod.value,
-                        ingredients = _ingredients.value,
-                        diet = Diet.valueOf(_dietType.value),
-                        mealType = Meal.valueOf(mealType.value),
-                        restaurantAddress = address.value,
-                        restaurantLatitude = location.value.latitude.toString(),
-                        restaurantLongitude = location.value.longitude.toString(),
-                        restaurantName = restaurantName.value,
-                        rating = _rating.value,
-                        status = "to do"
-                    )
-                ).catch { }.collect {
-                    if (it == Constants.ERROR_CODE_SUCCESS) {
-                        _errorMessage.value = "Recipe added successfully"
-                    }
-                }
-//            addRecipeRequestToDb()
-            }
-        }
-    }*/
 
     fun addRecipeRequest() {
         if (validateRecipeDetails()) {
@@ -230,7 +205,7 @@ class AddRecipeViewModel @Inject constructor(
                                 imageName = imageName,
                                 rating = _rating.value,
                                 status = "ApprovalPending",
-                                resturant = Restaurant(
+                                restaurant = Restaurant(
                                     name = _restaurantName.value,
                                     latitude = location.value.latitude.toString(),
                                     longitude = location.value.longitude.toString(),
@@ -272,11 +247,13 @@ class AddRecipeViewModel @Inject constructor(
                             addedBy = UserType.USER.name,
                             rating = _rating.value,
                             status = "",
-                            resturant = null
+                            restaurant = null
                         )
                     ).catch { }.collect {
                         if (it == Constants.ERROR_CODE_SUCCESS) {
                             _errorMessage.value = "Recipe details updated successfully"
+                        } else {
+                            _errorMessage.value = "Can't add recipe! Try again!"
                         }
                     }
                 }

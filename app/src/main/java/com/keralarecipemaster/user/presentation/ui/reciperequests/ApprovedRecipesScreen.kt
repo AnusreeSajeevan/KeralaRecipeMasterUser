@@ -79,7 +79,7 @@ fun ApprovedRecipesScreen(
                         .fillMaxHeight()
                 ) {
                     Text(
-                        text = "You haven't added any recipes!",
+                        text = "You don't have any approved recipes!",
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }

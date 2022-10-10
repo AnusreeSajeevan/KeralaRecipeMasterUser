@@ -187,6 +187,10 @@ fun LoginScreen(
 fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel) {
     val context = LocalContext.current
     val activity = (context as? Activity)
+    val name = remember {
+        mutableStateOf("")
+    }
+
     val email = remember {
         mutableStateOf("")
     }
@@ -202,6 +206,10 @@ fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel)
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "REGISTER AS USER", modifier = Modifier.align(CenterHorizontally))
         Spacer(Modifier.size(16.dp))
+        OutlinedTextField(value = name.value, onValueChange = {
+            name.value = it
+        }, label = { Text(text = "Name") }, modifier = Modifier.fillMaxWidth())
+
         OutlinedTextField(value = email.value, onValueChange = {
             email.value = it
         }, label = { Text(text = "Email") }, modifier = Modifier.fillMaxWidth())
@@ -219,13 +227,15 @@ fun ShowUserRegistrationScreen(authenticationViewModel: AuthenticationViewModel)
                 if (isUserDetailsValid(
                         username = userName.value,
                         password = password.value,
-                        email = email.value
+                        email = email.value,
+                        name = name.value
                     )
                 ) {
                     authenticationViewModel.registerUser(
                         username = userName.value,
                         password = password.value,
-                        email = email.value
+                        email = email.value,
+                        name = name.value
                     )
                 } else {
                     Toast.makeText(context, "Enter all fields", Toast.LENGTH_SHORT)
@@ -263,6 +273,10 @@ fun ShowRestaurantOwnerRegistrationScreen(authenticationViewModel: Authenticatio
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "REGISTER AS RESTAURANT OWNER", modifier = Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
+
+        OutlinedTextField(value = restaurantName.value, onValueChange = {
+            restaurantName.value = it
+        }, label = { Text(text = "Restaurant Name") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = email.value, onValueChange = {
             email.value = it
         }, label = { Text(text = "Email") }, modifier = Modifier.fillMaxWidth())
@@ -275,9 +289,6 @@ fun ShowRestaurantOwnerRegistrationScreen(authenticationViewModel: Authenticatio
             password.value = it
         }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = restaurantName.value, onValueChange = {
-            restaurantName.value = it
-        }, label = { Text(text = "Restaurant Name") }, modifier = Modifier.fillMaxWidth())
 
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             if (isRestaurantOwnerDetailsValid(
@@ -307,8 +318,8 @@ private fun isAllFieldsValid(username: String, password: String): Boolean {
     return username.trim().isNotEmpty() && password.trim().isNotEmpty()
 }
 
-fun isUserDetailsValid(username: String, password: String, email: String): Boolean {
-    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim().isNotEmpty()
+fun isUserDetailsValid(username: String, password: String, email: String, name: String): Boolean {
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim().isNotEmpty() && name.trim().isNotEmpty()
 }
 
 fun isRestaurantOwnerDetailsValid(

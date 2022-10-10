@@ -198,7 +198,7 @@ fun RecipesScreen(
                                 .fillMaxHeight()
                         ) {
                             Text(
-                                text = "No Famous Recipes available at this moment..\nPlease try again later!",
+                                text = if (userType == UserType.USER) "You haven't added any recipes!\n Click on + to add recipes!" else "No Famous Recipes available at this moment!",
                                 modifier = Modifier.align(Alignment.Center),
                                 textAlign = TextAlign.Center
                             )

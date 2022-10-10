@@ -23,6 +23,7 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
         val EMAIL = preferencesKey<String>("email")
         val USER_ID = preferencesKey<Int>("user_id")
         val RESTAURANT_NAME = preferencesKey<String>("restaurant_name")
+        val NAME = preferencesKey<String>("name")
     }
 
     private val dataStore = context.createDataStore(name = KRM_DATA_STORE)
@@ -138,6 +139,24 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
     override suspend fun setRestaurantName(restaurantName: String) {
         dataStore.edit {
             it[PreferencesKeys.RESTAURANT_NAME] = restaurantName
+        }
+    }
+
+    override suspend fun getName(): Flow<String> {
+        return flow {
+            dataStore.data.catch { exception ->
+                if (exception is Exception) {
+                    emit(emptyPreferences())
+                } else throw exception
+            }.collect {
+                emit(it[PreferencesKeys.NAME] ?: Constants.EMPTY_STRING)
+            }
+        }
+    }
+
+    override suspend fun setName(name: String) {
+        dataStore.edit {
+            it[PreferencesKeys.NAME] = name
         }
     }
 }

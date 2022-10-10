@@ -38,10 +38,10 @@ class AuthenticationRepositoryImpl @Inject constructor(
                         userInfo?.let {
                             if (it.usertype == UserType.USER.value) {
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
+                                prefsStore.setName(it.name)
                             } else {
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
-                                // TODO : get restaurant name from repsonse
-                                prefsStore.setRestaurantName("Restaurant Name")
+                                prefsStore.setRestaurantName(it.name)
                             }
                             prefsStore.setUsername(it.username)
                             prefsStore.setEmail(it.email)
@@ -57,14 +57,16 @@ class AuthenticationRepositoryImpl @Inject constructor(
     override suspend fun registerUser(
         username: String,
         password: String,
-        email: String
+        email: String,
+        name: String
     ): Flow<Boolean> {
         val result =
             authenticationApi.registerUser(
                 RegisterUserRequest(
                     username = username,
                     password = password,
-                    email = email
+                    email = email,
+                    name = name
                 )
             )
         if (result.isSuccessful) {
@@ -73,6 +75,8 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 launch {
                     prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
                     prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
+                    prefsStore.setName(userInfo?.name ?: Constants.EMPTY_STRING)
+                    prefsStore.setUserId(userInfo?.userId ?: Constants.INVALID_USER_ID)
                     prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_USER.name)
                 }
             }
@@ -103,8 +107,8 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 launch {
                     prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
                     prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
-                    // TODO : get restaurant name from repsonse
-                    prefsStore.setRestaurantName(userInfo?.restaurantName ?: Constants.EMPTY_STRING)
+                    prefsStore.setUserId(userInfo?.userId ?: Constants.INVALID_USER_ID)
+                    prefsStore.setRestaurantName(userInfo?.name ?: Constants.EMPTY_STRING)
                     prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
                 }
             }

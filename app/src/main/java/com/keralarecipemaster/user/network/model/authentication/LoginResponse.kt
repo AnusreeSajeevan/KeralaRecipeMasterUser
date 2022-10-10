@@ -11,7 +11,7 @@ data class LoginResponse(
 data class UserInfo(
     val email: String,
     val username: String,
-    @SerializedName("restaurant_name") val restaurantName: String = Constants.EMPTY_STRING,
+    val name: String = Constants.EMPTY_STRING,
     @SerializedName("user_id") val userId: Int,
     @SerializedName("usertype") val usertype: String
 )
