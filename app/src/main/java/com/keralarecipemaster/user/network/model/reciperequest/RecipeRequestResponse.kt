@@ -1,8 +1,10 @@
 package com.keralarecipemaster.user.network.model.reciperequest
 
+import androidx.compose.ui.unit.Constraints
 import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.Restaurant
+import com.keralarecipemaster.user.utils.Constants
 
 data class RecipeRequestResponse(
     @SerializedName("recipe_id")
@@ -15,7 +17,7 @@ data class RecipeRequestResponse(
 
     val ingredients: List<Ingredient>,
 
-    val image: String? = null,
+    val image: String = Constants.EMPTY_STRING,
 
     val restaurant: Restaurant,
 

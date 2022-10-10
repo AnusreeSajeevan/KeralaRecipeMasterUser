@@ -15,6 +15,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+
 class RecipeUtil {
     companion object {
         fun provideRecipe(
@@ -74,7 +75,7 @@ class RecipeUtil {
             return recipeDetails
         }
 
-        var startY = 100F
+        var startY = 300F
 
         fun createPdf(
             context: Context,
@@ -181,14 +182,41 @@ class RecipeUtil {
             // the first parameter is our text, second parameter
             // is position from start, third parameter is position from top
             // and then we are passing our variable of paint which is title.
+
+
             val contentStart = 100F
             paint.textSize = 50f
+
+            getBitmapFromBase64Image( recipe.image)?.let {
+                val scaledBitmap = Bitmap.createScaledBitmap(it, canvas.width/2, 200, false)
+                canvas.drawBitmap(scaledBitmap,  200f, 50f,paint)
+            }
+
+
+
             canvas.drawText(recipe.recipeName, 350f, getY(), paint)
             paint.textSize = 30f
-            addSpace()
 
-            canvas.drawText("${recipe.diet.type}", contentStart, getY(), paint)
-            canvas.drawText("${recipe.mealType.type}", contentStart, getY(), paint)
+            addSpace()
+            val dietIcon = if (recipe.diet == Diet.NON_VEG) {
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.ic_non_veg
+                )
+            } else {
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.ic_veg
+                )
+            }
+
+            val scaledDietIcon = Bitmap.createScaledBitmap(dietIcon, 20, 20, false)
+            val y = getY()
+            canvas.drawBitmap(scaledDietIcon,  contentStart, y, paint)
+
+//            canvas.drawText("${recipe.diet.type}", contentStart, getY(), paint)
+            canvas.drawText("${recipe.mealType.type}", contentStart + 40, y+20, paint)
+            addSpace()
 
             if (recipe.description.isNotEmpty()) {
                 canvas.drawText(recipe.description, contentStart, getY(), paint)
@@ -211,7 +239,7 @@ class RecipeUtil {
             addSpace()
 
 
-            for (i in 1..5) {
+            for (i in 1..3) {
                 addSpace()
             }
             paint.textSize = 40f
@@ -290,7 +318,7 @@ class RecipeUtil {
         }
 
         private fun addSpace() {
-            startY += 40F
+            startY += 35F
         }
 
         fun provideRecipeRequest(
@@ -298,7 +326,7 @@ class RecipeUtil {
             recipeName: String = Constants.EMPTY_STRING,
             description: String = Constants.EMPTY_STRING,
             ingredients: List<Ingredient> = listOf(),
-            image: String? = null,
+            image: String = Constants.EMPTY_STRING,
             restaurantName: String = Constants.EMPTY_STRING,
             restaurantLatitude: String = Constants.EMPTY_STRING,
             restaurantLongitude: String = Constants.EMPTY_STRING,

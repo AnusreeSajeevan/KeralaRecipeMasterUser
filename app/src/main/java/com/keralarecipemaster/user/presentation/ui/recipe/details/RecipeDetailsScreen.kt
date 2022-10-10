@@ -65,7 +65,6 @@ fun RecipeDetailsScreen(
 
     val rating by ratingFlowLifecycleAware.collectAsState(0)
 
-
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
         if (bitmap == null) {
@@ -190,10 +189,32 @@ fun RecipeDetailsScreen(
             }
             Spacer(modifier = Modifier.size(10.dp))
 
-            Text(
-                text = recipeEntity.description,
-                style = TextStyle(fontSize = 16.sp, fontStyle = FontStyle.Italic)
-            )
+            if (recipeEntity.description.isNotEmpty()) {
+                Text(
+                    text = recipeEntity.description,
+                    style = TextStyle(fontSize = 16.sp, fontStyle = FontStyle.Italic)
+                )
+                Spacer(Modifier.size(20.dp))
+            }
+
+
+            if (recipeEntity.addedBy == UserType.OWNER) {
+                /* Restaurant Details*/
+                Spacer(modifier = Modifier.size(16.dp))
+                Text(
+                    text = "Restaurant",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Spacer(Modifier.size(4.dp))
+                Text(text = recipeEntity.restaurantName)
+                Text(text = recipeEntity.restaurantAddress)
+                Spacer(Modifier.size(20.dp))
+                /* End Restaurant Details*/
+            }
 
             Spacer(Modifier.size(20.dp))
 

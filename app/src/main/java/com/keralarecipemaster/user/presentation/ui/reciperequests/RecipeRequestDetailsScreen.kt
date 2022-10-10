@@ -57,7 +57,6 @@ fun RecipeRequestDetailsScreen(
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box {
-
             val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeRequest.image ?: Constants.EMPTY_STRING)
             if (bitmap == null) {
                 Image(
@@ -136,21 +135,6 @@ fun RecipeRequestDetailsScreen(
             Spacer(Modifier.size(20.dp))
             /* End Important Recipe Details*/
 
-            /* Restaurant Details*/
-            Text(
-                text = "Restaurant",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Spacer(Modifier.size(4.dp))
-            Text(text = recipeRequest.restaurantName)
-            Text(text = recipeRequest.restaurantAddress)
-            Spacer(Modifier.size(20.dp))
-            /* End Restaurant Details*/
-
             /* Other Recipe Details*/
             Text(
                 text = "Ingredients",
@@ -195,6 +179,22 @@ fun RecipeRequestDetailsScreen(
                 )
             )
             /* End Other Recipe Details*/
+
+            /* Restaurant Details*/
+            Spacer(modifier = Modifier.size(16.dp))
+            Text(
+                text = "Restaurant",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            Spacer(Modifier.size(4.dp))
+            Text(text = recipeRequest.restaurantName)
+            Text(text = recipeRequest.restaurantAddress)
+            Spacer(Modifier.size(20.dp))
+            /* End Restaurant Details*/
         }
     }
 }

@@ -73,6 +73,8 @@ class RecipeRequestRepositoryImpl @Inject constructor(
                         ingredients = recipe.ingredients,
                         mealType = Meal.valueOf(recipe.mealType),
                         diet = Diet.valueOf(recipe.diet),
+                        image = recipe.image,
+                        imageName = recipe.imageName,
                         addedBy = UserType.OWNER.value,
                         rating = recipe.rating, status = "ApprovalPending",
                         restaurantAddress = recipe.restaurant?.address ?: Constants.EMPTY_STRING,

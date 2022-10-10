@@ -96,7 +96,7 @@ fun PendingRequestsScreen(
                 ConstraintLayout {
                     Column {
                         Text(
-                            text = "You have pending Recipe Requests",
+                            text = "You have pending Recipe Requests!",
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(16.dp)
                         )

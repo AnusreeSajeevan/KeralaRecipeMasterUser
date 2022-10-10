@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -119,9 +120,9 @@ fun UserProfileScreen(
             Text(text = "$name", fontWeight = FontWeight.Bold)
             Text(text = "$email")
 
-            Spacer(modifier = Modifier.size(16.dp))
-            Row {
-                Text(text = "Turn ${if (notificationStatus) "OFF" else "ON"} Location Notification")
+            Spacer(modifier = Modifier.size(8.dp))
+            Row(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Turn ${if (notificationStatus) "OFF" else "ON"} Location Notification to receive notification when you are close to famous restaurants")
                 Spacer(modifier = Modifier.size(10.dp))
                 Switch(
                     modifier = Modifier.align(Alignment.CenterVertically),
@@ -144,14 +145,14 @@ fun UserProfileScreen(
                 )
             }
             Spacer(modifier = Modifier.size(10.dp))
-            Button(onClick = {
+            Button( onClick = {
                 logout(
                     authenticationViewModel = authenticationViewModel,
                     activity = activity,
                     context = context
                 )
             }) {
-                Text(text = "Logout")
+                Text(text = "Logout", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             }
         }
     }

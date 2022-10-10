@@ -46,72 +46,74 @@ fun RecipeRequestComponent(
         Column(modifier = Modifier.fillMaxWidth()) {
             val bitmap =
                 RecipeUtil.getBitmapFromBase64Image(recipeRequest.image ?: Constants.EMPTY_STRING)
-            Box {
-                if (bitmap == null) {
-                    Image(
-                        painter = painterResource(
-                            id = R.drawable.placeholder
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                IconButton(onClick = {
-                    recipeRequestViewModel.deleteRecipeRequest(recipeRequest.recipeId)
-                }) {
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.ic_delete
-                        ),
-                        contentDescription = null
-                    )
-                }
+            if (bitmap == null) {
+                Image(
+                    painter = painterResource(
+                        id = R.drawable.placeholder
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
             }
 
             Column(modifier = Modifier.padding(8.dp)) {
-            Text(
-                text = recipeRequest.recipeName,
-                style = TextStyle(fontSize = 16.sp, fontStyle = FontStyle.Normal)
-            )
+                Text(
+                    text = recipeRequest.recipeName,
+                    style = TextStyle(fontSize = 16.sp, fontStyle = FontStyle.Normal)
+                )
 
-            RatingBarView(
-                rating = remember {
-                    mutableStateOf(recipeRequest.rating)
-                },
-                isRatingEditable = false,
-                ratedStarsColor = Color(255, 220, 0),
-                starIcon = painterResource(id = R.drawable.ic_star_filled),
-                unRatedStarsColor = Color.LightGray
-            )
+                RatingBarView(
+                    rating = remember {
+                        mutableStateOf(recipeRequest.rating)
+                    },
+                    isRatingEditable = false,
+                    ratedStarsColor = Color(255, 220, 0),
+                    starIcon = painterResource(id = R.drawable.ic_star_filled),
+                    unRatedStarsColor = Color.LightGray
+                )
 
-            val dietLogo = if (recipeRequest.diet.type == Diet.NON_VEG.type) {
-                R.drawable.ic_non_veg
-            } else {
-                R.drawable.ic_veg
-            }
-            Image(
-                painter = painterResource(id = dietLogo),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(15.dp)
-                    .width(15.dp)
+                val dietLogo = if (recipeRequest.diet.type == Diet.NON_VEG.type) {
+                    R.drawable.ic_non_veg
+                } else {
+                    R.drawable.ic_veg
+                }
+                Image(
+                    painter = painterResource(id = dietLogo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(15.dp)
+                        .width(15.dp)
 
-            )
-
-
+                )
+                if (recipeRequest.status == "Approved") {
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        IconButton(onClick = {
+                            recipeRequestViewModel.deleteRecipeRequest(recipeRequest.recipeId)
+                        }) {
+                            Icon(
+                                painter = painterResource(
+                                    id = R.drawable.ic_delete
+                                ),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
         }
     }
