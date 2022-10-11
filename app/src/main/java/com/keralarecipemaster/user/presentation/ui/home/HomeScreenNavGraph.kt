@@ -16,6 +16,7 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
+import com.keralarecipemaster.user.utils.BottomNavigationItems
 import com.keralarecipemaster.user.utils.UserType
 
 @Composable
@@ -30,9 +31,9 @@ fun RecipeNavHost(
     val context = LocalContext.current
     NavHost(
         navController = navController,
-        startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) HomeItems.ApprovedRecipes.name else HomeItems.FamousRecipes.name
+        startDestination = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) BottomNavigationItems.ApprovedRecipes.name else BottomNavigationItems.FamousRecipes.name
     ) {
-        composable(HomeItems.FamousRecipes.name) {
+        composable(BottomNavigationItems.FamousRecipes.name) {
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 onFabClick = null,
@@ -41,7 +42,7 @@ fun RecipeNavHost(
                 navController = navController
             )
         }
-        composable(HomeItems.MyRecipes.name) {
+        composable(BottomNavigationItems.MyRecipes.name) {
             RecipesScreen(
                 authenticationViewModel = authenticationViewModel,
                 recipeViewModel = recipeListViewModel,
@@ -53,19 +54,19 @@ fun RecipeNavHost(
                 navController = navController
             )
         }
-        composable(HomeItems.ApprovedRecipes.name) {
+        composable(BottomNavigationItems.ApprovedRecipes.name) {
             ApprovedRecipesScreen(
                 recipeRequestViewModel = recipeRequestViewModel,
                 navController = navController
             )
         }
-        composable(HomeItems.PendingRequests.name) {
+        composable(BottomNavigationItems.PendingRequests.name) {
             PendingRequestsScreen(
                 recipeRequestViewModel = recipeRequestViewModel,
                 navController = navController
             )
         }
-        composable(HomeItems.Profile.name) {
+        composable(BottomNavigationItems.Profile.name) {
             UserProfileScreen(
                 authenticationViewModel = authenticationViewModel,
                 locationNotificationViewModel = locationNotificationViewModel

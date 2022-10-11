@@ -19,7 +19,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.authentication.AuthenticationActivity
-import com.keralarecipemaster.user.presentation.ui.home.HomeItems
 import com.keralarecipemaster.user.presentation.ui.home.RecipeNavHost
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
@@ -40,23 +39,8 @@ fun RecipeApp(
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
         val backstackEntry = navController.currentBackStackEntryAsState()
-        val currentScreen = HomeItems.fromRoute(backstackEntry.value?.destination?.route)
         val scaffoldState = rememberScaffoldState()
         val lifeCycleOwner = LocalLifecycleOwner.current
-
-        /* val authenticationStateValue = authenticationViewModel.authenticationState
-         val authenticationStateValueLifeCycleAware =
-             remember(authenticationStateValue, lifeCycleOwner) {
-                 authenticationStateValue.flowWithLifecycle(
-                     lifeCycleOwner.lifecycle,
-                     Lifecycle.State.STARTED
-                 )
-             }
-         val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)*/
-
-//        if (authenticationState == AuthenticationState.INITIAL_STATE) {
-//            ShowLoginScreen(authenticationViewModel)
-//        } else {
 
         val nameValue = authenticationViewModel.name
         val nameValueLifeCycleAware =
@@ -104,42 +88,6 @@ fun RecipeApp(
                         getBottomNavigationItems(authenticationState)
                     )
                 }
-                /*
-        //                if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                val items = arrayListOf<HomeItems>()
-                HomeItems.values().forEach {
-                    if (it == HomeItems.FamousRecipes) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
-                            items.add(it)
-                        }
-                    } else if (it == HomeItems.MyRecipes) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
-                            items.add(it)
-                        }
-                    } else if (it == HomeItems.MyRequests) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                            items.add(it)
-                        }
-                    } else if (it == HomeItems.Account) {
-                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                            items.add(it)
-                        }
-                    } else {
-                        items.add(it)
-                    }
-                }
-
-                BottomNavigationBar(items = items, onTabSelected = { screen ->
-        //                    bottomBarOffsetHeightPx.value = 0f
-                    if (screen != currentScreen) {
-                        navController.navigate(screen.name) {
-                            // popUpTo(MainMenuItems.Home.name)
-                            navController.popBackStack()
-                        }
-                    }
-                }, currentScreen = currentScreen, modifier = Modifier.fillMaxWidth())
-        //                BottomNavigationBar(allScreens, navController)
-        //                }*/
             },
             scaffoldState = scaffoldState
         ) {
@@ -153,7 +101,6 @@ fun RecipeApp(
             )
         }
     }
-//    }
 }
 
 fun getBottomNavigationItems(authenticationState: AuthenticationState): ArrayList<BottomNavigationScreens> {

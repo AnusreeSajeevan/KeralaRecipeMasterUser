@@ -43,6 +43,7 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
+import com.keralarecipemaster.user.utils.BottomNavigationItems
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -60,13 +61,10 @@ class HomeActivity : ComponentActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
 
-        //        @SuppressLint("MissingPermission")
 
         setContent {
             val navController = rememberNavController()
             val backstackEntry = navController.currentBackStackEntryAsState()
-            val currentScreen = HomeItems.fromRoute(backstackEntry.value?.destination?.route)
-            val scaffoldState = rememberScaffoldState()
             val lifeCycleOwner = LocalLifecycleOwner.current
 
             val authenticationStateValue = authenticationViewModel.authenticationState
@@ -88,12 +86,7 @@ class HomeActivity : ComponentActivity() {
                     locationNotificationViewModel = locationNotificationViewModel,
                     authenticationState = authenticationState
                 )
-            } /*else {
-                ShowLoginScreen(
-
-                    authenticationViewModel = authenticationViewModel
-                )
-            }*/
+            }
         }
     }
 

@@ -4,12 +4,44 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.keralarecipemaster.user.presentation.ui.home.HomeItems
 
 sealed class BottomNavigationScreens(val route: String, val resourceId: String, val icon: ImageVector) {
-    object FamousRecipes : BottomNavigationScreens(HomeItems.FamousRecipes.name, "Famous Recipes", Icons.Filled.List)
-    object MyRecipes : BottomNavigationScreens(HomeItems.MyRecipes.name, "My Recipes", Icons.Filled.List)
-    object ApprovedRecipes : BottomNavigationScreens(HomeItems.ApprovedRecipes.name, "Approved Recipes", Icons.Filled.List)
-    object PendingRequests : BottomNavigationScreens(HomeItems.PendingRequests.name, "Pending Requests", Icons.Filled.List)
-    object Profile : BottomNavigationScreens(HomeItems.Profile.name, "Profile", Icons.Filled.AccountCircle)
+    object FamousRecipes : BottomNavigationScreens(BottomNavigationItems.FamousRecipes.name, BottomNavigationItems.FamousRecipes.name, Icons.Filled.List)
+    object MyRecipes : BottomNavigationScreens(BottomNavigationItems.MyRecipes.name, BottomNavigationItems.MyRecipes.name, Icons.Filled.List)
+    object ApprovedRecipes : BottomNavigationScreens(BottomNavigationItems.ApprovedRecipes.name, BottomNavigationItems.ApprovedRecipes.name, Icons.Filled.List)
+    object PendingRequests : BottomNavigationScreens(BottomNavigationItems.PendingRequests.name, BottomNavigationItems.PendingRequests.name, Icons.Filled.List)
+    object Profile : BottomNavigationScreens(BottomNavigationItems.Profile.name, BottomNavigationItems.Profile.name, Icons.Filled.AccountCircle)
+}
+
+enum class BottomNavigationItems(
+    val value: String
+) {
+    FamousRecipes(
+        value = "Famous Recipes"
+    ),
+    MyRecipes(
+        value = "My Recipes"
+    ),
+    ApprovedRecipes(
+        value = "Approved Recipes"
+    ),
+    PendingRequests(
+        value = "Pending Requests"
+    ),
+    Profile(
+        value = "Profile"
+    );
+
+    companion object {
+        fun fromRoute(route: String?): BottomNavigationItems =
+            when (route?.substringBefore("/")) {
+                FamousRecipes.name -> FamousRecipes
+                MyRecipes.name -> MyRecipes
+                Profile.name -> Profile
+                ApprovedRecipes.name -> ApprovedRecipes
+                PendingRequests.name -> PendingRequests
+                null -> FamousRecipes
+                else -> throw IllegalArgumentException("Route $route is not recognized.")
+            }
+    }
 }
