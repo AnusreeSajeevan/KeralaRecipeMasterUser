@@ -68,9 +68,14 @@ fun RecipeNavHost(
         }
         composable(BottomNavigationItems.Profile.name) {
             UserProfileScreen(
+                authenticationViewModel = authenticationViewModel
+            )
+        }
+/*        composable(BottomNavigationItems.Settings.name) {
+            SettingsScreen(
                 authenticationViewModel = authenticationViewModel,
                 locationNotificationViewModel = locationNotificationViewModel
             )
-        }
+        }*/
     }
 }

@@ -63,6 +63,12 @@
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.KeralaRecipeMasterUser" />
+
+        <activity
+            android:name=".presentation.ui.SettingsActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.KeralaRecipeMasterUser" />
     </application>
 
 </manifest>

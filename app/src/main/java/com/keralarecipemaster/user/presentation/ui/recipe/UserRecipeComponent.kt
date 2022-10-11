@@ -38,7 +38,6 @@ fun UserRecipeComponent(
         val intent = Intent(context, RecipeDetailsActivity::class.java)
         intent.putExtras(bundle)
         context.startActivity(intent)
-//        navController.navigate(RecipeDetailsDestinations.RecipeDetails.name)
     }) {
         Column(modifier = Modifier.fillMaxWidth()) {
             val bitmap = RecipeUtil.getBitmapFromBase64Image(recipe.image)
