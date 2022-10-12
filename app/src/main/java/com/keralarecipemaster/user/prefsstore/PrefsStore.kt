@@ -13,8 +13,6 @@ interface PrefsStore {
     suspend fun setEmail(email: String)
     suspend fun getUserId(): Flow<Int>
     suspend fun setUserId(userId: Int)
-    suspend fun getRestaurantName(): Flow<String>
-    suspend fun setRestaurantName(restaurantName: String)
     suspend fun getName(): Flow<String>
     suspend fun setName(name: String)
 }

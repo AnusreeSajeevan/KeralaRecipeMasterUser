@@ -64,45 +64,45 @@ fun RecipeApp(
                 TopAppBar(title = {
                     Text(
                         text = "Welcome ${
-                            if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
-                                name
-                            } else {
-                                "Guest user"
-                            }
+                        if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+                            name
+                        } else {
+                            "Guest user"
+                        }
                         }!"
                     )
                 }, actions = {
-                    if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
-                        IconButton(onClick = {
-                            val intent = Intent(activity, AuthenticationActivity::class.java)
-                            val bundle = Bundle()
-                            bundle.putBoolean(Constants.IS_FROM_PROFILE_SCREEN, true)
-                            intent.putExtras(bundle)
-                            context.startActivity(intent)
-                        }) {
-                            Icon(Icons.Default.AccountCircle, "")
-                        }
-                    } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
-                        Row {
+                        if (authenticationState == AuthenticationState.LOGGED_IN_AS_GUEST) {
                             IconButton(onClick = {
-                                context.startActivity(
-                                    Intent(
-                                        activity,
-                                        SettingsActivity::class.java
+                                val intent = Intent(activity, AuthenticationActivity::class.java)
+                                val bundle = Bundle()
+                                bundle.putBoolean(Constants.IS_FROM_PROFILE_SCREEN, true)
+                                intent.putExtras(bundle)
+                                context.startActivity(intent)
+                            }) {
+                                Icon(Icons.Default.AccountCircle, "")
+                            }
+                        } else if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+                            Row {
+                                IconButton(onClick = {
+                                    context.startActivity(
+                                        Intent(
+                                            activity,
+                                            SettingsActivity::class.java
+                                        )
                                     )
-                                )
-                            }) {
-                                Icon(Icons.Default.Settings, "")
-                            }
+                                }) {
+                                    Icon(Icons.Default.Settings, "")
+                                }
 
-                            IconButton(onClick = {
-                                logout(authenticationViewModel, activity, context)
-                            }) {
-                                Icon(Icons.Default.ExitToApp, "Logout")
+                                IconButton(onClick = {
+                                    logout(authenticationViewModel, activity, context)
+                                }) {
+                                    Icon(Icons.Default.ExitToApp, "Logout")
+                                }
                             }
                         }
-                    }
-                })
+                    })
             },
             modifier = Modifier.fillMaxWidth(),
             bottomBar = {

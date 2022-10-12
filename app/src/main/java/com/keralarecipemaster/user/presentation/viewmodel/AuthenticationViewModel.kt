@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
     private val prefsStore: PrefsStore,
-    val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ) :
     ViewModel() {
     val authenticationState: StateFlow<AuthenticationState>
@@ -45,25 +45,10 @@ class AuthenticationViewModel @Inject constructor(
     private val _email =
         MutableStateFlow(Constants.EMPTY_STRING)
 
-    private val _restaurantName =
-        MutableStateFlow(Constants.EMPTY_STRING)
-
-    val restaurantName: StateFlow<String>
-        get() = _restaurantName
-
     init {
         getAuthenticationState()
-        getUsername()
+        getName()
         getPassword()
-        getRestaurantName()
-    }
-
-    private fun getRestaurantName() {
-        viewModelScope.launch {
-            prefsStore.getRestaurantName().catch { }.collect {
-                _restaurantName.value = it
-            }
-        }
     }
 
     private fun getPassword() {
@@ -74,7 +59,7 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    private fun getUsername() {
+    private fun getName() {
         viewModelScope.launch {
             prefsStore.getName().catch { }.collect {
                 _name.value = it

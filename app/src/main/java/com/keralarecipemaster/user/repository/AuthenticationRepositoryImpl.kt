@@ -41,7 +41,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
                                 prefsStore.setName(it.name)
                             } else {
                                 prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
-                                prefsStore.setRestaurantName(it.name)
+                                prefsStore.setName(it.name)
                             }
                             prefsStore.setUsername(it.username)
                             prefsStore.setEmail(it.email)
@@ -108,7 +108,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
                     prefsStore.setUsername(userInfo?.username ?: Constants.EMPTY_STRING)
                     prefsStore.setEmail(userInfo?.email ?: Constants.EMPTY_STRING)
                     prefsStore.setUserId(userInfo?.userId ?: Constants.INVALID_USER_ID)
-                    prefsStore.setRestaurantName(userInfo?.name ?: Constants.EMPTY_STRING)
+                    prefsStore.setName(userInfo?.name ?: Constants.EMPTY_STRING)
                     prefsStore.updateAuthenticationState(AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER.name)
                 }
             }

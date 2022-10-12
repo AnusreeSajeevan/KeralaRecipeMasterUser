@@ -1,6 +1,8 @@
 package com.keralarecipemaster.user.presentation.ui.recipe.add
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -25,9 +27,12 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.google.accompanist.permissions.*
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.location.MapAddressPickerView
@@ -379,23 +384,6 @@ fun AddOrEditRecipeScreen(
                     )
 
                     Spacer(modifier = Modifier.size(16.dp))
-
-                    /*                   Row(modifier = Modifier.fillMaxWidth()) {
-                                           Checkbox(
-                                               checked = hasRestaurantDetails,
-                                               onCheckedChange = {
-                                                   addRecipeViewModel.onRestaurantCheckChange(it)
-                   //                            shouldShowAddRecipeButton = !hasRestaurantDetails
-                                               }
-                                           )
-                                           Spacer(
-                                               modifier = Modifier
-                                                   .size(10.dp)
-                                                   .align(Alignment.CenterVertically)
-                                           )
-
-                                           Text(text = "Check this box to add famous restaurant details")
-                                       }*/
 
                     Spacer(modifier = Modifier.size(16.dp))
 

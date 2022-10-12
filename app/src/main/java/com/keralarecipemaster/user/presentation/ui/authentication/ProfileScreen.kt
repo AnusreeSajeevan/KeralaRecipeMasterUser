@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -51,15 +52,15 @@ fun UserProfileScreen(
         }
     val email by emailValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
-    val restaurantNameValue = authenticationViewModel.restaurantName
-    val restaurantNameValueLifeCycleAware =
-        remember(restaurantNameValue, lifecycleOwner) {
-            restaurantNameValue.flowWithLifecycle(
+    val nameValue = authenticationViewModel.name
+    val nameValueLifeCycleAware =
+        remember(nameValue, lifecycleOwner) {
+            nameValue.flowWithLifecycle(
                 lifecycleOwner.lifecycle,
                 Lifecycle.State.STARTED
             )
         }
-    val restaurantName by restaurantNameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+    val name by nameValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
     when (authenticationState) {
         AuthenticationState.LOGGED_IN_AS_GUEST -> {
@@ -79,10 +80,24 @@ fun UserProfileScreen(
                     .padding(16.dp)
                     .fillMaxHeight()
             ) {
-                Text(text = "$restaurantName", fontWeight = FontWeight.Bold)
+                Text(text = "$name", fontWeight = FontWeight.Bold)
                 Text(text = "$email")
 
+
                 Spacer(modifier = Modifier.size(10.dp))
+                Button(onClick = {
+                    logout(
+                        authenticationViewModel = authenticationViewModel,
+                        activity = activity,
+                        context = context
+                    )
+                }) {
+                    Text(
+                        text = "Logout",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
         else -> {

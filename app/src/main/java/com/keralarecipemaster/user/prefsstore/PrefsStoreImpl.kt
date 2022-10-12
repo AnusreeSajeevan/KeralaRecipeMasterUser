@@ -124,24 +124,6 @@ class PrefsStoreImpl @Inject constructor(@ApplicationContext val context: Contex
         }
     }
 
-    override suspend fun getRestaurantName(): Flow<String> {
-        return flow {
-            dataStore.data.catch { exception ->
-                if (exception is Exception) {
-                    emit(emptyPreferences())
-                } else throw exception
-            }.collect {
-                emit(it[PreferencesKeys.RESTAURANT_NAME] ?: Constants.EMPTY_STRING)
-            }
-        }
-    }
-
-    override suspend fun setRestaurantName(restaurantName: String) {
-        dataStore.edit {
-            it[PreferencesKeys.RESTAURANT_NAME] = restaurantName
-        }
-    }
-
     override suspend fun getName(): Flow<String> {
         return flow {
             dataStore.data.catch { exception ->
