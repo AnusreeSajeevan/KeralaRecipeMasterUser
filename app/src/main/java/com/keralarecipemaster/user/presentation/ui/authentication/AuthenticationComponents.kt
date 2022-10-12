@@ -162,7 +162,6 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         navController.navigate(AuthenticationDestinations.RegisterUser.name)
-//                activity?.finish()
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -172,7 +171,6 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         navController.navigate(AuthenticationDestinations.RegisterRestaurantOwner.name)
-//                activity?.finish()
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -289,7 +287,6 @@ fun ShowRestaurantOwnerRegistrationScreen(authenticationViewModel: Authenticatio
             password.value = it
         }, label = { Text(text = "Password") }, modifier = Modifier.fillMaxWidth())
 
-
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             if (isRestaurantOwnerDetailsValid(
                     username = userName.value,
@@ -319,7 +316,8 @@ private fun isAllFieldsValid(username: String, password: String): Boolean {
 }
 
 fun isUserDetailsValid(username: String, password: String, email: String, name: String): Boolean {
-    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim().isNotEmpty() && name.trim().isNotEmpty()
+    return username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
+        .isNotEmpty() && name.trim().isNotEmpty()
 }
 
 fun isRestaurantOwnerDetailsValid(

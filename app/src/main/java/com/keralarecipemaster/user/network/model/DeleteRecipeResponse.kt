@@ -1,4 +1,4 @@
-package com.keralarecipemaster.admin.network.model
+package com.keralarecipemaster.user.network.model
 
 data class DeleteRecipeResponse(
     val message: String

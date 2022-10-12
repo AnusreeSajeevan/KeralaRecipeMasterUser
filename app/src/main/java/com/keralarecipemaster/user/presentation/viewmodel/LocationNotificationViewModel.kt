@@ -48,6 +48,7 @@ class LocationNotificationViewModel @Inject constructor(
             prefsStore.setNotificationStatus(status)
             _isNotificationEnabled.value = status
         }
+        _isNotificationEnabled.value = status
     }
 
     fun updateLocationPermissionStatus(isGranted: Boolean) {

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.Restaurant
 import com.keralarecipemaster.user.utils.Constants
-import com.keralarecipemaster.user.utils.UserType
 
 data class RecipeResponse(
     @SerializedName("recipe_id")

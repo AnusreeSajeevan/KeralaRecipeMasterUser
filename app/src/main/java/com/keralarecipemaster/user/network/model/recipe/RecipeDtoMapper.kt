@@ -53,10 +53,6 @@ class RecipeDtoMapper @Inject constructor() :
         )
     }
 
-    fun toEntityList(list: List<RecipeEntity>): List<RecipeResponse> {
-        return list.map { fromDomainModel(it) }
-    }
-
     fun toRecipeEntityList(list: List<RecipeResponse>): List<RecipeEntity> {
         return list.map { toDomainModel(it) }
     }

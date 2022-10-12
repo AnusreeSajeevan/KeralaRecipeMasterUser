@@ -1,49 +1,23 @@
 package com.keralarecipemaster.user.presentation.ui.home
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest.*
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
-import com.keralarecipemaster.user.presentation.ui.authentication.AuthenticationActivity
 import com.keralarecipemaster.user.presentation.ui.recipe.RecipeApp
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
-import com.keralarecipemaster.user.utils.BottomNavigationItems
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,13 +32,11 @@ class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        getLastLocation()
-
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+//        getLastLocation()
 
         setContent {
-            val navController = rememberNavController()
-            val backstackEntry = navController.currentBackStackEntryAsState()
+//            val navController = rememberNavController()
             val lifeCycleOwner = LocalLifecycleOwner.current
 
             val authenticationStateValue = authenticationViewModel.authenticationState
@@ -89,7 +61,7 @@ class HomeActivity : ComponentActivity() {
             }
         }
     }
-
+/*
     // method to check for permissions
     fun checkPermissions(): Boolean {
         return ActivityCompat.checkSelfPermission(
@@ -104,9 +76,9 @@ class HomeActivity : ComponentActivity() {
         // on Android 10.0 and higher,
         // use:
         // ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
+    }*/
 
-    @SuppressLint("MissingPermission")
+/*    @SuppressLint("MissingPermission")
     fun requestNewLocationData() {
         // Initializing LocationRequest
         // object with appropriate methods
@@ -124,9 +96,9 @@ class HomeActivity : ComponentActivity() {
             mLocationCallback,
             Looper.myLooper()
         )
-    }
+    }*/
 
-    private val mLocationCallback: LocationCallback = object : LocationCallback() {
+/*    private val mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation = locationResult.lastLocation
             Log.d(
@@ -138,8 +110,8 @@ class HomeActivity : ComponentActivity() {
                 "Lomgitude : ${mLastLocation.longitude?.toString()}"
             )
         }
-    }
-
+    }*/
+/*
     // method to check
     // if location is enabled
     private fun isLocationEnabled(): Boolean {
@@ -147,8 +119,8 @@ class HomeActivity : ComponentActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
-    }
-
+    }*/
+/*
     fun getLastLocation() {
         // check if permissions are given
         if (checkPermissions()) {
@@ -251,9 +223,9 @@ class HomeActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-    }
+    }*/
 
-    private fun createNotificationChannel() {
+/*    private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -268,11 +240,11 @@ class HomeActivity : ComponentActivity() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
+    }*/
 
-    override fun onPostResume() {
+/*    override fun onPostResume() {
         super.onPostResume()
         Log.d("CheckGuestLogin","onPostResume")
         Log.d("CheckGuestLogin","val : ${authenticationViewModel.authenticationState.value}")
-    }
+    }*/
 }

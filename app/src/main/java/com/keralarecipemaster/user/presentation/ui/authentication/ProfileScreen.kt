@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -83,7 +82,6 @@ fun UserProfileScreen(
                 Text(text = "$name", fontWeight = FontWeight.Bold)
                 Text(text = "$email")
 
-
                 Spacer(modifier = Modifier.size(10.dp))
                 Button(onClick = {
                     logout(
@@ -113,6 +111,6 @@ fun logout(
     authenticationViewModel.logout()
     activity?.finish()
     val intent = Intent(context, AuthenticationActivity::class.java)
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     context.startActivity(intent)
 }

@@ -1,8 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -33,9 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SettingsActivity : ComponentActivity() {
-    val locationNotificationViewModel: LocationNotificationViewModel by viewModels()
+    private val locationNotificationViewModel: LocationNotificationViewModel by viewModels()
     val authenticationViewModel: AuthenticationViewModel by viewModels()
-    var isLocationPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +54,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val showDialog = remember {
-        mutableStateOf(false)
-    }
-
     TurnONOrOFFLocationNotification(
-        showDialog = showDialog,
         lifecycleOwner = lifecycleOwner,
         locationNotificationViewModel = locationNotificationViewModel
     )
@@ -125,7 +117,10 @@ fun SettingsScreen(
         Text(text = "$name", fontWeight = FontWeight.Bold)
         Text(text = "$email")
         Spacer(modifier = Modifier.size(32.dp))
-        Text(text = "Turn ${if (isNotificationEnabled) "OFF" else "ON"} Location Notification to${if (isNotificationEnabled) " stop receiving" else " receive"} notifications when you are close to famous restaurants")
+        Text(
+            text = "Turn ${if (isNotificationEnabled) "OFF" else "ON"} Location Notification to" +
+                "${if (isNotificationEnabled) " stop receiving" else " receive"} notifications when you are close to famous restaurants"
+        )
         Spacer(modifier = Modifier.size(8.dp))
 
         Row {
@@ -139,13 +134,13 @@ fun SettingsScreen(
                 checked = isNotificationEnabled,
                 onCheckedChange = {
                     if (isLocationPermissionGranted) {
+                        locationNotificationViewModel.updateLocationPermissionStatusMsg(Constants.EMPTY_STRING)
                         locationNotificationViewModel.updateNotificationStatus(it)
                     } else {
                         if (locationPermissionStatusMsg.isNotEmpty()) {
                             Toast.makeText(context, locationPermissionStatusMsg, Toast.LENGTH_SHORT)
                                 .show()
                         }
-                        showDialog.value = true
                     }
                 }
             )
@@ -158,51 +153,48 @@ fun SettingsScreen(
 @Composable
 fun TurnONOrOFFLocationNotification(
     lifecycleOwner: LifecycleOwner,
-    locationNotificationViewModel: LocationNotificationViewModel,
-    showDialog: MutableState<Boolean>
+    locationNotificationViewModel: LocationNotificationViewModel
 ) {
-    if (showDialog.value) {
-        val permissionState =
-            rememberMultiplePermissionsState(
-                permissions = listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+    val permissionState =
+        rememberMultiplePermissionsState(
+            permissions = listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
-        DisposableEffect(key1 = lifecycleOwner, effect = {
-            val eventObserver = LifecycleEventObserver { _, event ->
-                when (event) {
-                    Lifecycle.Event.ON_START -> {
-                        permissionState.launchMultiplePermissionRequest()
-                    }
+        )
+    DisposableEffect(key1 = lifecycleOwner, effect = {
+        val eventObserver = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> {
+                    permissionState.launchMultiplePermissionRequest()
                 }
             }
-            lifecycleOwner.lifecycle.addObserver(eventObserver)
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(eventObserver)
-            }
-        })
+        }
+        lifecycleOwner.lifecycle.addObserver(eventObserver)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(eventObserver)
+        }
+    })
 
-        permissionState.permissions.forEach { it ->
-            when (it.permission) {
-                Manifest.permission.ACCESS_FINE_LOCATION -> {
-                    if (it.status.isGranted) {
-                        /* Permission has been granted by the user.
-                        You can use this permission to now acquire the location of the device.
-                        You can perform some other tasks here.
-                        */
-                        locationNotificationViewModel.updateLocationPermissionStatus(true)
-                        locationNotificationViewModel.updateLocationPermissionStatusMsg(Constants.EMPTY_STRING)
-                    } else if (it.status.shouldShowRationale) {
-                        // Happens if a user denies the permission two times
-                        locationNotificationViewModel.updateLocationPermissionStatus(false)
-                        locationNotificationViewModel.updateLocationPermissionStatusMsg("ACCESS_FINE_LOCATION permission is needed")
-                    } else if (!it.status.isGranted && !it.status.shouldShowRationale) {
-                        /* If the permission is denied and the should not show rationale
-                        You can only allow the permission manually through app settings
-                        */
-                        locationNotificationViewModel.updateLocationPermissionStatus(false)
-                        locationNotificationViewModel.updateLocationPermissionStatusMsg("Navigate to settings and enable the Location permission")
-                    }
+    permissionState.permissions.forEach { it ->
+        when (it.permission) {
+            Manifest.permission.ACCESS_FINE_LOCATION -> {
+                if (it.status.isGranted) {
+                    /* Permission has been granted by the user.
+                    You can use this permission to now acquire the location of the device.
+                    You can perform some other tasks here.
+                    */
+                    locationNotificationViewModel.updateLocationPermissionStatus(true)
+                    locationNotificationViewModel.updateLocationPermissionStatusMsg(Constants.EMPTY_STRING)
+                } else if (it.status.shouldShowRationale) {
+                    // Happens if a user denies the permission two times
+                    locationNotificationViewModel.updateLocationPermissionStatus(false)
+                    locationNotificationViewModel.updateLocationPermissionStatusMsg("Location permission is needed to enable notifications\nGo back and open settings again!")
+                } else if (!it.status.isGranted && !it.status.shouldShowRationale) {
+                    /* If the permission is denied and the should not show rationale
+                    You can only allow the permission manually through app settings
+                    */
+                    locationNotificationViewModel.updateLocationPermissionStatus(false)
+                    locationNotificationViewModel.updateLocationPermissionStatusMsg("Navigate to settings and enable the Location permission to enable notifications!")
                 }
             }
         }

@@ -52,7 +52,6 @@ class AuthenticationActivity : ComponentActivity() {
                 }
             val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
-
             if (authenticationState == AuthenticationState.INITIAL_STATE || isFromProfileScreen) {
                 KeralaRecipeMasterUserTheme {
                     val navController = rememberNavController()
@@ -75,7 +74,6 @@ class AuthenticationActivity : ComponentActivity() {
     @Composable
     fun ShowLoginScreenPreview() {
         KeralaRecipeMasterUserTheme {
-//        ShowLoginScreen(authenticationViewModel)
         }
     }
 }
