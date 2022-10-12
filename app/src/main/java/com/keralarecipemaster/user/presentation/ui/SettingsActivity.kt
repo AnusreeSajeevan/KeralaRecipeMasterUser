@@ -55,7 +55,6 @@ fun SettingsScreen(
     authenticationViewModel: AuthenticationViewModel
 ) {
     val context = LocalContext.current
-    val activity = (context as? Activity)
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val showDialog = remember {
@@ -64,7 +63,6 @@ fun SettingsScreen(
 
     TurnONOrOFFLocationNotification(
         showDialog = showDialog,
-        context = context,
         lifecycleOwner = lifecycleOwner,
         locationNotificationViewModel = locationNotificationViewModel
     )
@@ -149,12 +147,6 @@ fun SettingsScreen(
                         }
                         showDialog.value = true
                     }
-                    /*if (notificationStatus) {
-                        locationNotificationViewModel.updateNotificationStatus()
-                    } else {
-                        Toast.makeText(context, notificationStatusMsg, Toast.LENGTH_SHORT)
-                            .show()
-                    }*/
                 }
             )
         }
@@ -165,7 +157,6 @@ fun SettingsScreen(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun TurnONOrOFFLocationNotification(
-    context: Context,
     lifecycleOwner: LifecycleOwner,
     locationNotificationViewModel: LocationNotificationViewModel,
     showDialog: MutableState<Boolean>

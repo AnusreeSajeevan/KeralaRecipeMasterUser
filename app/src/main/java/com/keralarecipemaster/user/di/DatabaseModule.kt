@@ -3,7 +3,7 @@ package com.keralarecipemaster.user.di
 import android.content.Context
 import com.keralarecipemaster.user.domain.db.FamousLocationDao
 import com.keralarecipemaster.user.domain.db.RecipeDao
-import com.keralarecipemaster.user.domain.db.RecipeMemoriesDatabase
+import com.keralarecipemaster.user.domain.db.KeralaRecipeMasterDatabase
 import com.keralarecipemaster.user.domain.db.RecipeRequestsDao
 import dagger.Module
 import dagger.Provides
@@ -19,26 +19,26 @@ import kotlinx.coroutines.SupervisorJob
 class DatabaseModule {
 
     @Provides
-    fun provideRecipeDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): RecipeDao {
-        return recipeMemoriesDatabase.getRecipeDao()
+    fun provideRecipeDao(keralaRecipeMasterDatabase: KeralaRecipeMasterDatabase): RecipeDao {
+        return keralaRecipeMasterDatabase.getRecipeDao()
     }
 
     @Provides
-    fun provideRecipeRequestDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): RecipeRequestsDao {
-        return recipeMemoriesDatabase.getRecipeRequestDao()
+    fun provideRecipeRequestDao(keralaRecipeMasterDatabase: KeralaRecipeMasterDatabase): RecipeRequestsDao {
+        return keralaRecipeMasterDatabase.getRecipeRequestDao()
     }
 
     @Provides
-    fun provideFamousLocationDao(recipeMemoriesDatabase: RecipeMemoriesDatabase): FamousLocationDao {
-        return recipeMemoriesDatabase.getFamousLocationDao()
+    fun provideFamousLocationDao(keralaRecipeMasterDatabase: KeralaRecipeMasterDatabase): FamousLocationDao {
+        return keralaRecipeMasterDatabase.getFamousLocationDao()
     }
 
     @Provides
     fun provideDatabase(
         @ApplicationContext context: Context,
         coroutineScope: CoroutineScope
-    ): RecipeMemoriesDatabase {
-        return RecipeMemoriesDatabase.getDatabase(context, coroutineScope)
+    ): KeralaRecipeMasterDatabase {
+        return KeralaRecipeMasterDatabase.getDatabase(context, coroutineScope)
     }
 
     @Provides

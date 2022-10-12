@@ -21,21 +21,21 @@ import kotlinx.coroutines.CoroutineScope
     MealsTypeConverter::class,
     IngredientsTypeConverter::class
 )
-abstract class RecipeMemoriesDatabase : RoomDatabase() {
+abstract class KeralaRecipeMasterDatabase : RoomDatabase() {
     abstract fun getRecipeDao(): RecipeDao
     abstract fun getRecipeRequestDao(): RecipeRequestsDao
     abstract fun getFamousLocationDao(): FamousLocationDao
 
     companion object {
         @Volatile
-        private var INSTANCE: RecipeMemoriesDatabase? = null
+        private var INSTANCE: KeralaRecipeMasterDatabase? = null
 
-        fun getDatabase(context: Context, scope: CoroutineScope): RecipeMemoriesDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): KeralaRecipeMasterDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    RecipeMemoriesDatabase::class.java,
-                    "recipe_memories_database"
+                    KeralaRecipeMasterDatabase::class.java,
+                    "kerala_recipe_master_database"
                 )
                     .build()
                 INSTANCE = instance
