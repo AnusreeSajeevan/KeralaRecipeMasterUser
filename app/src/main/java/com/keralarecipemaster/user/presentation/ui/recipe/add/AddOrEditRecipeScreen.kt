@@ -1,8 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui.recipe.add
 
-import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -19,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -27,8 +26,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -221,12 +218,13 @@ fun AddOrEditRecipeScreen(
         }
     )
 
-    KeralaRecipeMasterUserTheme {
+    KeralaRecipeMasterUserTheme(authenticationState = authenticationState, content = {
         Scaffold {
             Column(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .clipToBounds()
                     .fillMaxWidth()
+                    .padding(PaddingValues(8.dp))
                     .verticalScroll(rememberScrollState())
             ) {
                 Box {
@@ -450,11 +448,17 @@ fun AddOrEditRecipeScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = if (actionType == "edit") "Update Recipe" else "Add Recipe")
+                    Text(
+                        text = if (actionType == "edit") "Update Recipe" else {
+                            if (authenticationState == AuthenticationState.AUTHENTICATED_USER) {
+                                "Add Recipe"
+                            } else "Add Recipe Request"
+                        }
+                    )
                 }
             }
         }
-    }
+    })
 }
 
 @Composable

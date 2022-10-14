@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.presentation.ui.recipe.OnRatingBarCheck
 import com.keralarecipemaster.user.repository.RecipeRepository
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.RecipeUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ class RecipeDetailsViewModel @Inject constructor(val repository: RecipeRepositor
         MutableStateFlow(RecipeUtil.provideRecipe())
 
     private var _rating: MutableStateFlow<Int> =
-        MutableStateFlow(0)
+        MutableStateFlow(Constants.INVALID_RECIPE_ID)
 
     fun getRecipeDetails(recipeId: Int) {
         viewModelScope.launch {

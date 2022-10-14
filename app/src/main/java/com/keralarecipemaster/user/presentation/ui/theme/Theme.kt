@@ -5,14 +5,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPaletteUser = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
     secondary = BritishAirways
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPaletteUser = lightColors(
     primary = Bahia,
     primaryVariant = Purple700,
     secondary = BritishAirways
@@ -27,15 +28,36 @@ private val LightColorPalette = lightColors(
     */
 )
 
+private val DarkColorPaletteOwner = darkColors(
+    primary = Purple2001,
+    primaryVariant = Purple7001,
+    secondary = BritishAirways1
+)
+
+private val LightColorPaletteOwner = lightColors(
+    primary = Bahia1,
+    primaryVariant = Purple7001,
+    secondary = BritishAirways1
+)
+
 @Composable
 fun KeralaRecipeMasterUserTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    authenticationState: AuthenticationState
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
+    val colors = if (authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
+        if (darkTheme) {
+            DarkColorPaletteOwner
+        } else {
+            LightColorPaletteOwner
+        }
     } else {
-        LightColorPalette
+        if (darkTheme) {
+            DarkColorPaletteUser
+        } else {
+            LightColorPaletteUser
+        }
     }
 
     MaterialTheme(

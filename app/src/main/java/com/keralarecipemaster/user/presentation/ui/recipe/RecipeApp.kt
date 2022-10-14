@@ -44,7 +44,7 @@ fun RecipeApp(
     locationNotificationViewModel: LocationNotificationViewModel,
     authenticationState: AuthenticationState
 ) {
-    KeralaRecipeMasterUserTheme {
+    KeralaRecipeMasterUserTheme(authenticationState = authenticationState, content = {
         val navController = rememberNavController()
         val scaffoldState = rememberScaffoldState()
         val lifeCycleOwner = LocalLifecycleOwner.current
@@ -160,7 +160,7 @@ fun RecipeApp(
                 locationNotificationViewModel = locationNotificationViewModel
             )
         }
-    }
+    })
 }
 
 fun getBottomNavigationItems(authenticationState: AuthenticationState): ArrayList<BottomNavigationScreens> {

@@ -53,7 +53,7 @@ class AuthenticationActivity : ComponentActivity() {
             val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
 
             if (authenticationState == AuthenticationState.INITIAL_STATE || isFromProfileScreen) {
-                KeralaRecipeMasterUserTheme {
+                KeralaRecipeMasterUserTheme(authenticationState = authenticationState, content = {
                     val navController = rememberNavController()
                     androidx.compose.material3.Scaffold(modifier = Modifier.fillMaxWidth()) {
                         AuthenticationNavHost(
@@ -62,18 +62,11 @@ class AuthenticationActivity : ComponentActivity() {
                             isFromProfileScreen = isFromProfileScreen
                         )
                     }
-                }
+                })
             } else {
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()
             }
-        }
-    }
-
-    @Preview(showBackground = true)
-    @Composable
-    fun ShowLoginScreenPreview() {
-        KeralaRecipeMasterUserTheme {
         }
     }
 }

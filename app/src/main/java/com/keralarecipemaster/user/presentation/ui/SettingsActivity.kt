@@ -26,6 +26,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.gson.Gson
 import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
@@ -42,9 +43,24 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            KeralaRecipeMasterUserTheme {
-                SettingsScreen(locationNotificationViewModel, authenticationViewModel)
-            }
+            val lifecycleOwner = LocalLifecycleOwner.current
+            val authenticationStateValue = authenticationViewModel.email
+            val authenticationStateValueLifeCycleAware =
+                remember(authenticationStateValue, lifecycleOwner) {
+                    authenticationStateValue.flowWithLifecycle(
+                        lifecycleOwner.lifecycle,
+                        Lifecycle.State.STARTED
+                    )
+                }
+            val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+            KeralaRecipeMasterUserTheme(
+                authenticationState = AuthenticationState.valueOf(
+                    authenticationState
+                ),
+                content = {
+                    SettingsScreen(locationNotificationViewModel, authenticationViewModel)
+                }
+            )
         }
     }
 }

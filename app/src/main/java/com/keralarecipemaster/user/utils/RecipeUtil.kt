@@ -15,7 +15,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-
 class RecipeUtil {
     companion object {
         fun provideRecipe(
@@ -183,16 +182,13 @@ class RecipeUtil {
             // is position from start, third parameter is position from top
             // and then we are passing our variable of paint which is title.
 
-
             val contentStart = 100F
             paint.textSize = 50f
 
-            getBitmapFromBase64Image( recipe.image)?.let {
-                val scaledBitmap = Bitmap.createScaledBitmap(it, canvas.width/2, 200, false)
-                canvas.drawBitmap(scaledBitmap,  200f, 50f,paint)
+            getBitmapFromBase64Image(recipe.image)?.let {
+                val scaledBitmap = Bitmap.createScaledBitmap(it, canvas.width / 2, 200, false)
+                canvas.drawBitmap(scaledBitmap, 200f, 50f, paint)
             }
-
-
 
             canvas.drawText(recipe.recipeName, 350f, getY(), paint)
             paint.textSize = 30f
@@ -212,10 +208,10 @@ class RecipeUtil {
 
             val scaledDietIcon = Bitmap.createScaledBitmap(dietIcon, 20, 20, false)
             val y = getY()
-            canvas.drawBitmap(scaledDietIcon,  contentStart, y, paint)
+            canvas.drawBitmap(scaledDietIcon, contentStart, y, paint)
 
 //            canvas.drawText("${recipe.diet.type}", contentStart, getY(), paint)
-            canvas.drawText("${recipe.mealType.type}", contentStart + 40, y+20, paint)
+            canvas.drawText("${recipe.mealType.type}", contentStart + 40, y + 20, paint)
             addSpace()
 
             if (recipe.description.isNotEmpty()) {
@@ -237,7 +233,6 @@ class RecipeUtil {
             paint.textSize = 30f
             canvas.drawText("${recipe.preparationMethod}", contentStart, getY(), paint)
             addSpace()
-
 
             for (i in 1..3) {
                 addSpace()

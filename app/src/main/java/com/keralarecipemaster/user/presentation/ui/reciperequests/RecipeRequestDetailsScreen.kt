@@ -50,14 +50,15 @@ fun RecipeRequestDetailsScreen(
         ratingValue.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    val rating by ratingFlowLifecycleAware.collectAsState(0)
+    val rating by ratingFlowLifecycleAware.collectAsState(Constants.INVALID_RECIPE_ID)
 
     val context = LocalContext.current
     val activity = context as? Activity
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box {
-            val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeRequest.image ?: Constants.EMPTY_STRING)
+            val bitmap =
+                RecipeUtil.getBitmapFromBase64Image(recipeRequest.image ?: Constants.EMPTY_STRING)
             if (bitmap == null) {
                 Image(
                     painter = painterResource(
@@ -65,7 +66,7 @@ fun RecipeRequestDetailsScreen(
                     ),
                     contentDescription = null,
                     modifier = Modifier
-                        .height(150.dp)
+                        .height(300.dp)
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
@@ -74,7 +75,7 @@ fun RecipeRequestDetailsScreen(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
-                        .height(150.dp)
+                        .height(300.dp)
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
@@ -103,16 +104,18 @@ fun RecipeRequestDetailsScreen(
             }
 
             Row {
-                RatingBarView(
-                    rating = remember {
-                        mutableStateOf(rating)
-                    },
-                    isRatingEditable = false,
-                    ratedStarsColor = Color(255, 220, 0),
-                    starIcon = painterResource(id = R.drawable.ic_star_filled),
-                    unRatedStarsColor = Color.LightGray,
-                    viewModel = recipeRequestDetailsViewModel
-                )
+                if (rating != Constants.INVALID_RECIPE_ID) {
+                    RatingBarView(
+                        rating = remember {
+                            mutableStateOf(rating)
+                        },
+                        isRatingEditable = false,
+                        ratedStarsColor = Color(255, 220, 0),
+                        starIcon = painterResource(id = R.drawable.ic_star_filled),
+                        unRatedStarsColor = Color.LightGray,
+                        viewModel = recipeRequestDetailsViewModel
+                    )
+                }
                 Spacer(modifier = Modifier.size(10.dp))
                 Image(
                     painter = painterResource(id = dietLogo),
@@ -183,7 +186,7 @@ fun RecipeRequestDetailsScreen(
             /* Restaurant Details*/
             Spacer(modifier = Modifier.size(16.dp))
             Text(
-                text = "Restaurant",
+                text = "Famous In",
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontStyle = FontStyle.Normal,

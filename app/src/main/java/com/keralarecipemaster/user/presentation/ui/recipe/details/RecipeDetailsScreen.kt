@@ -34,6 +34,7 @@ import com.keralarecipemaster.user.presentation.ui.recipe.RatingBarView
 import com.keralarecipemaster.user.presentation.ui.recipe.add.AddRecipeDestinations
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeDetailsViewModel
+import com.keralarecipemaster.user.utils.Constants
 import com.keralarecipemaster.user.utils.Diet
 import com.keralarecipemaster.user.utils.RecipeUtil
 import com.keralarecipemaster.user.utils.RecipeUtil.Companion.createPdf
@@ -63,7 +64,7 @@ fun RecipeDetailsScreen(
         ratingValue.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    val rating by ratingFlowLifecycleAware.collectAsState(0)
+    val rating by ratingFlowLifecycleAware.collectAsState(Constants.INVALID_RECIPE_ID)
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         val bitmap = RecipeUtil.getBitmapFromBase64Image(recipeEntity.image)
@@ -108,16 +109,18 @@ fun RecipeDetailsScreen(
             } else {
                 drawable.ic_veg
             }
-            RatingBarView(
-                rating = remember {
-                    mutableStateOf(rating)
-                },
-                isRatingEditable = false,
-                ratedStarsColor = Color(255, 220, 0),
-                starIcon = painterResource(id = drawable.ic_star_filled),
-                unRatedStarsColor = Color.LightGray,
-                viewModel = recipeDetailsViewModel
-            )
+            if (rating!=Constants.INVALID_RECIPE_ID) {
+                RatingBarView(
+                    rating = remember {
+                        mutableStateOf(rating)
+                    },
+                    isRatingEditable = false,
+                    ratedStarsColor = Color(255, 220, 0),
+                    starIcon = painterResource(id = drawable.ic_star_filled),
+                    unRatedStarsColor = Color.LightGray,
+                    viewModel = recipeDetailsViewModel
+                )
+            }
             Row {
                 Spacer(modifier = Modifier.size(10.dp))
                 Image(
