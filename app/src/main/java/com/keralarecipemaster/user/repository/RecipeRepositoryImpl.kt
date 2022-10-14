@@ -45,8 +45,8 @@ class RecipeRepositoryImpl @Inject constructor(
                                 System.currentTimeMillis() / 1000,
                                 it.restaurantName,
                                 it.restaurantAddress,
-                                it.restaurantLatitude,
-                                it.restaurantLongitude
+                                it.restaurantLatitude.toDouble(),
+                                it.restaurantLongitude.toDouble()
                             )
                         )
                     }

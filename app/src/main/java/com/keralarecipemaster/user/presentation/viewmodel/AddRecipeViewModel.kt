@@ -425,8 +425,6 @@ class AddRecipeViewModel @Inject constructor(
             val name = java.lang.String.valueOf(Calendar.getInstance().timeInMillis)
             this.image = image
             this.imageName = name
-            Log.d("Base64Img", "image : $image")
-            Log.d("Base64Img", "name : $name")
         } catch (e: Exception) {
         }
     }

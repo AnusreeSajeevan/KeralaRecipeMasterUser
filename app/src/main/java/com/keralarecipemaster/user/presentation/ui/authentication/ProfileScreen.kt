@@ -21,6 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
+import com.keralarecipemaster.user.service.GoogleService
 import com.keralarecipemaster.user.utils.Constants
 
 @Composable
@@ -109,6 +110,8 @@ fun logout(
     context: Context
 ) {
     authenticationViewModel.logout()
+    val myService = Intent(context, GoogleService::class.java)
+    context.stopService(myService)
     activity?.finish()
     val intent = Intent(context, AuthenticationActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

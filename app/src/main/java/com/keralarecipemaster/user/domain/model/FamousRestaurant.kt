@@ -8,6 +8,6 @@ data class FamousRestaurant(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val restaurantAddress: String,
     val restaurantName: String,
-    val latitude: String,
-    val longitude: String
+    val latitude: Double,
+    val longitude: Double
 )

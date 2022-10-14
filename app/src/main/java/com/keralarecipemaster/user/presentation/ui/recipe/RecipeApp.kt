@@ -20,6 +20,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
+import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.SettingsActivity
 import com.keralarecipemaster.user.presentation.ui.authentication.AuthenticationActivity
@@ -30,6 +32,7 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
+import com.keralarecipemaster.user.service.GoogleService
 import com.keralarecipemaster.user.utils.BottomNavigationScreens
 import com.keralarecipemaster.user.utils.Constants
 
@@ -43,9 +46,10 @@ fun RecipeApp(
 ) {
     KeralaRecipeMasterUserTheme {
         val navController = rememberNavController()
-        val backstackEntry = navController.currentBackStackEntryAsState()
         val scaffoldState = rememberScaffoldState()
         val lifeCycleOwner = LocalLifecycleOwner.current
+        val context = LocalContext.current
+        val activity = (context as? Activity)
 
         val nameValue = authenticationViewModel.name
         val nameValueLifeCycleAware =
@@ -56,14 +60,46 @@ fun RecipeApp(
                 )
             }
         val name by nameValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
-        val context = LocalContext.current
-        val activity = (context as? Activity)
+
+        val isNotificationEnabledValue = locationNotificationViewModel.isNotificationEnabled
+        val isNotificationEnabledValueLifeCycleAware =
+            remember(isNotificationEnabledValue, lifeCycleOwner) {
+                isNotificationEnabledValue.flowWithLifecycle(
+                    lifeCycleOwner.lifecycle,
+                    Lifecycle.State.STARTED
+                )
+            }
+        val isNotificationEnabled by isNotificationEnabledValueLifeCycleAware.collectAsState(initial = false)
+
+        val famousRestaurantsValue = locationNotificationViewModel.famousRestaurants
+        val famousRestaurantsValueLifeCycleAware =
+            remember(famousRestaurantsValue, lifeCycleOwner) {
+                famousRestaurantsValue.flowWithLifecycle(
+                    lifeCycleOwner.lifecycle,
+                    Lifecycle.State.STARTED
+                )
+            }
+        val famousRestaurants by famousRestaurantsValueLifeCycleAware.collectAsState(initial = emptyList())
+
+        if (isNotificationEnabled) {
+            if (famousRestaurants.isNotEmpty()) {
+                val intent = Intent(
+                    context.applicationContext,
+                    GoogleService::class.java
+                )
+                val bundle = Bundle()
+                val restaurants = FamousRestaurants(famousRestaurants)
+                bundle.putString(Constants.KEY_FAMOUS_RESTAURANTS, Gson().toJson(restaurants))
+                intent.putExtras(bundle)
+                context.startService(intent)
+            }
+        }
 
         Scaffold(
             topBar = {
                 TopAppBar(title = {
                     Text(
-                        text = "Welcome ${
+                        text = "Hi ${
                         if (authenticationState == AuthenticationState.AUTHENTICATED_USER || authenticationState == AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER) {
                             name
                         } else {
@@ -136,7 +172,7 @@ fun getBottomNavigationItems(authenticationState: AuthenticationState): ArrayLis
         AuthenticationState.AUTHENTICATED_USER -> {
             bottomNavigationItems.add(BottomNavigationScreens.FamousRecipes)
             bottomNavigationItems.add(BottomNavigationScreens.MyRecipes)
-            bottomNavigationItems.add(BottomNavigationScreens.Profile)
+//            bottomNavigationItems.add(BottomNavigationScreens.Profile)
         }
         AuthenticationState.AUTHENTICATED_RESTAURANT_OWNER -> {
             bottomNavigationItems.add(BottomNavigationScreens.ApprovedRecipes)

@@ -2,8 +2,13 @@ package com.keralarecipemaster.user.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.keralarecipemaster.user.domain.model.FamousRestaurant
+import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.prefsstore.PrefsStore
+import com.keralarecipemaster.user.repository.FamousLocationRepository
 import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.DietFilter
+import com.keralarecipemaster.user.utils.MealFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationNotificationViewModel @Inject constructor(
-    private val prefsStore: PrefsStore
+    private val prefsStore: PrefsStore,
+    private val locationRepository: FamousLocationRepository
 ) :
     ViewModel() {
 
@@ -35,7 +41,13 @@ class LocationNotificationViewModel @Inject constructor(
     private val _isLocationPermissionGranted =
         MutableStateFlow(false)
 
+
+    private var _famousRestaurants = MutableStateFlow<List<FamousRestaurant>>(emptyList())
+    val famousRestaurants: StateFlow<List<FamousRestaurant>>
+        get() = _famousRestaurants
+
     init {
+        getFamousLocations()
         viewModelScope.launch {
             prefsStore.getNotificationStatus().catch { }.collect {
                 _isNotificationEnabled.value = it
@@ -57,5 +69,14 @@ class LocationNotificationViewModel @Inject constructor(
 
     fun updateLocationPermissionStatusMsg(msg: String) {
         _locationPermissionStatusMsg.value = msg
+    }
+
+    fun getFamousLocations() {
+        viewModelScope.launch {
+            locationRepository.getAllFamousLocations().catch { }.collect { locations ->
+                var list = locations
+                _famousRestaurants.value = list
+            }
+        }
     }
 }

@@ -102,9 +102,14 @@ fun RecipeRequestComponent(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        IconButton(onClick = {
-                            recipeRequestViewModel.deleteRecipeRequest(recipeRequest.recipeId)
-                        }) {
+                        IconButton(
+                            onClick = {
+                                recipeRequestViewModel.deleteRecipeRequest(recipeRequest.recipeId)
+                            },
+                            modifier = Modifier
+                                .height(26.dp)
+                                .width(26.dp)
+                        ) {
                             Icon(
                                 painter = painterResource(
                                     id = R.drawable.ic_delete

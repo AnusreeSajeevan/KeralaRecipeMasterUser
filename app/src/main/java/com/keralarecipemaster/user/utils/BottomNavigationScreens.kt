@@ -7,11 +7,11 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavigationScreens(val route: String, val resourceId: String, val icon: ImageVector) {
-    object FamousRecipes : BottomNavigationScreens(BottomNavigationItems.FamousRecipes.name, BottomNavigationItems.FamousRecipes.name, Icons.Filled.List)
-    object MyRecipes : BottomNavigationScreens(BottomNavigationItems.MyRecipes.name, BottomNavigationItems.MyRecipes.name, Icons.Filled.List)
-    object ApprovedRecipes : BottomNavigationScreens(BottomNavigationItems.ApprovedRecipes.name, BottomNavigationItems.ApprovedRecipes.name, Icons.Filled.List)
-    object PendingRequests : BottomNavigationScreens(BottomNavigationItems.PendingRequests.name, BottomNavigationItems.PendingRequests.name, Icons.Filled.List)
-    object Profile : BottomNavigationScreens(BottomNavigationItems.Profile.name, BottomNavigationItems.Profile.name, Icons.Filled.AccountCircle)
+    object FamousRecipes : BottomNavigationScreens(BottomNavigationItems.FamousRecipes.name, BottomNavigationItems.FamousRecipes.value, Icons.Filled.List)
+    object MyRecipes : BottomNavigationScreens(BottomNavigationItems.MyRecipes.name, BottomNavigationItems.MyRecipes.value, Icons.Filled.List)
+    object ApprovedRecipes : BottomNavigationScreens(BottomNavigationItems.ApprovedRecipes.name, BottomNavigationItems.ApprovedRecipes.value, Icons.Filled.List)
+    object PendingRequests : BottomNavigationScreens(BottomNavigationItems.PendingRequests.name, BottomNavigationItems.PendingRequests.value, Icons.Filled.List)
+    object Profile : BottomNavigationScreens(BottomNavigationItems.Profile.name, BottomNavigationItems.Profile.value, Icons.Filled.AccountCircle)
 //    object Settings : BottomNavigationScreens(BottomNavigationItems.Settings.name, BottomNavigationItems.Settings.name, Icons.Filled.Settings)
 }
 

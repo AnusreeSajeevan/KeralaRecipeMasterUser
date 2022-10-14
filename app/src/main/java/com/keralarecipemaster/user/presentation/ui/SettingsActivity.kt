@@ -1,6 +1,7 @@
 package com.keralarecipemaster.user.presentation.ui
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -23,9 +24,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.google.gson.Gson
+import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
+import com.keralarecipemaster.user.service.GoogleService
 import com.keralarecipemaster.user.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -113,6 +117,16 @@ fun SettingsScreen(
         }
     val email by emailValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
 
+    val famousRestaurantsValue = locationNotificationViewModel.famousRestaurants
+    val famousRestaurantsValueLifeCycleAware =
+        remember(famousRestaurantsValue, lifecycleOwner) {
+            famousRestaurantsValue.flowWithLifecycle(
+                lifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            )
+        }
+    val famousRestaurants by famousRestaurantsValueLifeCycleAware.collectAsState(initial = emptyList())
+
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "$name", fontWeight = FontWeight.Bold)
         Text(text = "$email")
@@ -136,6 +150,22 @@ fun SettingsScreen(
                     if (isLocationPermissionGranted) {
                         locationNotificationViewModel.updateLocationPermissionStatusMsg(Constants.EMPTY_STRING)
                         locationNotificationViewModel.updateNotificationStatus(it)
+                        if (it) {
+                            if (famousRestaurants.isNotEmpty()) {
+                                val intent = Intent(
+                                    context.applicationContext,
+                                    GoogleService::class.java
+                                )
+                                val bundle = Bundle()
+                                val restaurants = FamousRestaurants(famousRestaurants)
+                                bundle.putString(
+                                    Constants.KEY_FAMOUS_RESTAURANTS,
+                                    Gson().toJson(restaurants)
+                                )
+                                intent.putExtras(bundle)
+                                context.startService(intent)
+                            }
+                        }
                     } else {
                         if (locationPermissionStatusMsg.isNotEmpty()) {
                             Toast.makeText(context, locationPermissionStatusMsg, Toast.LENGTH_SHORT)

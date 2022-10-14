@@ -5,4 +5,5 @@ enum class MealFilter(val type: String) {
     BREAKFAST("Breakfast"),
     LUNCH("Lunch"),
     DINNER("Dinner"),
+    SNACKS("Snacks")
 }

@@ -32,11 +32,8 @@ class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-//        getLastLocation()
 
         setContent {
-//            val navController = rememberNavController()
             val lifeCycleOwner = LocalLifecycleOwner.current
 
             val authenticationStateValue = authenticationViewModel.authenticationState
@@ -111,15 +108,7 @@ class HomeActivity : ComponentActivity() {
             )
         }
     }*/
-/*
-    // method to check
-    // if location is enabled
-    private fun isLocationEnabled(): Boolean {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
-    }*/
+
 /*
     fun getLastLocation() {
         // check if permissions are given

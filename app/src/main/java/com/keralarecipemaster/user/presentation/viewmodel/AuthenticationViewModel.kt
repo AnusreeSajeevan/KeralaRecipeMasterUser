@@ -83,7 +83,6 @@ class AuthenticationViewModel @Inject constructor(
                     password = password
                 )
                     .catch {
-                        Log.d("CheckResponse", "catch")
                     }.collect {
                         if (it.second == Constants.ERROR_CODE_SUCCESS) {
                             it.first?.let { userInfo ->
@@ -116,7 +115,6 @@ class AuthenticationViewModel @Inject constructor(
         if (username.trim().isNotEmpty() && password.trim().isNotEmpty() && email.trim()
             .isNotEmpty() && name.trim().isNotEmpty()
         ) {
-            Log.d("CheckRegisterResponse", "catch")
             viewModelScope.launch {
                 authenticationRepository.registerUser(
                     username = username,
@@ -125,9 +123,7 @@ class AuthenticationViewModel @Inject constructor(
                     name = name
                 )
                     .catch {
-                        Log.d("CheckRegisterResponse", "catch")
                     }.collect {
-                        Log.d("CheckRegisterResponse", it.toString())
                         _errorMessage.value = "Registration successful!"
                         if (it) _authenticationState.value = AuthenticationState.AUTHENTICATED_USER
                     }

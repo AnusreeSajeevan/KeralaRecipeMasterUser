@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -156,7 +157,7 @@ fun RecipesScreen(
                         onFabClick?.let {
                             FloatingActionButton(
                                 onClick = onFabClick!!,
-                                modifier = Modifier.padding(bottom = 100.dp)
+                                modifier = Modifier.padding(bottom = 56.dp)
                             ) {
                                 Icon(Icons.Filled.Add, "")
                             }
@@ -167,7 +168,7 @@ fun RecipesScreen(
                 val coroutineScope = rememberCoroutineScope()
                 Column(
                     modifier = Modifier.padding(
-                        bottom = 100.dp,
+                        bottom = 56.dp,
                         top = 8.dp,
                         start = 8.dp,
                         end = 8.dp
@@ -234,7 +235,7 @@ fun RecipesScreen(
 fun DietFilterComponent(recipeViewModel: RecipeListViewModel, selectedDietType: String) {
     Column(Modifier.padding(16.dp)) {
         Spacer(Modifier.size(10.dp))
-        Text(text = "Filter by diet")
+        Text(text = "Diet", fontWeight = FontWeight.Bold)
         Spacer(Modifier.size(10.dp))
         Row {
             DietFilter.values().forEach {
@@ -244,8 +245,8 @@ fun DietFilterComponent(recipeViewModel: RecipeListViewModel, selectedDietType: 
                         recipeViewModel.onDietFilterChange(diet = it.name)
                     }
                 )
-                Text(text = it.type)
-                Spacer(modifier = Modifier.size(10.dp))
+                Text(text = it.type, modifier = Modifier.align(Alignment.CenterVertically))
+                Spacer(modifier = Modifier.size(8.dp))
             }
         }
     }
@@ -254,19 +255,22 @@ fun DietFilterComponent(recipeViewModel: RecipeListViewModel, selectedDietType: 
 @Composable
 fun MealFilterComponent(recipeViewModel: RecipeListViewModel, selectedMealType: String) {
     Column(Modifier.padding(4.dp)) {
+//        Spacer(Modifier.size(8.dp))
+        Text(text = "Meal", modifier = Modifier.padding(start = 16.dp), fontWeight = FontWeight.Bold)
         Spacer(Modifier.size(8.dp))
-        Text(text = "Filter by Meal")
-        Spacer(Modifier.size(8.dp))
-        Row {
+        Column {
             MealFilter.values().forEach {
-                RadioButton(
-                    selected = it.name == selectedMealType,
-                    onClick = {
-                        recipeViewModel.onMealFilterChange(meal = it.name)
+                Column {
+                    Row {
+                        RadioButton(
+                            selected = it.name == selectedMealType,
+                            onClick = {
+                                recipeViewModel.onMealFilterChange(meal = it.name)
+                            }
+                        )
+                        Text(text = it.type, modifier = Modifier.align(Alignment.CenterVertically))
                     }
-                )
-                Text(text = it.type)
-                Spacer(modifier = Modifier.size(4.dp))
+                }
             }
         }
     }
