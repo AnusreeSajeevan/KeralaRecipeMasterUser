@@ -109,17 +109,19 @@ fun RecipeDetailsScreen(
             } else {
                 drawable.ic_veg
             }
-            if (rating!=Constants.INVALID_RECIPE_ID) {
-                RatingBarView(
-                    rating = remember {
-                        mutableStateOf(rating)
-                    },
-                    isRatingEditable = false,
-                    ratedStarsColor = Color(255, 220, 0),
-                    starIcon = painterResource(id = drawable.ic_star_filled),
-                    unRatedStarsColor = Color.LightGray,
-                    viewModel = recipeDetailsViewModel
-                )
+            if (recipeEntity.addedBy == UserType.OWNER) {
+                if (rating != Constants.INVALID_RECIPE_ID) {
+                    RatingBarView(
+                        rating = remember {
+                            mutableStateOf(rating)
+                        },
+                        isRatingEditable = false,
+                        ratedStarsColor = Color(255, 220, 0),
+                        starIcon = painterResource(id = drawable.ic_star_filled),
+                        unRatedStarsColor = Color.LightGray,
+                        viewModel = recipeDetailsViewModel
+                    )
+                }
             }
             Row {
                 Spacer(modifier = Modifier.size(10.dp))
@@ -199,7 +201,6 @@ fun RecipeDetailsScreen(
                 )
                 Spacer(Modifier.size(20.dp))
             }
-
 
             if (recipeEntity.addedBy == UserType.OWNER) {
                 /* Restaurant Details*/

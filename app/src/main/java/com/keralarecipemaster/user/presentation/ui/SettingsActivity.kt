@@ -3,6 +3,7 @@ package com.keralarecipemaster.user.presentation.ui
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.google.gson.Gson
 import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.presentation.ui.authentication.LoginScreen
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
@@ -44,7 +46,7 @@ class SettingsActivity : ComponentActivity() {
 
         setContent {
             val lifecycleOwner = LocalLifecycleOwner.current
-            val authenticationStateValue = authenticationViewModel.email
+            val authenticationStateValue = authenticationViewModel.authenticationState
             val authenticationStateValueLifeCycleAware =
                 remember(authenticationStateValue, lifecycleOwner) {
                     authenticationStateValue.flowWithLifecycle(
@@ -52,11 +54,11 @@ class SettingsActivity : ComponentActivity() {
                         Lifecycle.State.STARTED
                     )
                 }
-            val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = Constants.EMPTY_STRING)
+            val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
+           Log.d("CheckAuthState", authenticationState.toString())
             KeralaRecipeMasterUserTheme(
-                authenticationState = AuthenticationState.valueOf(
-                    authenticationState
-                ),
+                authenticationState =
+                    authenticationState,
                 content = {
                     SettingsScreen(locationNotificationViewModel, authenticationViewModel)
                 }

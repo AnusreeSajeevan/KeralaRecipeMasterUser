@@ -75,7 +75,7 @@ fun PendingRequestsScreen(
                 onClick = {
                     context.startActivity(Intent(context, AddRecipeActivity::class.java))
                 },
-                modifier = Modifier.padding(bottom = 100.dp)
+                modifier = Modifier.padding(bottom = 56.dp)
             ) {
                 Icon(Icons.Filled.Add, "")
             }

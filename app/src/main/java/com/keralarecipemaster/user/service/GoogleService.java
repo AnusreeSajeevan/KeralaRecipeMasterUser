@@ -166,8 +166,8 @@ public class GoogleService extends Service implements LocationListener {
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (location != null) {
-                        Log.e("GoogleServiceLocation", "location : " + location.getLatitude());
-                        Log.e("GoogleServiceLocation", "location : " + location.getLongitude());
+//                        Log.e("GoogleServiceLocation", "location : " + location.getLatitude());
+//                        Log.e("GoogleServiceLocation", "location : " + location.getLongitude());
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
 
@@ -176,13 +176,19 @@ public class GoogleService extends Service implements LocationListener {
                         for (FamousRestaurant famousRestaurant : this.famousRestaurants) {
                             Location famousLocation = new Location("");
                             //TODO : Phoenix market city
-                            famousLocation.setLatitude(12.995854);
-                            famousLocation.setLongitude(77.696350);
+//                            famousLocation.setLatitude(12.995854);
+//                            famousLocation.setLongitude(77.696350);
+                            famousLocation.setLatitude(famousRestaurant.getLatitude());
+                            famousLocation.setLongitude(famousRestaurant.getLongitude());
 
                             Float distance = location.distanceTo(famousLocation);
+                            Log.e("GoogleServiceLocation", "current latitude : " + location.getLatitude());
+                            Log.e("GoogleServiceLocation", "current longitude : " + location.getLongitude());
+                            Log.e("GoogleServiceLocation", "famous latitude : " + famousLocation.getLatitude());
+                            Log.e("GoogleServiceLocation", "famous longitude : " + famousLocation.getLongitude());
                             if (distance < radius) {
                                 Log.d("GoogleServiceLocation", "Near");
-                                showNotification();
+                                showNotification(famousRestaurant);
                             } else {
                                 Log.d("GoogleServiceLocation", "Far");
                             }
@@ -201,7 +207,7 @@ public class GoogleService extends Service implements LocationListener {
 
     }
 
-    private void showNotification() {
+    private void showNotification(FamousRestaurant famousRestaurant) {
         Intent ii = new Intent(this, AuthenticationActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii, 0);
         Intent intent = new Intent(this, AuthenticationActivity.class);
@@ -220,8 +226,8 @@ public class GoogleService extends Service implements LocationListener {
 
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setSmallIcon(com.keralarecipemaster.user.R.mipmap.ic_launcher_round);
-        mBuilder.setContentTitle("Your Title");
-        mBuilder.setContentText("Your text");
+        mBuilder.setContentTitle("Nearby Restaurant Alert!");
+        mBuilder.setContentText(famousRestaurant.getRestaurantName());
         mBuilder.setPriority(Notification.PRIORITY_MAX);
         mBuilder.setStyle(bigText);
         mBuilder.setChannelId("1");
@@ -254,8 +260,8 @@ public class GoogleService extends Service implements LocationListener {
 
     private void fn_update(Location location) {
 
-        intent.putExtra("GoogleServiceLocation", location.getLatitude() + "");
-        intent.putExtra("GoogleServiceLocation", location.getLongitude() + "");
+//        intent.putExtra("GoogleServiceLocation", location.getLatitude() + "");
+//        intent.putExtra("GoogleServiceLocation", location.getLongitude() + "");
         sendBroadcast(intent);
     }
 

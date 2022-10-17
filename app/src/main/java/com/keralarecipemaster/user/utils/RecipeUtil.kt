@@ -3,9 +3,14 @@ package com.keralarecipemaster.user.utils
 import android.content.Context
 import android.graphics.*
 import android.graphics.pdf.PdfDocument
+import android.os.Build
 import android.os.Environment
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.Base64
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.keralarecipemaster.user.R
 import com.keralarecipemaster.user.domain.model.Ingredient
@@ -74,8 +79,9 @@ class RecipeUtil {
             return recipeDetails
         }
 
-        var startY = 300F
+        var startY = 250F
 
+        @RequiresApi(Build.VERSION_CODES.M)
         fun createPdf(
             context: Context,
             recipe: RecipeEntity,
@@ -93,8 +99,8 @@ class RecipeUtil {
 
             // declaring width and height
             // for our PDF file.
-            val pageHeight = 1120
-            val pagewidth = 792
+            val pageHeight = 1520
+            val pagewidth = 700
 
             // creating an object variable
             // for our PDF document.
@@ -182,18 +188,19 @@ class RecipeUtil {
             // is position from start, third parameter is position from top
             // and then we are passing our variable of paint which is title.
 
-            val contentStart = 100F
-            paint.textSize = 50f
+            val contentStart = 70F
+            paint.textSize = 30f
 
             getBitmapFromBase64Image(recipe.image)?.let {
                 val scaledBitmap = Bitmap.createScaledBitmap(it, canvas.width / 2, 200, false)
-                canvas.drawBitmap(scaledBitmap, 200f, 50f, paint)
+                canvas.drawBitmap(scaledBitmap, 200f, 10f, paint)
             }
 
             canvas.drawText(recipe.recipeName, 350f, getY(), paint)
             paint.textSize = 30f
+//            canvas.drawText("$chefName", contentStart, getY(), paint)
 
-            addSpace()
+//            addSpace()
             val dietIcon = if (recipe.diet == Diet.NON_VEG) {
                 BitmapFactory.decodeResource(
                     context.resources,
@@ -209,37 +216,72 @@ class RecipeUtil {
             val scaledDietIcon = Bitmap.createScaledBitmap(dietIcon, 20, 20, false)
             val y = getY()
             canvas.drawBitmap(scaledDietIcon, contentStart, y, paint)
+//
 
-//            canvas.drawText("${recipe.diet.type}", contentStart, getY(), paint)
+
             canvas.drawText("${recipe.mealType.type}", contentStart + 40, y + 20, paint)
             addSpace()
-
-            if (recipe.description.isNotEmpty()) {
-                canvas.drawText(recipe.description, contentStart, getY(), paint)
-                addSpace()
-            }
-
             addSpace()
-            paint.textSize = 40f
-            canvas.drawText("Ingredients", contentStart, getY(), paint)
+
+//            paint.textSize = 30f
+//            canvas.drawText("Ingredients", contentStart, getY(), paint)
             paint.textSize = 30f
             recipe.ingredients.forEach {
                 canvas.drawText("${it.name} - ${it.quantity}", contentStart, getY(), paint)
             }
             addSpace()
 
-            paint.textSize = 40f
-            canvas.drawText("Preparation Method", contentStart, getY(), paint)
-            paint.textSize = 30f
-            canvas.drawText("${recipe.preparationMethod}", contentStart, getY(), paint)
+            val tp = TextPaint()
+            tp.textSize = 30f
+            val sl1 = StaticLayout(
+                "" + recipe.preparationMethod,
+                tp,
+                canvas.width - 100,
+                Layout.Alignment.ALIGN_NORMAL,
+                1f,
+                0f,
+                false
+            )
+            canvas.translate(contentStart, getY())
+            sl1.draw(canvas)
+
             addSpace()
 
-            for (i in 1..3) {
-                addSpace()
-            }
             paint.textSize = 40f
-            canvas.drawText("\n\nChef,", contentStart, getY(), paint)
-            canvas.drawText("\n\n$chefName", contentStart, getY(), paint)
+            canvas.drawText("Chef,", contentStart, getY(), paint)
+            canvas.drawText("$chefName", contentStart, getY(), paint)
+
+            /* val tp = TextPaint()
+             tp.textSize = 30f
+             val sl = StaticLayout.Builder.obtain(
+                 "" + recipe.description,
+                 0,
+                 recipe.description.length,
+                 tp,
+                 canvas.width - 100
+             ).build()
+             canvas.save();
+             if (recipe.description.isNotEmpty()) {
+ //                canvas.translate(contentStart, getY())
+ //                sl.draw(canvas)
+             }
+
+
+
+
+
+             paint.textSize = 40f
+             canvas.drawText("Preparation Method", contentStart, getY(), paint)
+             paint.textSize = 30f
+             canvas.drawText("${recipe.preparationMethod}", contentStart, getY(), paint)
+             addSpace()
+
+             for (i in 1..3) {
+                 addSpace()
+             }
+             paint.textSize = 40f
+             canvas.drawText("\n\nChef,", contentStart, getY(), paint)
+             canvas.drawText("\n\n$chefName", contentStart, getY(), paint)*/
 
 //            recipe.ingredients.forEach {
 //                canvas.drawText(it.name + " - " + it.quantity, 209F, getY(), paint)
@@ -292,7 +334,11 @@ class RecipeUtil {
 
                 // below line is to print toast message
                 // on completion of PDF generation.
-                Toast.makeText(context, "PDF file generated successfully.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    "Recipe PDF generated successfully!\nYou can find them in files!",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             } catch (e: IOException) {
                 // below line is used

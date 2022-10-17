@@ -14,4 +14,7 @@ interface FamousLocationDao {
 
     @Query("SELECT COUNT(restaurantName) from famous_restaurant")
     fun numberOfLocations(): Int
+
+    @Query("DELETE from famous_restaurant")
+    fun deleteFamousRestaurants(): Int
 }

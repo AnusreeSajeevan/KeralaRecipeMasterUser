@@ -50,6 +50,9 @@ class RecipeRepositoryImpl @Inject constructor(
                             )
                         )
                     }
+                } else
+                {
+                    famousLocationDao.dele
                 }
             }
         }
