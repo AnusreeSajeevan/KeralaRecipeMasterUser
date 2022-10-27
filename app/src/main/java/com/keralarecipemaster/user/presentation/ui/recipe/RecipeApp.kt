@@ -20,8 +20,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.gson.Gson
-import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
 import com.keralarecipemaster.user.presentation.ui.SettingsActivity
 import com.keralarecipemaster.user.presentation.ui.authentication.AuthenticationActivity
@@ -32,9 +30,9 @@ import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewMode
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeListViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.RecipeRequestViewModel
-import com.keralarecipemaster.user.service.GoogleService
 import com.keralarecipemaster.user.utils.BottomNavigationScreens
 import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.RecipeUtil
 
 @Composable
 fun RecipeApp(
@@ -83,15 +81,14 @@ fun RecipeApp(
 
         if (isNotificationEnabled) {
             if (famousRestaurants.isNotEmpty()) {
-                val intent = Intent(
-                    context.applicationContext,
-                    GoogleService::class.java
+                context.startService(
+                    RecipeUtil.getGoogleServiceIntent(
+                        context = context,
+                        famousRestaurants = famousRestaurants,
+                        authenticationState = authenticationState,
+                        isNotificationEnabled = isNotificationEnabled
+                    )
                 )
-                val bundle = Bundle()
-                val restaurants = FamousRestaurants(famousRestaurants)
-                bundle.putString(Constants.KEY_FAMOUS_RESTAURANTS, Gson().toJson(restaurants))
-                intent.putExtras(bundle)
-                context.startService(intent)
             }
         }
 

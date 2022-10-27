@@ -73,7 +73,20 @@ fun RecipeRequestComponent(
                     text = recipeRequest.recipeName,
                     style = TextStyle(fontSize = 16.sp, fontStyle = FontStyle.Normal)
                 )
+                Text(
+                    text = recipeRequest.restaurantName,
+                    style = TextStyle(fontSize = 14.sp, fontStyle = FontStyle.Italic)
+                )
+                Text(
+                    text = recipeRequest.mealType.type,
+                    style = TextStyle(fontSize = 12.sp, fontStyle = FontStyle.Normal)
+                )
 
+                val dietLogo = if (recipeRequest.diet.type == Diet.NON_VEG.type) {
+                    R.drawable.ic_non_veg
+                } else {
+                    R.drawable.ic_veg
+                }
                 RatingBarView(
                     rating = remember {
                         mutableStateOf(recipeRequest.rating)
@@ -83,12 +96,6 @@ fun RecipeRequestComponent(
                     starIcon = painterResource(id = R.drawable.ic_star_filled),
                     unRatedStarsColor = Color.LightGray
                 )
-
-                val dietLogo = if (recipeRequest.diet.type == Diet.NON_VEG.type) {
-                    R.drawable.ic_non_veg
-                } else {
-                    R.drawable.ic_veg
-                }
                 Image(
                     painter = painterResource(id = dietLogo),
                     contentDescription = null,

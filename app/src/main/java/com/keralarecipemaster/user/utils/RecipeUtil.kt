@@ -1,9 +1,11 @@
 package com.keralarecipemaster.user.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.text.Layout
 import android.text.StaticLayout
@@ -12,10 +14,15 @@ import android.util.Base64
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 import com.keralarecipemaster.user.R
+import com.keralarecipemaster.user.domain.model.FamousRestaurant
 import com.keralarecipemaster.user.domain.model.Ingredient
 import com.keralarecipemaster.user.domain.model.RecipeEntity
 import com.keralarecipemaster.user.domain.model.RecipeRequestEntity
+import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
+import com.keralarecipemaster.user.prefsstore.AuthenticationState
+import com.keralarecipemaster.user.service.GoogleService
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -218,7 +225,6 @@ class RecipeUtil {
             canvas.drawBitmap(scaledDietIcon, contentStart, y, paint)
 //
 
-
             canvas.drawText("${recipe.mealType.type}", contentStart + 40, y + 20, paint)
             addSpace()
             addSpace()
@@ -400,6 +406,25 @@ class RecipeUtil {
         fun getBitmapFromBase64Image(base64: String): Bitmap? {
             val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
             return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        }
+
+        fun getGoogleServiceIntent(
+            context: Context,
+            famousRestaurants: List<FamousRestaurant>,
+            authenticationState: AuthenticationState,
+            isNotificationEnabled: Boolean,
+        ): Intent {
+            val intent = Intent(
+                context.applicationContext,
+                GoogleService::class.java
+            )
+            val bundle = Bundle()
+            val restaurants = FamousRestaurants(famousRestaurants)
+            bundle.putString(Constants.KEY_FAMOUS_RESTAURANTS, Gson().toJson(restaurants))
+            bundle.putString(Constants.KEY_AUTHENTICATION_STATE, authenticationState.name)
+            bundle.putBoolean(Constants.KEY_IS_NOTIFICATION_ENABLED, isNotificationEnabled)
+            intent.putExtras(bundle)
+            return intent
         }
     }
 }

@@ -22,10 +22,12 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.keralarecipemaster.user.R;
 import com.keralarecipemaster.user.domain.model.FamousRestaurant;
 import com.keralarecipemaster.user.domain.model.util.FamousRestaurants;
+import com.keralarecipemaster.user.prefsstore.AuthenticationState;
 import com.keralarecipemaster.user.presentation.ui.authentication.AuthenticationActivity;
 import com.keralarecipemaster.user.utils.Constants;
 
@@ -38,20 +40,26 @@ public class GoogleService extends Service implements LocationListener {
 
     boolean isGPSEnable = false;
     boolean isNetworkEnable = false;
-    double latitude, longitude;
+    Boolean isNotificationEnabled = false;
     LocationManager locationManager;
-    Location location;
-    private Handler mHandler = new Handler();
-    private Timer mTimer = null;
     long notify_interval = 50000;
-    public static String str_receiver = "servicetutorial.service.receiver";
-    Intent intent;
-    List<FamousRestaurant> famousRestaurants = Collections.emptyList();
+    private Timer mTimer = null;
     Double radius = 50.0;
+    Intent intent;
+    Location location;
+    double latitude, longitude;
+    private Handler mHandler = new Handler();
+    List<FamousRestaurant> famousRestaurants = Collections.emptyList();
+    AuthenticationState authenticationState = AuthenticationState.INITIAL_STATE;
+    public static String famousRestaurantsStr = Constants.EMPTY_STRING;
+    public static String str_receiver = "krm.service.receiver";
+    public static String bigContentTitle = "Nearby Restaurant Alert!";
+    public static String channelId = "notify_001";
+    public static String channelName = "Channel human readable title";
+    public static String contentTitle = "Nearby Restaurant Alert!";
 
 
     public GoogleService() {
-
     }
 
     @Nullable
@@ -64,10 +72,9 @@ public class GoogleService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
 
-
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTaskToGetLocation(), 100, notify_interval);
-        intent = new Intent(str_receiver);
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTaskToGetLocation(), 100, notify_interval);
+            intent = new Intent(str_receiver);
     }
 
     @Override
@@ -79,13 +86,13 @@ public class GoogleService extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle bundle = intent.getExtras();
-        String famousRestaurantsStr = bundle.getString(Constants.KEY_FAMOUS_RESTAURANTS);
-        Log.d("FamousRestaurantsCheck", famousRestaurantsStr);
+        famousRestaurantsStr = bundle.getString(Constants.KEY_FAMOUS_RESTAURANTS);
+        authenticationState = AuthenticationState.valueOf(bundle.getString(Constants.KEY_AUTHENTICATION_STATE));
+        isNotificationEnabled = bundle.getBoolean(Constants.KEY_IS_NOTIFICATION_ENABLED);
         if (famousRestaurantsStr != null) {
             Gson gson = new Gson();
             FamousRestaurants famousRestaurants = gson.fromJson(famousRestaurantsStr, FamousRestaurants.class);
             this.famousRestaurants = famousRestaurants.getRestaurants();
-            Log.d("FamousRestaurantsCheckk", this.famousRestaurants.toString());
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -115,28 +122,14 @@ public class GoogleService extends Service implements LocationListener {
 
         } else {
             if (isNetworkEnable) {
-                Log.d("GoogleServiceLocation", "Network enabled");
                 location = null;
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    Log.d("GoogleServiceLocation", "Permission Not Granted");
                     return;
                 }
-                Log.d("GoogleServiceLocation", "PermissionGranted");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     if (location != null) {
-
-                        Log.e("GoogleServiceLocation", location.getLatitude() + "");
-                        Log.e("GoogleServiceLocation", location.getLongitude() + "");
-
                         for (FamousRestaurant famousRestaurant : this.famousRestaurants) {
                             Location famousLocation = new Location("");
                             famousLocation.setLatitude(famousRestaurant.getLatitude());
@@ -144,15 +137,14 @@ public class GoogleService extends Service implements LocationListener {
 
                             Float distance = location.distanceTo(famousLocation);
                             if (distance < radius) {
-                                Log.d("GoogleServiceLocation", "Near");
+                                showNotification(famousRestaurant);
                             } else {
-                                Log.d("GoogleServiceLocation", "Far");
                             }
                         }
 
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
-                        fn_update(location);
+                        fn_update();
                     }
                 }
 
@@ -160,45 +152,28 @@ public class GoogleService extends Service implements LocationListener {
 
 
             if (isGPSEnable) {
-                Log.d("GoogleServiceLocation", "GPS enabled");
                 location = null;
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (location != null) {
-//                        Log.e("GoogleServiceLocation", "location : " + location.getLatitude());
-//                        Log.e("GoogleServiceLocation", "location : " + location.getLongitude());
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
 
 
-                        //TODO : show notification
                         for (FamousRestaurant famousRestaurant : this.famousRestaurants) {
                             Location famousLocation = new Location("");
-                            //TODO : Phoenix market city
-//                            famousLocation.setLatitude(12.995854);
-//                            famousLocation.setLongitude(77.696350);
                             famousLocation.setLatitude(famousRestaurant.getLatitude());
                             famousLocation.setLongitude(famousRestaurant.getLongitude());
 
                             Float distance = location.distanceTo(famousLocation);
-                            Log.e("GoogleServiceLocation", "current latitude : " + location.getLatitude());
-                            Log.e("GoogleServiceLocation", "current longitude : " + location.getLongitude());
-                            Log.e("GoogleServiceLocation", "famous latitude : " + famousLocation.getLatitude());
-                            Log.e("GoogleServiceLocation", "famous longitude : " + famousLocation.getLongitude());
                             if (distance < radius) {
-                                Log.d("GoogleServiceLocation", "Near");
                                 showNotification(famousRestaurant);
-                            } else {
-                                Log.d("GoogleServiceLocation", "Far");
                             }
                         }
 
-
-                        fn_update(location);
+                        fn_update();
                     }
-                } else {
-                    Log.d("GoogleServiceLocation", "locationmanager bull");
                 }
             }
 
@@ -215,31 +190,31 @@ public class GoogleService extends Service implements LocationListener {
 
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-        bigText.bigText("big text");
-        bigText.setBigContentTitle("Today's Bible Verse");
-        bigText.setSummaryText("Text in detail");
+        String bigStr = famousRestaurant.getRestaurantName() + "\n" + famousRestaurant.getRestaurantAddress();
+        bigText.bigText(bigStr);
+        bigText.setBigContentTitle(bigContentTitle);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 this,
-                "notify_001"
+                channelId
         );
+
 
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setSmallIcon(com.keralarecipemaster.user.R.mipmap.ic_launcher_round);
-        mBuilder.setContentTitle("Nearby Restaurant Alert!");
+        mBuilder.setContentTitle(contentTitle);
         mBuilder.setContentText(famousRestaurant.getRestaurantName());
         mBuilder.setPriority(Notification.PRIORITY_MAX);
         mBuilder.setStyle(bigText);
-        mBuilder.setChannelId("1");
+        mBuilder.setChannelId(channelId);
 
         NotificationManager mNotificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "Your_channel_id";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Channel human readable title",
+                    channelName,
                     NotificationManager.IMPORTANCE_HIGH
             );
             mNotificationManager.createNotificationChannel(channel);
@@ -252,18 +227,27 @@ public class GoogleService extends Service implements LocationListener {
     private class TimerTaskToGetLocation extends TimerTask {
         @Override
         public void run() {
-
-            mHandler.post(() -> fn_getlocation());
-
+            if (authenticationState == AuthenticationState.AUTHENTICATED_USER && isNotificationEnabled) {
+                mHandler.post(() -> fn_getlocation());
+            }
         }
     }
 
-    private void fn_update(Location location) {
-
-//        intent.putExtra("GoogleServiceLocation", location.getLatitude() + "");
-//        intent.putExtra("GoogleServiceLocation", location.getLongitude() + "");
+    private void fn_update() {
         sendBroadcast(intent);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        authenticationState = AuthenticationState.INITIAL_STATE;
 
+    }
+
+    public void stopLocationUpdates() {
+
+//        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
+//        mGoogleApiClient.disconnect();
+
+    }
 }

@@ -42,17 +42,17 @@ class RecipeRepositoryImpl @Inject constructor(
                         recipeDao.insertRecipe(recipe = it)
                         famousLocationDao.insertFamousLocation(
                             FamousRestaurant(
-                                System.currentTimeMillis() / 1000,
-                                it.restaurantName,
-                                it.restaurantAddress,
-                                it.restaurantLatitude.toDouble(),
-                                it.restaurantLongitude.toDouble()
+                                id = it.id,
+                                restaurantName = it.restaurantName,
+                                restaurantAddress = it.restaurantAddress,
+                                latitude = it.restaurantLatitude.toDouble(),
+                                longitude = it.restaurantLongitude.toDouble()
                             )
                         )
                     }
                 } else
                 {
-                    famousLocationDao.dele
+                    famousLocationDao.deleteFamousRestaurants()
                 }
             }
         }

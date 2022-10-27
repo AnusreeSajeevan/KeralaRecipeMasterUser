@@ -1,7 +1,6 @@
 package com.keralarecipemaster.user.presentation.ui
 
 import android.Manifest
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -25,15 +24,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.google.gson.Gson
-import com.keralarecipemaster.user.domain.model.util.FamousRestaurants
 import com.keralarecipemaster.user.prefsstore.AuthenticationState
-import com.keralarecipemaster.user.presentation.ui.authentication.LoginScreen
 import com.keralarecipemaster.user.presentation.ui.theme.KeralaRecipeMasterUserTheme
 import com.keralarecipemaster.user.presentation.viewmodel.AuthenticationViewModel
 import com.keralarecipemaster.user.presentation.viewmodel.LocationNotificationViewModel
-import com.keralarecipemaster.user.service.GoogleService
 import com.keralarecipemaster.user.utils.Constants
+import com.keralarecipemaster.user.utils.RecipeUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,10 +51,10 @@ class SettingsActivity : ComponentActivity() {
                     )
                 }
             val authenticationState by authenticationStateValueLifeCycleAware.collectAsState(initial = AuthenticationState.INITIAL_STATE)
-           Log.d("CheckAuthState", authenticationState.toString())
+            Log.d("CheckAuthState", authenticationState.toString())
             KeralaRecipeMasterUserTheme(
                 authenticationState =
-                    authenticationState,
+                authenticationState,
                 content = {
                     SettingsScreen(locationNotificationViewModel, authenticationViewModel)
                 }
@@ -170,18 +166,14 @@ fun SettingsScreen(
                         locationNotificationViewModel.updateNotificationStatus(it)
                         if (it) {
                             if (famousRestaurants.isNotEmpty()) {
-                                val intent = Intent(
-                                    context.applicationContext,
-                                    GoogleService::class.java
+                                context.startService(
+                                    RecipeUtil.getGoogleServiceIntent(
+                                        context = context,
+                                        famousRestaurants = famousRestaurants,
+                                        authenticationState = AuthenticationState.AUTHENTICATED_USER,
+                                        isNotificationEnabled = isNotificationEnabled
+                                    )
                                 )
-                                val bundle = Bundle()
-                                val restaurants = FamousRestaurants(famousRestaurants)
-                                bundle.putString(
-                                    Constants.KEY_FAMOUS_RESTAURANTS,
-                                    Gson().toJson(restaurants)
-                                )
-                                intent.putExtras(bundle)
-                                context.startService(intent)
                             }
                         }
                     } else {

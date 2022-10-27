@@ -10,6 +10,8 @@ class Constants {
         const val INVALID_RECIPE_REQUEST_ID = -1
         const val EMPTY_STRING = ""
         const val KEY_FAMOUS_RESTAURANTS = "famous_restaurants"
+        const val KEY_AUTHENTICATION_STATE = "authentication_state"
+        const val KEY_IS_NOTIFICATION_ENABLED = "is_notification_enabled"
 
         const val ERROR_CODE_SUCCESS = 200
         const val ERROR_CODE_INVALID_CREDENTIALS = 400
